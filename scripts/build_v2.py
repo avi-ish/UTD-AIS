@@ -363,7 +363,7 @@ PAGES_CONTENT["events"] = ("Events · AIS at UT Dallas", "Upcoming AIS at UT Dal
     </section>
 
 {FEATURE}
-{COLLAGE}{cta("Stay in the loop", "Never miss an <em>event</em>", "Join the email list and we’ll let you know when something’s coming up.", "join.html", "Join the email list", "ocean")}{next_page("officers.html", "Meet the officers")}""")
+{COLLAGE}""")
 
 PAGES_CONTENT["officers"] = ("Officers · AIS at UT Dallas", "Meet the AIS at UT Dallas officers.", page_hero("The team", "Meet the <em>Officers</em>", "The students who plan every workshop, speaker, and social.", "ais-reception.jpg") + f"""
     <section class="officers">
