@@ -62,17 +62,6 @@ document.addEventListener("keydown", (e) => { if (e.key === "Escape") setMenu(fa
 const navLinks = [...nav.querySelectorAll(".nav__links a")];
 const sections = navLinks.map((a) => document.querySelector(a.getAttribute("href"))).filter(Boolean);
 
-// Tides: build the layered wave edge for each section that asks for one
-const WAVE = '<svg viewBox="0 0 2880 200" preserveAspectRatio="none"><path d="M0 60 C 360 0 360 0 720 60 S 1080 120 1440 60 S 1800 0 2160 60 S 2520 120 2880 60 V200 H0 Z"/></svg>';
-const tides = [...document.querySelectorAll("[data-tide]")];
-tides.forEach((section) => {
-  const tide = document.createElement("div");
-  tide.className = "tide";
-  tide.setAttribute("aria-hidden", "true");
-  tide.innerHTML = `<div class="tide__move">${["foam", "mid", "main"].map((k) => `<div class="tide__layer tide__layer--${k}">${WAVE}</div>`).join("")}</div>`;
-  section.prepend(tide);
-});
-
 // Scroll-driven effects: progress bar, nav state, parallax
 const progress = document.querySelector(".progress");
 const hero = document.querySelector("[data-wash]");
@@ -98,16 +87,6 @@ function onScroll() {
   navLinks.forEach((a) => a.classList.toggle("is-active", current && a.getAttribute("href") === "#" + current.id));
 
   const stacked = window.innerWidth <= 900;
-  // Each tide rolls in while its section travels from the bottom of the screen to ~40% up
-  if (!reduceMotion) {
-    tides.forEach((section) => {
-      const top = section.getBoundingClientRect().top;
-      if (top > vh * 1.2 || top < -vh) return;
-      const t = Math.min(Math.max((vh - top) / (vh * 0.6), 0), 1);
-      section.style.setProperty("--p", (1 - Math.pow(1 - t, 3)).toFixed(4));
-    });
-  }
-
   parallaxEls.forEach((el) => {
     // Collage tiles stack on small screens, where drifting would make them overlap
     if (stacked && el.classList.contains("collage__item")) { el.style.translate = ""; return; }

@@ -688,7 +688,7 @@ em { font-style: italic; font-family: var(--font-serif); font-weight: 300; }
   overflow: hidden;
   background: var(--ink) var(--grain);
   color: var(--on-dark);
-  padding: clamp(18px, 2.4vw, 30px) 0 clamp(64px, 7vw, 96px);
+  padding: clamp(18px, 2.4vw, 30px) 0;
   border-top: 1px solid rgba(243, 238, 228, 0.08);
 }
 .marquee__track {
@@ -772,55 +772,6 @@ em { font-style: italic; font-family: var(--font-serif); font-weight: 300; }
 .ticker__row--reverse li { font-style: italic; color: var(--on-dark-soft); }
 .ticker__row li:hover { background: var(--on-dark); color: var(--ink); border-color: var(--on-dark); }
 
-/* ---------- Tides between sections ----------
-   script.js adds a .tide to every [data-tide] section. Its crests sit over the
-   bottom of the previous section in the new section's colour and roll in as
-   --p goes 0→1 while the section scrolls into view. Direction comes from
-   data-tide, angle from --tilt, colours from --tide / --tide-mid / --tide-foam. */
-[data-tide] { position: relative; --p: 1; --tide-h: clamp(64px, 9vw, 132px); }
-.tide {
-  position: absolute;
-  left: 0; right: 0;
-  bottom: calc(100% - 56px);
-  height: calc(var(--tide-h) + 56px + 90px);
-  overflow: hidden;
-  pointer-events: none;
-  z-index: 4;
-}
-.tide__move {
-  position: absolute;
-  inset: 0;
-  transform-origin: 50% 100%;
-  will-change: transform;
-}
-.tide__layer { position: absolute; left: 0; bottom: 0; width: 200%; }
-.tide__layer svg { display: block; width: 100%; height: 100%; }
-.tide__layer--foam { height: calc(var(--tide-h) + 56px); fill: var(--tide-foam); animation: swell 11s linear infinite; }
-.tide__layer--mid  { height: calc(var(--tide-h) * 0.8 + 56px); fill: var(--tide-mid); animation: swell 15s linear infinite reverse; }
-.tide__layer--main { height: calc(var(--tide-h) * 0.58 + 56px); fill: var(--tide); animation: swell 8s linear infinite; }
-
-[data-tide="rise"] .tide__move           { transform: translateY(calc((1 - var(--p)) * 100%)) skewY(var(--tilt)); }
-[data-tide="left"] .tide__move           { transform: translateX(calc((var(--p) - 1) * 105%)) skewY(var(--tilt)); }
-[data-tide="right"] .tide__move          { transform: translateX(calc((1 - var(--p)) * 105%)) skewY(var(--tilt)); }
-[data-tide="diagonal"] .tide__move       { transform: translate(calc((var(--p) - 1) * 70%), calc((1 - var(--p)) * 100%)) skewY(var(--tilt)); }
-[data-tide="diagonal-right"] .tide__move { transform: translate(calc((1 - var(--p)) * 70%), calc((1 - var(--p)) * 100%)) skewY(var(--tilt)); }
-
-/* Side-sliding waves: widen past the screen and feather the leading edge so it
-   arrives as a soft swell; the feathered strip sits off-screen once settled. */
-[data-tide="right"] .tide__move, [data-tide="diagonal-right"] .tide__move {
-  left: -30%; right: 0;
-  -webkit-mask-image: linear-gradient(90deg, transparent, #000 23%);
-  mask-image: linear-gradient(90deg, transparent, #000 23%);
-}
-[data-tide="left"] .tide__move, [data-tide="diagonal"] .tide__move {
-  left: 0; right: -30%;
-  -webkit-mask-image: linear-gradient(270deg, transparent, #000 23%);
-  mask-image: linear-gradient(270deg, transparent, #000 23%);
-}
-
-/* Sections that clip their contents still need the crest to reach upward */
-.alumni, .contact { overflow: visible; overflow-x: clip; }
-
 /* ---------- Reveal on scroll ---------- */
 .reveal { opacity: 0; transform: translateY(24px); transition: opacity 1.1s ease var(--d, 0s), transform 1.1s cubic-bezier(.2,.7,.2,1) var(--d, 0s); }
 .reveal.is-in { opacity: 1; transform: none; }
@@ -833,7 +784,6 @@ em { font-style: italic; font-family: var(--font-serif); font-weight: 300; }
   .hero { height: auto; margin-bottom: 0; }
   .hero__stage { position: relative; min-height: 100svh; }
   .wash { display: none; }
-  .tide__layer { animation: none; }
 }
 
 /* ---------- Responsive ---------- */
