@@ -8,7 +8,7 @@ from pathlib import Path
 
 OUT = Path(__file__).resolve().parent.parent / "v2"
 VERSION = "2"
-PAGES = [("index", "Home"), ("about", "About"), ("events", "Events"), ("officers", "Officers"), ("alumni", "Alumni"), ("join", "Join")]
+PAGES = [("index", "Home"), ("events", "Events"), ("officers", "Officers"), ("alumni", "Alumni"), ("join", "Join")]
 CUR = ' aria-current="page"'
 
 
@@ -99,6 +99,11 @@ def cta(eyebrow, title, body, href, label, tone="jade"):
     </section>
 """
 
+
+# Chapter facts shared across pages, so wording stays consistent everywhere
+MISSION = "We promote the study and practice of information systems through professional development, technical workshops, and a community of students who like figuring out how technology and business fit together."
+MISSION_MORE = "Whether you’re aiming for analytics, consulting, product or engineering, AIS is where you practise the skills, meet the people, and find your footing."
+EMAIL = "utdallasais@gmail.com"
 
 PILLARS = """        <ul class="pillars">
           <li><strong>Professional development</strong><span>Résumé reviews, mock interviews, and career prep aimed at IS, analytics, and consulting roles.</span></li>
@@ -206,7 +211,7 @@ FEATURE = """    <section class="feature">
     </section>
 """
 
-JOIN_FORM = """    <section class="contact" id="form">
+JOIN_FORM = f"""    <section class="contact" id="form">
       <img class="contact__bg" src="images/stones-cream.jpg" alt="" loading="lazy">
       <div class="contact__panel">
         <div class="contact__intro">
@@ -220,14 +225,14 @@ JOIN_FORM = """    <section class="contact" id="form">
             <li>A community of students heading the same way</li>
           </ul>
           <dl class="contact__details">
-            <div><dt>Email</dt><dd><a href="mailto:utdallasais@gmail.com">utdallasais@gmail.com</a></dd></div>
+            <div><dt>Email</dt><dd><a href="mailto:{EMAIL}">{EMAIL}</a></dd></div>
             <div><dt>Follow</dt><dd><a href="https://www.instagram.com/utdallasais/" target="_blank" rel="noopener">Instagram</a> · <a href="https://www.linkedin.com/company/utdallasais/" target="_blank" rel="noopener">LinkedIn</a></dd></div>
             <div><dt>Find us</dt><dd>Jindal School of Management<br>800 W Campbell Rd, Richardson, TX</dd></div>
             <div><dt>Flare</dt><dd><a href="https://flare-event.app.link/EcJCg0AUW0b" target="_blank" rel="noopener">Join our Flare</a></dd></div>
           </dl>
         </div>
 
-        <form class="form contact__form" action="https://formsubmit.co/utdallasais@gmail.com" method="POST" data-form>
+        <form class="form contact__form" action="https://formsubmit.co/{EMAIL}" method="POST" data-form>
           <input type="hidden" name="_subject" value="New AIS membership interest" data-subject>
           <input type="hidden" name="_template" value="table">
           <input type="hidden" name="_captcha" value="false">
@@ -259,7 +264,7 @@ def faq(items):
           <p>{a}</p>
         </details>""" for q, a in items)
     return f"""
-    <section class="faq">
+    <section class="faq" id="faq">
       <div class="faq__head">
         <p class="eyebrow">Questions</p>
         <h2 class="heading">Frequently <em>asked</em></h2>
@@ -271,7 +276,7 @@ def faq(items):
 """
 
 
-ABOUT_FAQ = faq([
+FAQ = faq([
     ("Who can join AIS?", "Any UT Dallas student. You don’t need to be an information systems major; members come from business, computer science, data science, finance and more."),
     ("How do I become a member?", 'Fill in the form on the <a href="join.html">Join page</a> and choose “Joining AIS”. An officer will follow up with next steps.'),
     ("What happens at a typical meeting?", "General meetings mix chapter updates with a workshop, speaker or social, so there’s always something to learn and people to meet."),
@@ -305,14 +310,16 @@ PAGES_CONTENT["index"] = ("AIS at UT Dallas", "The UT Dallas student chapter of 
       <div><strong>JSOM</strong><span>Home at the Naveen Jindal School of Management</span></div>
     </section>
 
-    <section class="split">
+    <section class="split" id="about">
       <div class="panel panel--ink" data-reveal>
+        <p class="eyebrow">Who we are</p>
         <h2 class="heading">Welcome to <em>AIS</em></h2>
-        <p class="lede">We promote the study and practice of information systems through professional development, technical workshops, and a community of students who like figuring out how technology and business fit together.</p>
+        <p class="lede">{MISSION}</p>
+        <p class="lede">{MISSION_MORE}</p>
         <figure class="frame">
           <img src="images/stone-stack.jpg" alt="Three smooth stones balanced on a block of banded jasper" loading="lazy">
         </figure>
-        <a class="link-line" href="about.html">More about us</a>
+        <a class="link-line" href="index.html#faq">Common questions</a>
       </div>
       <div class="panel panel--seaglass">
         <h2 class="heading">What we <em>do</em></h2>
@@ -343,35 +350,12 @@ PAGES_CONTENT["index"] = ("AIS at UT Dallas", "The UT Dallas student chapter of 
 {EVENT_CARDS}
     </section>
 
+{FAQ}
     <section class="partners partners--band" data-reveal>
       <p class="eyebrow partners__label">Current partners</p>
 {PARTNERS}
     </section>
 {cta("Membership", "Ready to <em>join</em>?", "Membership is open to every UT Dallas student, whatever your major.", "join.html", "Become a member")}""")
-
-PAGES_CONTENT["about"] = ("About · AIS at UT Dallas", "Who we are and what the AIS chapter at UT Dallas does.", page_hero("Who we are", "About <em>AIS</em>", "A student chapter of the global Association for Information Systems, based at the Jindal School.", "stone-stack.jpg") + f"""
-    <section class="split">
-      <div class="panel panel--ink" data-reveal>
-        <p class="eyebrow">Our mission</p>
-        <h2 class="heading">Technology meets <em>business</em></h2>
-        <p class="lede">We promote the study and practice of information systems through professional development, technical workshops, and a community of students who like figuring out how technology and business fit together.</p>
-        <p class="lede">Whether you’re aiming for analytics, consulting, product or engineering, AIS is where you practise the skills, meet the people, and find your footing.</p>
-        <dl class="facts">
-          <div><dt>Part of</dt><dd>Global AIS</dd></div>
-          <div><dt>Alumni</dt><dd>10,000+</dd></div>
-          <div><dt>Open to</dt><dd>All majors</dd></div>
-        </dl>
-      </div>
-      <div class="panel panel--seaglass">
-        <h2 class="heading">What we <em>do</em></h2>
-        <p class="caps-display caps-display--small">Learn. Connect. Build. Compete.</p>
-{PILLARS}
-      </div>
-    </section>
-
-{MARQUEE}
-{FEATURE}
-{ABOUT_FAQ}{next_page("events.html", "Upcoming events")}""")
 
 PAGES_CONTENT["events"] = ("Events · AIS at UT Dallas", "Upcoming AIS at UT Dallas events.", page_hero("Workshops · Speakers · Competitions", "Chapter <em>Events</em>", "What’s coming up at the chapter, and moments from the wider AIS community.", "ais-speaker.jpg") + f"""
     <!-- Filled from the chapter's Google Calendar once CALENDAR is set in js/main.js -->

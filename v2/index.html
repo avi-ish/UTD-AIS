@@ -22,7 +22,6 @@
     </button>
     <nav class="nav__links" id="nav-links" aria-label="Primary">
       <a href="index.html" aria-current="page">Home</a>
-      <a href="about.html">About</a>
       <a href="events.html">Events</a>
       <a href="officers.html">Officers</a>
       <a href="alumni.html">Alumni</a>
@@ -55,14 +54,16 @@
       <div><strong>JSOM</strong><span>Home at the Naveen Jindal School of Management</span></div>
     </section>
 
-    <section class="split">
+    <section class="split" id="about">
       <div class="panel panel--ink" data-reveal>
+        <p class="eyebrow">Who we are</p>
         <h2 class="heading">Welcome to <em>AIS</em></h2>
         <p class="lede">We promote the study and practice of information systems through professional development, technical workshops, and a community of students who like figuring out how technology and business fit together.</p>
+        <p class="lede">Whether you’re aiming for analytics, consulting, product or engineering, AIS is where you practise the skills, meet the people, and find your footing.</p>
         <figure class="frame">
           <img src="images/stone-stack.jpg" alt="Three smooth stones balanced on a block of banded jasper" loading="lazy">
         </figure>
-        <a class="link-line" href="about.html">More about us</a>
+        <a class="link-line" href="index.html#faq">Common questions</a>
       </div>
       <div class="panel panel--seaglass">
         <h2 class="heading">What we <em>do</em></h2>
@@ -127,6 +128,36 @@
       </ol>
     </section>
 
+
+    <section class="faq" id="faq">
+      <div class="faq__head">
+        <p class="eyebrow">Questions</p>
+        <h2 class="heading">Frequently <em>asked</em></h2>
+      </div>
+      <div class="faq__list">
+        <details>
+          <summary>Who can join AIS?</summary>
+          <p>Any UT Dallas student. You don’t need to be an information systems major; members come from business, computer science, data science, finance and more.</p>
+        </details>
+        <details>
+          <summary>How do I become a member?</summary>
+          <p>Fill in the form on the <a href="join.html">Join page</a> and choose “Joining AIS”. An officer will follow up with next steps.</p>
+        </details>
+        <details>
+          <summary>What happens at a typical meeting?</summary>
+          <p>General meetings mix chapter updates with a workshop, speaker or social, so there’s always something to learn and people to meet.</p>
+        </details>
+        <details>
+          <summary>Can my company work with the chapter?</summary>
+          <p>Yes. We host speakers, workshops and recruiting events with industry partners. Choose “Partnering” on the <a href="join.html?topic=partner">Join form</a> and we’ll be in touch.</p>
+        </details>
+        <details>
+          <summary>How do I hear about upcoming events?</summary>
+          <p>Tick “Add me to the email list” on the Join form, follow us on Instagram and LinkedIn, or join our Flare.</p>
+        </details>
+      </div>
+    </section>
+
     <section class="partners partners--band" data-reveal>
       <p class="eyebrow partners__label">Current partners</p>
         <ul class="partners__list">
@@ -146,7 +177,7 @@
 
   <footer class="footer footer--v2">
     <span class="nav__mark">AIS <em>at</em> UT Dallas</span>
-    <nav class="footer__links" aria-label="Footer"><a href="index.html">Home</a> · <a href="about.html">About</a> · <a href="events.html">Events</a> · <a href="officers.html">Officers</a> · <a href="alumni.html">Alumni</a> · <a href="join.html">Join</a></nav>
+    <nav class="footer__links" aria-label="Footer"><a href="index.html">Home</a> · <a href="events.html">Events</a> · <a href="officers.html">Officers</a> · <a href="alumni.html">Alumni</a> · <a href="join.html">Join</a></nav>
     <span>© <span data-year></span> AIS Student Chapter at The University of Texas at Dallas</span>
   </footer>
 
@@ -154,7 +185,6 @@
   <div class="fab" data-fab>
     <ul class="fab__menu" id="fab-menu" aria-label="Pages">
       <li><a href="index.html" aria-current="page">Home</a></li>
-      <li><a href="about.html">About</a></li>
       <li><a href="events.html">Events</a></li>
       <li><a href="officers.html">Officers</a></li>
       <li><a href="alumni.html">Alumni</a></li>
