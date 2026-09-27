@@ -329,19 +329,6 @@ PAGES_CONTENT["index"] = ("AIS at UT Dallas", "The UT Dallas student chapter of 
     </section>
 
 {MARQUEE}
-    <section class="explore">
-      <div class="explore__head">
-        <p class="eyebrow">Explore</p>
-        <h2 class="heading">Find your <em>way in</em></h2>
-      </div>
-      <div class="explore__grid" data-reveal>
-        <a class="explore__card" href="events.html"><img src="images/ais-speaker.jpg" alt="" loading="lazy"><span class="explore__label">Events</span><span class="explore__text">Workshops, speakers, competitions and socials.</span></a>
-        <a class="explore__card" href="officers.html"><img src="images/officer-chinmayi.jpg" alt="" loading="lazy"><span class="explore__label">Officers</span><span class="explore__text">Meet the students who run the chapter.</span></a>
-        <a class="explore__card" href="alumni.html"><img src="images/ais-reception.jpg" alt="" loading="lazy"><span class="explore__label">Alumni</span><span class="explore__text">Where AIS members go next.</span></a>
-        <a class="explore__card" href="join.html"><img src="images/stones-cream.jpg" alt="" loading="lazy"><span class="explore__label">Join</span><span class="explore__text">Become a member in a minute.</span></a>
-      </div>
-    </section>
-
     <section class="events upnext" data-calendar>
       <div class="events__head">
         <h2 class="heading"><em>Coming</em> up</h2>
