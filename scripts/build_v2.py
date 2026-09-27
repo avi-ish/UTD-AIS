@@ -304,6 +304,7 @@ PAGES_CONTENT["index"] = ("AIS at UT Dallas", "The UT Dallas student chapter of 
     </section>
 
     <section class="stats" data-reveal>
+      <p class="stats__label">The chapter at a glance</p>
       <div><strong><span data-count="10000">10,000</span>+</strong><span>Alumni in the AIS network</span></div>
       <div><strong>Global</strong><span>Part of the Association for Information Systems</span></div>
       <div><strong>All majors</strong><span>Open to every UT Dallas student</span></div>
