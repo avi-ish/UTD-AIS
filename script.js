@@ -64,6 +64,7 @@ const sections = navLinks.map((a) => document.querySelector(a.getAttribute("href
 
 // Scroll-driven effects: progress bar, nav state, parallax
 const progress = document.querySelector(".progress");
+const hero = document.querySelector("[data-wash]");
 const parallaxEls = reduceMotion ? [] : [...document.querySelectorAll("[data-parallax]")];
 let ticking = false;
 
@@ -72,7 +73,14 @@ function onScroll() {
   const vh = window.innerHeight;
   const max = document.documentElement.scrollHeight - vh;
   progress.style.setProperty("--p", max > 0 ? (y / max).toFixed(4) : 0);
-  nav.classList.toggle("is-scrolled", y > vh * 0.6);
+  // Wave progress through the pinned hero: 0 at the top, 1 once it has washed over
+  let w = 1;
+  if (hero && !reduceMotion) {
+    const travel = hero.offsetHeight - vh;
+    w = travel > 0 ? Math.min(Math.max(-hero.getBoundingClientRect().top / travel, 0), 1) : 1;
+    hero.style.setProperty("--w", w.toFixed(4));
+  }
+  nav.classList.toggle("is-scrolled", reduceMotion ? y > vh * 0.6 : w > 0.82);
 
   let current = null;
   sections.forEach((s) => { if (s.getBoundingClientRect().top < vh * 0.4) current = s; });
