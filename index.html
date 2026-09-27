@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Notes from a Life in Progress</title>
-  <meta name="description" content="Thoughts, discoveries, and tiny joys collected along the way.">
+  <title>AIS at UT Dallas</title>
+  <meta name="description" content="The UT Dallas student chapter of the Association for Information Systems: workshops, industry speakers, case competitions and community for students in information systems.">
   <meta name="theme-color" content="#0f2233">
   <link rel="preload" href="fonts/italiana-QmWaXw.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="fonts/fonts.css">
@@ -12,12 +12,17 @@
 </head>
 <body>
 
-  <header class="nav">
-    <a class="nav__mark" href="#top">Life in Progress</a>
-    <nav class="nav__links" aria-label="Primary">
-      <a href="#journal">Journal</a>
+  <div class="progress" aria-hidden="true"></div>
+  <header class="nav" data-nav>
+    <a class="nav__mark" href="#top">AIS <em>at</em> UT Dallas</a>
+    <button class="nav__toggle" type="button" aria-expanded="false" aria-controls="nav-links" data-nav-toggle>
+      <span></span><span></span><span class="sr-only">Menu</span>
+    </button>
+    <nav class="nav__links" id="nav-links" aria-label="Primary">
       <a href="#about">About</a>
-      <a href="#loop">Newsletter</a>
+      <a href="#events">Events</a>
+      <a href="#officers">Officers</a>
+      <a href="#join">Join</a>
       <a href="#contact">Contact</a>
     </nav>
   </header>
@@ -26,135 +31,187 @@
 
     <!-- Hero -->
     <section class="hero">
-      <img class="hero__img" src="images/hero.jpg" alt="A jade roller, stone comb, agate bead and sea shell resting on deep blue handmade paper">
+      <img class="hero__img" data-parallax="0.25" src="images/hero.jpg" alt="Stones, a shell and a jade roller resting on deep blue handmade paper">
       <div class="hero__inner">
+        <p class="eyebrow">Student Chapter · Naveen Jindal School of Management</p>
         <h1 class="display">
-          <span>Notes from a</span>
-          <em>Life in Progress</em>
+          <span class="line"><span>Association for</span></span>
+          <em class="line"><span>Information Systems</span></em>
         </h1>
-        <p class="hero__sub">Thoughts, discoveries, and tiny joys collected along the way</p>
-        <a class="link-line" href="#journal">Read the latest</a>
+        <p class="hero__sub">Where UT Dallas students learn the tools, meet the people, and build the experience behind a career in technology.</p>
+        <div class="hero__actions">
+          <a class="link-line" href="#join">Become a member</a>
+          <a class="link-line" href="#events">See upcoming events</a>
+        </div>
       </div>
     </section>
 
-    <!-- Intro + latest musings -->
+    <!-- About + events -->
     <section class="split" id="about">
       <div class="panel panel--ink">
-        <h2 class="heading">Hey, I’m <em>Elianna</em></h2>
-        <p class="lede">Welcome to my corner of the internet, where curiosity leads, creativity follows, and every day offers something worth noticing.</p>
+        <h2 class="heading">Welcome to <em>AIS</em></h2>
+        <p class="lede">We promote the study and practice of information systems through professional development, technical workshops, and a community of students who like figuring out how technology and business fit together.</p>
         <figure class="frame">
           <img src="images/stone-stack.jpg" alt="Three smooth stones balanced on a block of banded jasper" loading="lazy">
         </figure>
-        <a class="link-line" href="#contact">Drop a note</a>
+        <dl class="facts">
+          <div><dt>Part of</dt><dd>Global AIS</dd></div>
+          <div><dt>Home</dt><dd>Jindal School</dd></div>
+          <div><dt>Open to</dt><dd>All majors</dd></div>
+        </dl>
+        <a class="link-line" href="#officers">Meet the officers</a>
       </div>
 
-      <div class="panel panel--seaglass" id="journal">
-        <h2 class="heading"><em>Latest</em> Musings</h2>
+      <div class="panel panel--seaglass" id="events">
+        <h2 class="heading"><em>Upcoming</em> Events</h2>
         <ol class="musings">
           <li>
             <a href="#">
               <img src="images/ocean.jpg" alt="" loading="lazy">
-              <span class="musings__meta">Field notes · 4 min</span>
-              <span class="musings__title">What I learned from taking a break</span>
+              <span class="musings__meta">Sept 10 · Jindal School</span>
+              <span class="musings__title">General Meeting &amp; Welcome Social</span>
             </a>
           </li>
           <li>
             <a href="#">
               <img src="images/comb.jpg" alt="" loading="lazy">
-              <span class="musings__meta">Work · 6 min</span>
-              <span class="musings__title">Three ideas that changed how I work</span>
+              <span class="musings__meta">Sept 24 · Workshop</span>
+              <span class="musings__title">SQL &amp; Power BI, hands-on</span>
             </a>
           </li>
           <li>
             <a href="#">
               <img src="images/blue-table.jpg" alt="" loading="lazy">
-              <span class="musings__meta">Rituals · 3 min</span>
-              <span class="musings__title">Why slow mornings still matter</span>
+              <span class="musings__meta">Oct 8 · Speaker series</span>
+              <span class="musings__title">From intern to analyst: an industry panel</span>
             </a>
           </li>
         </ol>
+        <a class="link-line link-line--dark" href="#">Full calendar</a>
       </div>
     </section>
 
-    <!-- Manifesto -->
+    <!-- Marquee -->
+    <div class="marquee" aria-hidden="true">
+      <div class="marquee__track">
+        <span>Technical workshops</span><span>Industry speakers</span><span>Case competitions</span><span>Career prep</span><span>Networking</span><span>Community</span>
+        <span>Technical workshops</span><span>Industry speakers</span><span>Case competitions</span><span>Career prep</span><span>Networking</span><span>Community</span>
+      </div>
+    </div>
+
+    <!-- What we do -->
     <section class="manifesto">
       <div class="manifesto__card manifesto__card--words">
-        <p class="caps-display">Tide returns.<br>Stone steadies.</p>
-        <p class="caps-display">Moss softens.<br>Water carries light.</p>
+        <p class="caps-display">Learn.<br>Connect.</p>
+        <p class="caps-display">Build.<br>Compete.</p>
       </div>
-      <div class="manifesto__card">
-        <figure class="frame frame--flush">
-          <img src="images/stones-dark.jpg" alt="A pale green stone sphere and four small red jasper beads on slate" loading="lazy">
-        </figure>
-        <p class="body">I’m a writer, builder, and perpetual beginner. I started this journal to document the small shifts that shape a meaningful life: creative experiments, work in progress, and the occasional snack-fuelled epiphany. Thanks for reading. I’m glad you’re here.</p>
+      <div class="manifesto__card manifesto__card--list">
+        <h2 class="eyebrow">What we do</h2>
+        <ul class="pillars">
+          <li><strong>Professional development</strong><span>Résumé reviews, mock interviews, and career prep aimed at IS, analytics, and consulting roles.</span></li>
+          <li><strong>Technical workshops</strong><span>Hands-on sessions in SQL, Python, cloud, data visualisation, and the tools employers actually use.</span></li>
+          <li><strong>Industry speakers</strong><span>Talks and panels with professionals from the companies that hire UT Dallas students.</span></li>
+          <li><strong>Case competitions</strong><span>Real business problems, tight deadlines, and a chance to present to judges from industry.</span></li>
+        </ul>
       </div>
     </section>
 
-    <!-- Feature post -->
+    <!-- Feature: conference -->
     <section class="feature">
       <div class="feature__diptych">
         <figure>
-          <img src="images/quiet-room.jpg" alt="A calm living room with a linen daybed and walnut shelf" loading="lazy">
-          <figcaption><strong>Life Lately</strong><br>January 30</figcaption>
+          <img src="images/quiet-room.jpg" alt="A calm, light-filled room" loading="lazy">
+          <figcaption><strong>National AIS</strong><br>Each spring</figcaption>
         </figure>
         <figure>
           <img src="images/travertine.jpg" alt="Close-up of porous travertine stone" loading="lazy">
         </figure>
       </div>
-      <ul class="feature__tags" aria-label="Topics">
-        <li>Small turning points</li>
-        <li>Quiet movement</li>
-        <li>Seasons of change</li>
+      <ul class="feature__tags" aria-label="Highlights">
+        <li>Case competitions</li>
+        <li>Leadership sessions</li>
+        <li>Chapters nationwide</li>
       </ul>
       <div class="feature__text">
-        <h2 class="heading">Life <em>Lately</em></h2>
-        <p class="meta">January 30 · 7 minutes · Life Updates</p>
-        <p class="body">Life lately has felt like a collection of small, quiet turning points, the kinds you almost miss while you’re busy chasing the bigger ones.</p>
-        <p class="body">I’ve been noticing how the days stack differently when I slow down just enough to pay attention: the way sunlight pools on my desk in the late afternoon, the conversations that linger longer than expected, the unexpected calm that follows a week of chaos.</p>
-        <a class="link-line link-line--dark" href="#">Read the full post</a>
+        <h2 class="heading">Compete on a <em>national</em> stage</h2>
+        <p class="meta">AIS Student Chapter Leadership Conference</p>
+        <p class="body">As a chapter of the global Association for Information Systems, our members can take part in the AIS Student Chapter Leadership Conference, where teams from universities across the country go head to head in case and technology competitions.</p>
+        <p class="body">It’s the best way to test what you’ve learned against the strongest IS students in the country, and to come home with connections that last well beyond the weekend.</p>
+        <a class="link-line link-line--dark" href="https://aisnet.org/" target="_blank" rel="noopener">About AIS national</a>
       </div>
     </section>
 
-    <!-- Journal collage -->
+    <!-- Chapter life collage -->
     <section class="collage" aria-labelledby="collage-title">
-      <p class="eyebrow" id="collage-title">From the journal</p>
-      <a class="collage__item collage__item--a" href="#">
+      <p class="eyebrow" id="collage-title">Chapter life</p>
+      <a class="collage__item collage__item--a" data-parallax="-0.05" href="#events">
         <img src="images/ocean.jpg" alt="" loading="lazy">
-        <span>On learning to float</span>
+        <span>General meetings</span>
       </a>
-      <a class="collage__item collage__item--b" href="#">
+      <a class="collage__item collage__item--b" data-parallax="0.04" href="#events">
         <img src="images/chair.jpg" alt="" loading="lazy">
-        <span>A chair by the window</span>
+        <span>Speaker series</span>
       </a>
-      <a class="collage__item collage__item--c" href="#">
+      <a class="collage__item collage__item--c" data-parallax="-0.05" href="#events">
         <img src="images/bedroom.jpg" alt="" loading="lazy">
-        <span>Rest, reconsidered</span>
+        <span>Socials &amp; study nights</span>
       </a>
-      <a class="collage__item collage__item--d" href="#">
+      <a class="collage__item collage__item--d" data-parallax="0.06" href="#events">
         <img src="images/jade-roller.jpg" alt="" loading="lazy">
-        <span>Tiny rituals, green stones</span>
+        <span>Technical workshops</span>
       </a>
     </section>
 
-    <!-- Newsletter -->
-    <section class="split" id="loop">
+    <!-- Officers -->
+    <section class="officers" id="officers">
+      <div class="officers__head">
+        <h2 class="heading">Meet the <em>Officers</em></h2>
+        <p class="body">The student team that plans every workshop, speaker, and social. Reach out to any of us.</p>
+      </div>
+      <ul class="officers__grid">
+        <li><span class="avatar" aria-hidden="true">P</span><strong>Officer Name</strong><span>President</span></li>
+        <li><span class="avatar" aria-hidden="true">V</span><strong>Officer Name</strong><span>Vice President</span></li>
+        <li><span class="avatar" aria-hidden="true">T</span><strong>Officer Name</strong><span>Treasurer</span></li>
+        <li><span class="avatar" aria-hidden="true">S</span><strong>Officer Name</strong><span>Secretary</span></li>
+        <li><span class="avatar" aria-hidden="true">D</span><strong>Officer Name</strong><span>Director of Professional Development</span></li>
+        <li><span class="avatar" aria-hidden="true">M</span><strong>Officer Name</strong><span>Director of Marketing</span></li>
+      </ul>
+    </section>
+
+    <!-- Join -->
+    <section class="split" id="join">
       <figure class="split__image">
         <img src="images/incense.jpg" alt="A stone incense holder and a green pebble on blue linen" loading="lazy">
       </figure>
       <div class="panel panel--jade panel--center">
         <div class="card">
-          <h2 class="heading">Stay in the <em>Loop</em></h2>
-          <p class="body">New posts, personal updates, and the occasional behind-the-scenes moment, delivered to your inbox.</p>
+          <h2 class="heading">Join the <em>Chapter</em></h2>
+          <p class="body">Membership is open to every UT Dallas student, whatever your major. Members get:</p>
+          <ul class="checks">
+            <li>Priority access to workshops and company events</li>
+            <li>Eligibility for AIS national case competitions</li>
+            <li>Résumé book shared with our industry partners</li>
+            <li>A community of students heading the same way</li>
+          </ul>
           <form class="form" data-form>
             <label class="field">
-              <span>Email</span>
-              <input type="email" name="email" required autocomplete="email" placeholder="you@example.com">
+              <span>UTD email</span>
+              <input type="email" name="email" required autocomplete="email" placeholder="netid@utdallas.edu">
             </label>
-            <button class="button" type="submit">Join the mailing list</button>
-            <p class="form__note" role="status" aria-live="polite">No spam. Unsubscribe anytime.</p>
+            <button class="button" type="submit">Get membership info</button>
+            <p class="form__note" role="status" aria-live="polite">We’ll send dues and next steps to your inbox.</p>
           </form>
         </div>
       </div>
+    </section>
+
+    <!-- Sponsors -->
+    <section class="sponsors" aria-labelledby="sponsors-title">
+      <p class="eyebrow" id="sponsors-title">Our partners</p>
+      <ul class="sponsors__row">
+        <li>Partner</li><li>Partner</li><li>Partner</li><li>Partner</li><li>Partner</li>
+      </ul>
+      <a class="link-line link-line--dark" href="#contact">Become a sponsor</a>
     </section>
 
     <!-- Contact -->
@@ -162,7 +219,7 @@
       <img class="contact__bg" src="images/stones-cream.jpg" alt="" loading="lazy">
       <div class="contact__panel">
         <h2 class="caps-display caps-display--light">Let’s stay in touch</h2>
-        <p class="hero__sub">Whether it’s a question, a kind word, or a collaboration idea, I’d love to hear from you.</p>
+        <p class="hero__sub">Questions about membership, an idea for an event, or interested in partnering with the chapter? Send us a note.</p>
         <form class="form form--wide" data-form>
           <label class="field"><span>Name</span><input type="text" name="name" required autocomplete="name"></label>
           <label class="field"><span>Email</span><input type="email" name="email" required autocomplete="email"></label>
@@ -172,15 +229,16 @@
         </form>
         <dl class="contact__details">
           <div><dt>Email</dt><dd><a href="mailto:hello@example.com">hello@example.com</a></dd></div>
-          <div><dt>Elsewhere</dt><dd><a href="#">Instagram</a> · <a href="#">Substack</a></dd></div>
+          <div><dt>Follow</dt><dd><a href="#">Instagram</a> · <a href="#">LinkedIn</a> · <a href="#">Discord</a></dd></div>
+          <div><dt>Find us</dt><dd>Jindal School of Management<br>800 W Campbell Rd, Richardson, TX</dd></div>
         </dl>
       </div>
     </section>
   </main>
 
   <footer class="footer">
-    <span class="nav__mark">Life in Progress</span>
-    <span>© <span data-year></span> Elianna. Written slowly, near the water.</span>
+    <span class="nav__mark">AIS <em>at</em> UT Dallas</span>
+    <span>© <span data-year></span> AIS Student Chapter at The University of Texas at Dallas</span>
   </footer>
 
   <script src="script.js"></script>
