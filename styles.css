@@ -390,7 +390,8 @@ em { font-style: italic; font-family: var(--font-serif); font-weight: 300; }
   position: relative;
   display: grid;
   grid-template-columns: repeat(12, 1fr);
-  grid-template-rows: repeat(11, minmax(36px, 5.4vw));
+  grid-template-rows: repeat(10, minmax(36px, 5.4vw));
+  gap: clamp(14px, 1.8vw, 26px);
   padding: var(--section) var(--gutter);
   background: var(--ocean) var(--grain);
   color: var(--on-dark);
@@ -411,16 +412,15 @@ em { font-style: italic; font-family: var(--font-serif); font-weight: 300; }
 }
 .collage__item:hover img { transform: scale(1.04); }
 .collage__item:hover span, .collage__item:focus-visible span { opacity: 1; transform: none; }
-.collage__item--a { grid-column: 1 / span 2; grid-row: 7 / span 4; }
-.collage__item--b { grid-column: 4 / span 3; grid-row: 3 / span 6; }
+.collage__item--a { grid-column: 1 / span 3; grid-row: 6 / span 4; }
+.collage__item--b { grid-column: 4 / span 3; grid-row: 2 / span 6; }
 .collage__item--c { grid-column: 8 / span 4; grid-row: 2 / span 3; }
-.collage__item--d { grid-column: 8 / span 2; grid-row: 7 / span 5; }
-.collage__item--photo img { object-position: 38% 50%; }
+.collage__item--d { grid-column: 8 / span 3; grid-row: 6 / span 5; }
 .collage__item--photo span { opacity: 1; transform: none; }
 .collage__credit {
   grid-column: 4 / span 4;
-  grid-row: 10;
-  align-self: end;
+  grid-row: 9;
+  align-self: start;
   margin: 0;
   font-size: 0.72rem;
   letter-spacing: 0.08em;
