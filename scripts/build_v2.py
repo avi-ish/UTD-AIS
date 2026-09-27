@@ -318,7 +318,7 @@ PAGES_CONTENT["index"] = ("AIS at UT Dallas", "The UT Dallas student chapter of 
         <p class="lede">{MISSION}</p>
         <p class="lede">{MISSION_MORE}</p>
         <figure class="frame">
-          <img src="images/stone-stack.jpg" alt="Three smooth stones balanced on a block of banded jasper" loading="lazy">
+          <img src="images/ais-podium.jpg" alt="Two speakers at an AIS-bannered podium on a conference stage" loading="lazy" style="object-position: 45% 50%">
         </figure>
         <a class="link-line" href="index.html#faq">Common questions</a>
       </div>
