@@ -194,26 +194,14 @@ em { font-style: italic; font-family: var(--font-serif); font-weight: 300; }
 }
 
 /* ---------- Hero ---------- */
-/* The section is taller than the screen; the stage stays pinned while --w (0→1,
-   set from scroll in script.js) raises the wave and sweeps the content away. */
 .hero {
-  --w: 0;
   position: relative;
-  height: 200svh;
-  /* The next section overlaps the pinned stage's last screen, so it arrives
-     exactly as the wave finishes instead of after a blank screen of water. */
-  margin-bottom: -100svh;
-  color: var(--on-dark);
-  text-align: center;
-  background: var(--ink);
-}
-.hero__stage {
-  position: sticky;
-  top: 0;
-  height: 100svh;
+  min-height: 100svh;
   display: grid;
   place-items: center;
   overflow: hidden;
+  color: var(--on-dark);
+  text-align: center;
   background: var(--ocean-deep);
 }
 .hero__img {
@@ -222,72 +210,23 @@ em { font-style: italic; font-family: var(--font-serif); font-weight: 300; }
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transform: scale(calc(1 + var(--w) * 0.12)) translateY(calc(var(--w) * -4%));
-  animation: settle 2.4s cubic-bezier(.2,.7,.2,1) both;
+  transform: scale(1.04);
+  animation: settle 2.4s cubic-bezier(.2,.7,.2,1) forwards;
 }
-.hero + * { position: relative; z-index: 3; }
-.hero__stage::after {
+.hero::after {
   content: "";
   position: absolute;
   inset: 0;
   background: radial-gradient(ellipse 60% 55% at center, rgba(15, 34, 51, 0.55), rgba(15, 34, 51, 0.12) 100%);
 }
-.hero__inner {
-  position: relative;
-  z-index: 1;
-  padding: 0 var(--gutter);
-  text-shadow: 0 1px 24px rgba(15, 34, 51, 0.45);
-  opacity: calc(1 - var(--w) * 1.6);
-  transform: translateY(calc(var(--w) * -14vh)) scale(calc(1 - var(--w) * 0.08));
-  filter: blur(calc(var(--w) * 8px));
-}
+.hero__inner { position: relative; z-index: 1; padding: 0 var(--gutter); text-shadow: 0 1px 24px rgba(15, 34, 51, 0.45); }
 .hero__sub {
   margin: 1.6rem auto 2.4rem;
   max-width: 40ch;
   font-size: 1.02rem;
   color: var(--on-dark-soft);
 }
-@keyframes settle { from { scale: 1.06; } to { scale: 1; } }
-
-.hero__cue {
-  position: absolute;
-  z-index: 1;
-  bottom: 28px;
-  left: 50%;
-  translate: -50% 0;
-  display: grid;
-  justify-items: center;
-  gap: 10px;
-  font-size: 0.66rem;
-  letter-spacing: 0.24em;
-  text-transform: uppercase;
-  text-decoration: none;
-  color: var(--on-dark-soft);
-  opacity: calc(1 - var(--w) * 5);
-}
-.hero__cue i { width: 1px; height: 44px; background: linear-gradient(var(--on-dark), transparent); animation: cue 2.2s ease-in-out infinite; transform-origin: top; }
-@keyframes cue { 0% { transform: scaleY(0); } 45% { transform: scaleY(1); } 100% { transform: scaleY(1); opacity: 0; } }
-
-/* The wave: three offset crests over a solid body that becomes the next section */
-.wash {
-  position: absolute;
-  z-index: 2;
-  left: 0; right: 0;
-  top: 0;
-  height: 100%;
-  pointer-events: none;
-  transform: translateY(calc((1 - var(--w) * var(--w) * (3 - 2 * var(--w))) * 118%));
-}
-.wash__body { position: absolute; left: 0; right: 0; top: 0; bottom: 0; background: var(--ink) var(--grain); }
-.wash__crest { position: absolute; left: 0; right: 0; height: clamp(70px, 11vw, 150px); overflow: hidden; }
-.wash__wave { position: absolute; top: 0; left: 0; width: 200%; height: 100%; }
-.wash__crest--foam { top: calc(clamp(70px, 11vw, 150px) * -0.95 - var(--w) * 30px); }
-.wash__crest--mid  { top: calc(clamp(70px, 11vw, 150px) * -0.75 - var(--w) * 16px); }
-.wash__crest--deep { top: calc(clamp(70px, 11vw, 150px) * -0.55); }
-.wash__wave--a { fill: rgba(223, 231, 218, 0.55); animation: swell 9s linear infinite; }
-.wash__wave--b { fill: var(--ocean); animation: swell 13s linear infinite reverse; }
-.wash__wave--c { fill: var(--ink); animation: swell 7s linear infinite; }
-@keyframes swell { to { transform: translateX(-50%); } }
+@keyframes settle { to { transform: scale(1); } }
 
 /* ---------- Split sections ---------- */
 .split { display: grid; grid-template-columns: 1fr 1fr; }
@@ -713,6 +652,17 @@ em { font-style: italic; font-family: var(--font-serif); font-weight: 300; }
 /* ---------- Logo ---------- */
 .nav__mark img { width: 36px; height: 36px; transition: transform 0.8s cubic-bezier(.2,.7,.2,1); }
 .nav__mark:hover img { transform: rotate(-12deg) scale(1.06); }
+.hero__badge {
+  width: clamp(88px, 11vw, 136px);
+  height: auto;
+  margin: 0 auto 1.6rem;
+  border-radius: 50%;
+  box-shadow: 0 18px 50px rgba(5, 15, 30, 0.45);
+  opacity: 0;
+  animation: badge-in 1.4s cubic-bezier(.2,.7,.2,1) 0.1s forwards, float 7s ease-in-out 1.6s infinite;
+}
+@keyframes badge-in { from { opacity: 0; transform: translateY(16px) rotate(-90deg) scale(0.7); } to { opacity: 1; transform: none; } }
+@keyframes float { 50% { transform: translateY(-8px) rotate(3deg); } }
 
 /* ---------- Alumni network ---------- */
 .alumni {
@@ -780,10 +730,7 @@ em { font-style: italic; font-family: var(--font-serif); font-weight: 300; }
   html { scroll-behavior: auto; }
   *, *::before, *::after { animation: none !important; transition: none !important; }
   .reveal { opacity: 1; transform: none; }
-  .display .line > span, .hero .eyebrow, .hero__sub, .hero__actions { transform: none; opacity: 1; }
-  .hero { height: auto; margin-bottom: 0; }
-  .hero__stage { position: relative; min-height: 100svh; }
-  .wash { display: none; }
+  .display .line > span, .hero .eyebrow, .hero__sub, .hero__actions, .hero__badge { transform: none; opacity: 1; }
 }
 
 /* ---------- Responsive ---------- */
