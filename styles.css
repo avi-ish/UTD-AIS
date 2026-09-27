@@ -361,6 +361,30 @@ em { font-style: italic; font-family: var(--font-serif); font-weight: 300; }
 .feature__text .body:first-of-type { grid-row: 1 / span 2; align-self: end; }
 .feature__text .link-line { justify-self: start; margin-top: 1rem; }
 
+/* ---------- Feature photo ---------- */
+.feature__photo { position: relative; overflow: hidden; }
+.feature__photo img {
+  width: 100%;
+  aspect-ratio: 16 / 8;
+  object-fit: cover;
+  transform: scale(1.14);
+}
+.feature__photo figcaption {
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  flex-wrap: wrap;
+  gap: 0.4rem 1.6rem;
+  padding: 4rem clamp(18px, 3vw, 32px) clamp(16px, 2.4vw, 26px);
+  background: linear-gradient(transparent, rgba(15, 34, 51, 0.78));
+  color: var(--on-dark);
+}
+.feature__photo strong { font-family: var(--font-serif); font-weight: 400; font-size: clamp(1.2rem, 2vw, 1.6rem); }
+.feature__photo span { font-size: 0.72rem; letter-spacing: 0.08em; color: var(--on-dark-soft); }
+.feature__photo a { text-underline-offset: 3px; }
+
 /* ---------- Collage ---------- */
 .collage {
   position: relative;
@@ -698,6 +722,7 @@ em { font-style: italic; font-family: var(--font-serif); font-weight: 300; }
   .collage__item span { opacity: 1; transform: none; font-size: 1rem; }
 }
 @media (max-width: 600px) {
+  .feature__photo img { aspect-ratio: 4 / 3; }
   .nav__toggle { display: block; }
   .nav__links {
     position: fixed;
