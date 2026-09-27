@@ -46,11 +46,9 @@ def nav(cur):
 
 
 def footer(cur):
-    links = " · ".join(f'<a href="{p}.html">{t}</a>' for p, t in PAGES)
     items = "\n".join(f'      <li><a href="{p}.html"{CUR if p == cur else ""}>{t}</a></li>' for p, t in PAGES)
     return f"""  <footer class="footer footer--v2">
     <span class="nav__mark">AIS <em>at</em> UT Dallas</span>
-    <nav class="footer__links" aria-label="Footer">{links}</nav>
     <span>© <span data-year></span> AIS Student Chapter at The University of Texas at Dallas</span>
   </footer>
 
