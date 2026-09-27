@@ -360,43 +360,30 @@ em { font-style: italic; font-family: var(--font-serif); font-weight: 300; }
 .feature__photo a { text-underline-offset: 3px; }
 
 /* ---------- Collage ---------- */
+/* A 2×2 photo grid at every size, centred in a 1000px column */
 .collage {
-  position: relative;
   display: grid;
-  grid-template-columns: repeat(12, 1fr);
-  grid-template-rows: repeat(10, minmax(36px, min(5.4vw, 70px)));
-  gap: clamp(14px, 1.8vw, 26px);
-  /* Centre the collage in a 1400px column on wide screens */
-  padding: var(--section) max(var(--gutter), (100% - 1400px) / 2);
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(14px, 2vw, 28px);
+  padding: var(--section) max(var(--gutter), (100% - 1000px) / 2);
   background: var(--ocean) var(--grain);
   color: var(--on-dark);
 }
-.collage .eyebrow { grid-column: 1 / span 4; grid-row: 1; margin: 0; align-self: center; }
-.collage__item { position: relative; text-decoration: none; overflow: hidden; }
+.collage .eyebrow { grid-column: 1 / -1; margin: 0 0 0.6rem; }
+.collage__item { position: relative; display: block; aspect-ratio: 3 / 4; text-decoration: none; overflow: hidden; }
 .collage__item img { width: 100%; height: 100%; object-fit: cover; transition: transform 1.2s ease; }
 .collage__item span {
   position: absolute;
   left: 0; right: 0; bottom: 0;
-  padding: 2.4rem 1rem 0.9rem;
+  padding: 3rem clamp(16px, 2.4vw, 32px) clamp(14px, 2vw, 26px);
   font-family: var(--font-serif);
-  font-size: clamp(1.2rem, 1.3vw, 1.5rem);
-  background: linear-gradient(transparent, rgba(15, 34, 51, 0.7));
-  opacity: 0;
-  transform: translateY(6px);
-  transition: opacity 0.45s ease, transform 0.45s ease;
+  font-size: clamp(1rem, 2.2vw, 2rem);
+  background: linear-gradient(transparent, rgba(15, 34, 51, 0.72));
 }
 .collage__item:hover img { transform: scale(1.04); }
-.collage__item:hover span, .collage__item:focus-visible span { opacity: 1; transform: none; }
-.collage__item--a { grid-column: 1 / span 4; grid-row: 3 / span 7; }
-.collage__item--b { grid-column: 5 / span 4; grid-row: 1 / span 7; }
-.collage__item--c { grid-column: 9 / span 4; grid-row: 1 / span 4; }
-.collage__item--d { grid-column: 9 / span 4; grid-row: 5 / span 6; }
-.collage__item--photo span { opacity: 1; transform: none; }
 .collage__credit {
-  grid-column: 5 / span 4;
-  grid-row: 8;
-  align-self: start;
-  margin: 0;
+  grid-column: 1 / -1;
+  margin: 0.4rem 0 0;
   font-size: 0.72rem;
   letter-spacing: 0.08em;
   color: var(--on-dark-soft);
@@ -715,11 +702,6 @@ em { font-style: italic; font-family: var(--font-serif); font-weight: 300; }
   .alumni__head { grid-template-columns: 1fr; text-align: center; }
   .feature__text .heading, .feature__text .meta, .feature__text .body, .feature__text .link-line { grid-column: 1; grid-row: auto; }
 
-  .collage { grid-template-columns: 1fr 1fr; grid-template-rows: none; gap: 14px; }
-  .collage .eyebrow { grid-column: 1 / -1; grid-row: auto; margin-bottom: 1rem; }
-  .collage__credit { grid-column: 1 / -1 !important; grid-row: auto !important; margin-top: 0.6rem; }
-  .collage__item { grid-column: auto !important; grid-row: auto !important; aspect-ratio: 3 / 4; }
-  .collage__item span { opacity: 1; transform: none; font-size: 1rem; }
 }
 @media (max-width: 600px) {
   .feature__photo img { aspect-ratio: 4 / 3; }
