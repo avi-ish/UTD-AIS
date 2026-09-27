@@ -574,7 +574,7 @@ em { font-style: italic; font-family: var(--font-serif); font-weight: 300; }
   grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
   gap: clamp(28px, 3vw, 44px) clamp(16px, 2vw, 28px);
 }
-.officers__grid li { display: grid; gap: 0.25rem; }
+.officers__grid li { display: grid; gap: 0.25rem; align-content: start; }
 .officers__grid strong { font-family: var(--font-serif); font-weight: 400; font-size: 1.3rem; }
 .officers__grid span:last-child { color: var(--moss); line-height: 1.5; }
 .avatar {
@@ -589,6 +589,9 @@ em { font-style: italic; font-family: var(--font-serif); font-weight: 300; }
 }
 .officers__grid li:nth-child(3n+2) .avatar { background-color: var(--jade); }
 .officers__grid li:nth-child(3n) .avatar { background-color: var(--moss); }
+.avatar { overflow: hidden; }
+.avatar img { width: 100%; height: 100%; object-fit: cover; }
+.officer__meta { font-size: 0.95rem; color: var(--text-soft); }
 
 .checks { list-style: none; margin: 0 0 0.4rem; padding: 0; }
 .checks li { position: relative; padding: 0.45rem 0 0.45rem 1.6rem; font-size: 0.95rem; color: var(--text-soft); }
