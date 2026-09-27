@@ -361,12 +361,12 @@ em { font-style: italic; font-family: var(--font-serif); font-weight: 300; }
 .feature__photo a { text-underline-offset: 3px; }
 
 /* ---------- Collage ---------- */
-/* A 2×2 photo grid at every size, centred in a 1000px column */
+/* Matches the officers section: 1200px column, four across on desktop, 2×2 on smaller screens */
 .collage {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: clamp(14px, 2vw, 28px);
-  padding: var(--section) max(var(--gutter), (100% - 1000px) / 2);
+  grid-template-columns: repeat(4, 1fr);
+  gap: clamp(16px, 2vw, 28px);
+  padding: var(--section) max(var(--gutter), (100% - 1200px) / 2);
   background: var(--ocean) var(--grain);
   color: var(--on-dark);
 }
@@ -378,7 +378,7 @@ em { font-style: italic; font-family: var(--font-serif); font-weight: 300; }
   left: 0; right: 0; bottom: 0;
   padding: 3rem clamp(16px, 2.4vw, 32px) clamp(14px, 2vw, 26px);
   font-family: var(--font-serif);
-  font-size: clamp(1rem, 2.2vw, 2rem);
+  font-size: clamp(1rem, 1.4vw, 1.35rem);
   background: linear-gradient(transparent, rgba(15, 34, 51, 0.72));
 }
 .collage__item:hover img { transform: scale(1.04); }
@@ -738,6 +738,7 @@ em { font-style: italic; font-family: var(--font-serif); font-weight: 300; }
 /* ---------- Responsive ---------- */
 @media (max-width: 900px) {
   .split, .feature__text, .contact__panel, .events__grid { grid-template-columns: 1fr; }
+  .collage { grid-template-columns: 1fr 1fr; }
   .contact__intro { display: contents; }
   .contact__intro > * { order: 0; }
   .contact__form { order: 1; }
