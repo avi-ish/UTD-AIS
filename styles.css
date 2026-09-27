@@ -669,7 +669,11 @@ em { font-style: italic; font-family: var(--font-serif); font-weight: 300; }
   line-height: 0.9;
   color: var(--gold);
   font-variant-numeric: tabular-nums;
+  /* The invisible final value holds the width, so the text beside it never shifts while counting */
+  display: grid;
 }
+.alumni__ghost, .alumni__live { grid-area: 1 / 1; }
+.alumni__ghost { visibility: hidden; }
 .alumni .heading { margin-bottom: 0.4em; }
 .alumni .body { color: var(--on-dark-soft); margin: 0; }
 .alumni__label { margin: clamp(56px, 8vw, 104px) 0 clamp(20px, 3vw, 32px); color: var(--on-dark-soft); }

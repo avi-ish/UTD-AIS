@@ -151,10 +151,10 @@ document.querySelectorAll("[data-count]").forEach((el) => {
     if (!entry.isIntersecting) return;
     io.disconnect();
     const start = performance.now();
-    const duration = 2200;
+    const duration = 4500;
     const step = (now) => {
       const t = Math.min((now - start) / duration, 1);
-      const eased = 1 - Math.pow(1 - t, 4);
+      const eased = 1 - Math.pow(1 - t, 3);
       el.textContent = Math.round(target * eased).toLocaleString("en-US");
       if (t < 1) requestAnimationFrame(step);
     };
