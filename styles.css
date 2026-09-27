@@ -531,19 +531,6 @@ em { font-style: italic; font-family: var(--font-serif); font-weight: 300; }
   font-size: 0.82rem;
 }
 .footer .nav__mark { color: var(--on-dark); }
-.footer { align-items: center; }
-.footer__flare {
-  padding: 0.7rem 1.4rem;
-  border: 1px solid var(--gold);
-  color: var(--on-dark);
-  font-size: 0.74rem;
-  font-weight: 500;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  text-decoration: none;
-  transition: background-color 0.3s ease, color 0.3s ease;
-}
-.footer__flare:hover { background: var(--gold); color: var(--ink); }
 
 /* ---------- Chapter additions ---------- */
 .nav__mark em { font-size: 1.05em; }
