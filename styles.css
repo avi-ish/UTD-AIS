@@ -234,11 +234,7 @@ em { font-style: italic; font-family: var(--font-serif); font-weight: 300; }
 .panel--ink { background: var(--ink) var(--grain); color: var(--on-dark); }
 .panel--ink .body, .panel--ink .lede { color: var(--on-dark-soft); }
 .panel--seaglass { background: var(--seaglass); }
-.panel--jade { background: var(--jade) var(--grain); }
-.panel--center { display: grid; place-items: center; }
 
-.split__image { position: relative; min-height: 480px; }
-.split__image img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 
 .frame { margin: 0 0 2.4rem; overflow: hidden; }
 .frame img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; transition: transform 1.2s ease; }
@@ -428,17 +424,8 @@ em { font-style: italic; font-family: var(--font-serif); font-weight: 300; }
 }
 .collage__credit a { text-underline-offset: 3px; }
 
-/* ---------- Newsletter card ---------- */
-.card {
-  width: min(100%, 460px);
-  background: var(--cream);
-  padding: clamp(28px, 4vw, 48px);
-}
-.card .heading { font-size: clamp(2rem, 3.4vw, 2.8rem); }
-
 /* ---------- Forms ---------- */
 .form { display: grid; gap: 1.2rem; margin-top: 1.6rem; }
-.form--wide { grid-template-columns: 1fr 1fr; max-width: 720px; margin: 2.4rem auto 0; text-align: left; }
 .field { display: grid; gap: 0.35rem; }
 .field--full { grid-column: 1 / -1; }
 .field span {
@@ -483,11 +470,10 @@ em { font-style: italic; font-family: var(--font-serif); font-weight: 300; }
 .button:disabled { opacity: 0.6; cursor: wait; }
 :focus-visible { outline: 2px solid var(--moss); outline-offset: 3px; }
 
-/* ---------- Contact ---------- */
+/* ---------- Join + contact ---------- */
 .contact {
   position: relative;
-  padding: 0 var(--gutter) var(--section);
-  text-align: center;
+  padding: var(--section) var(--gutter);
   color: var(--on-dark);
   overflow: hidden;
 }
@@ -496,26 +482,50 @@ em { font-style: italic; font-family: var(--font-serif); font-weight: 300; }
   position: relative;
   max-width: 1160px;
   margin: 0 auto;
-  padding: clamp(72px, 10vw, 128px) clamp(20px, 6vw, 96px);
+  display: grid;
+  grid-template-columns: 1.05fr 1fr;
+  gap: clamp(40px, 6vw, 96px);
+  padding: clamp(40px, 7vw, 96px) clamp(22px, 6vw, 88px);
   background: var(--ocean) var(--grain);
 }
-.contact__panel .form { color: var(--on-dark); }
+.contact__lede { margin: 1.4rem 0 1.8rem; max-width: 44ch; color: var(--on-dark-soft); font-size: 1.02rem; }
+.contact .checks--light li { color: var(--on-dark); }
+.contact .checks--light li::before { color: var(--gold); }
+.contact__intro .caps-display { font-size: clamp(2.2rem, 4.2vw, 3.4rem); }
 .contact__details {
-  position: relative;
-  display: flex;
-  justify-content: center;
-  gap: clamp(24px, 4vw, 56px);
-  margin: clamp(48px, 7vw, 72px) auto 0;
-  padding-top: clamp(32px, 4vw, 48px);
-  max-width: 720px;
-  border-top: 1px solid rgba(243, 238, 228, 0.25);
+  display: grid;
+  gap: 1.1rem;
+  margin: 2.2rem 0 0;
+  padding-top: 1.8rem;
+  border-top: 1px solid rgba(243, 238, 228, 0.22);
 }
-.contact__details dt { font-size: 0.72rem; letter-spacing: 0.16em; text-transform: uppercase; }
-.contact__details dt { color: var(--on-dark-soft); }
-.contact__details dd { margin: 0.3rem 0 0; font-size: 1.1rem; font-weight: 400; }
-.contact__details > div { flex: 1 1 0; }
-.contact__details dd { font-size: 1rem; }
-.contact__details a { white-space: nowrap; text-underline-offset: 4px; text-decoration-thickness: 1px; }
+.contact__details dt { font-size: 0.7rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--on-dark-soft); }
+.contact__details dd { margin: 0.2rem 0 0; font-size: 1rem; font-weight: 400; }
+.contact__details a { text-underline-offset: 4px; text-decoration-thickness: 1px; }
+.contact__form { align-self: start; margin-top: 0; }
+.contact__form .button { justify-self: stretch; }
+
+.choice { border: 0; margin: 0 0 0.4rem; padding: 0; display: flex; flex-wrap: wrap; gap: 0.6rem; }
+.choice legend {
+  width: 100%;
+  margin-bottom: 0.8rem;
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.choice label { cursor: pointer; }
+.choice input { position: absolute; opacity: 0; pointer-events: none; }
+.choice span {
+  display: inline-block;
+  padding: 0.55rem 1rem;
+  border: 1px solid rgba(243, 238, 228, 0.4);
+  font-size: 0.85rem;
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+.choice label:hover span { border-color: var(--on-dark); }
+.choice input:checked + span { background: var(--on-dark); color: var(--ocean-deep); border-color: var(--on-dark); }
+.choice input:focus-visible + span { outline: 2px solid var(--gold); outline-offset: 3px; }
+.field__opt { font-family: inherit; font-style: normal; text-transform: none; letter-spacing: 0; opacity: 0.7; }
 
 /* ---------- Footer ---------- */
 .footer {
@@ -725,9 +735,15 @@ em { font-style: italic; font-family: var(--font-serif); font-weight: 300; }
 
 /* ---------- Responsive ---------- */
 @media (max-width: 900px) {
-  .split, .manifesto, .feature__text { grid-template-columns: 1fr; }
+  .split, .manifesto, .feature__text, .contact__panel { grid-template-columns: 1fr; }
+  .contact__intro { display: contents; }
+  .contact__intro > * { order: 0; }
+  .contact__form { order: 1; }
+  .contact__details { order: 2; margin-top: 0.4rem; }
+  .contact__panel { gap: 0; }
+  .contact__lede { margin-bottom: 1.2rem; }
+  .checks--light { margin-bottom: 2.4rem; }
   .alumni__head { grid-template-columns: 1fr; text-align: center; }
-  .split__image { min-height: 70vw; }
   .feature__text .heading, .feature__text .meta, .feature__text .body, .feature__text .link-line { grid-column: 1; grid-row: auto; }
   .manifesto__card--words { gap: 2.4rem; }
 
@@ -757,9 +773,7 @@ em { font-style: italic; font-family: var(--font-serif); font-weight: 300; }
   .facts { gap: 1.4rem; }
   .facts dd { font-size: 1.2rem; }
   .officers__grid { grid-template-columns: 1fr 1fr; }
-  .form--wide { grid-template-columns: 1fr; }
   .feature__tags { flex-direction: column; gap: 0.3rem; }
-  .contact__details { flex-direction: column; gap: 1.4rem; }
 }
 
 /* Backdrop-filter would trap the fixed mobile menu inside the bar */

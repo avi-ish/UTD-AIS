@@ -25,7 +25,6 @@
       <a href="#officers">Officers</a>
       <a href="#alumni">Alumni</a>
       <a href="#join">Join</a>
-      <a href="#contact">Contact</a>
     </nav>
   </header>
 
@@ -194,69 +193,47 @@
         <ul class="ticker__row"><li>Goldman Sachs</li><li>JPMorgan Chase</li><li>Microsoft</li><li>Amazon</li><li>Google</li><li>Deloitte</li><li>Accenture</li><li>EY</li><li>PwC</li><li>KPMG</li><li>Bank of America</li><li>Capital One</li><li>Goldman Sachs</li><li>JPMorgan Chase</li><li>Microsoft</li><li>Amazon</li><li>Google</li><li>Deloitte</li><li>Accenture</li><li>EY</li><li>PwC</li><li>KPMG</li><li>Bank of America</li><li>Capital One</li></ul>
         <ul class="ticker__row ticker__row--reverse" aria-hidden="true"><li>Texas Instruments</li><li>IBM</li><li>Salesforce</li><li>Oracle</li><li>AT&amp;T</li><li>Charles Schwab</li><li>Dell Technologies</li><li>Toyota</li><li>American Airlines</li><li>Citi</li><li>Wells Fargo</li><li>Southwest Airlines</li><li>Texas Instruments</li><li>IBM</li><li>Salesforce</li><li>Oracle</li><li>AT&amp;T</li><li>Charles Schwab</li><li>Dell Technologies</li><li>Toyota</li><li>American Airlines</li><li>Citi</li><li>Wells Fargo</li><li>Southwest Airlines</li></ul>
       </div>
-      <a class="link-line" href="#contact">Partner with the chapter</a>
+      <a class="link-line" href="#join" data-topic="Partnering or sponsoring">Partner with the chapter</a>
     </section>
 
-    <!-- Join -->
-    <section class="split" id="join">
-      <figure class="split__image">
-        <img src="images/incense.jpg" alt="A stone incense holder and a green pebble on blue linen" loading="lazy">
-      </figure>
-      <div class="panel panel--jade panel--center">
-        <div class="card">
-          <h2 class="heading">Join the <em>Chapter</em></h2>
-          <p class="body">Membership is open to every UT Dallas student, whatever your major. Members get:</p>
-          <ul class="checks">
+    <!-- Join + contact -->
+    <section class="contact" id="join">
+      <img class="contact__bg" src="images/stones-cream.jpg" alt="" loading="lazy">
+      <div class="contact__panel">
+        <div class="contact__intro">
+          <h2 class="caps-display caps-display--light">Join the chapter</h2>
+          <p class="contact__lede">Membership is open to every UT Dallas student, whatever your major. Want to partner with us, or just have a question? Use the same form.</p>
+          <ul class="checks checks--light">
             <li>Priority access to workshops and company events</li>
             <li>Eligibility for AIS national case competitions</li>
             <li>A 10,000+ strong alumni network to learn from</li>
             <li>Résumé book shared with our industry partners</li>
             <li>A community of students heading the same way</li>
           </ul>
-          <form class="form" action="https://formsubmit.co/utdallasais@gmail.com" method="POST" data-form>
-            <input type="hidden" name="_subject" value="New AIS membership interest">
-            <input type="hidden" name="_template" value="table">
-            <input type="hidden" name="_captcha" value="false">
-            <input type="hidden" name="form" value="Membership interest">
-            <input class="honeypot" type="text" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true">
-            <label class="field">
-              <span>Name</span>
-              <input type="text" name="name" required autocomplete="name">
-            </label>
-            <label class="field">
-              <span>UTD email</span>
-              <input type="email" name="email" required autocomplete="email" placeholder="netid@utdallas.edu">
-            </label>
-            <button class="button" type="submit">Sign me up</button>
-            <p class="form__note" role="status" aria-live="polite"></p>
-          </form>
+          <dl class="contact__details">
+            <div><dt>Email</dt><dd><a href="mailto:utdallasais@gmail.com">utdallasais@gmail.com</a></dd></div>
+            <div><dt>Follow</dt><dd><a href="https://www.instagram.com/utdallasais/" target="_blank" rel="noopener">Instagram</a> · <a href="https://www.linkedin.com/company/utdallasais/" target="_blank" rel="noopener">LinkedIn</a></dd></div>
+            <div><dt>Find us</dt><dd>Jindal School of Management<br>800 W Campbell Rd, Richardson, TX</dd></div>
+          </dl>
         </div>
-      </div>
-    </section>
 
-    <!-- Contact -->
-    <section class="contact" id="contact">
-      <img class="contact__bg" src="images/stones-cream.jpg" alt="" loading="lazy">
-      <div class="contact__panel">
-        <h2 class="caps-display caps-display--light">Let’s stay in touch</h2>
-        <p class="hero__sub">Questions about membership, an idea for an event, or interested in partnering with the chapter? Send us a note.</p>
-        <form class="form form--wide" action="https://formsubmit.co/utdallasais@gmail.com" method="POST" data-form>
-          <input type="hidden" name="_subject" value="New message from the AIS website">
+        <form class="form contact__form" action="https://formsubmit.co/utdallasais@gmail.com" method="POST" data-form>
+          <input type="hidden" name="_subject" value="New AIS membership interest" data-subject>
           <input type="hidden" name="_template" value="table">
           <input type="hidden" name="_captcha" value="false">
-          <input type="hidden" name="form" value="Contact">
           <input class="honeypot" type="text" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true">
+          <fieldset class="choice">
+            <legend>I’m interested in</legend>
+            <label><input type="radio" name="topic" value="Joining AIS" data-subject-value="New AIS membership interest" checked><span>Joining AIS</span></label>
+            <label><input type="radio" name="topic" value="Partnering or sponsoring" data-subject-value="New AIS partnership inquiry"><span>Partnering</span></label>
+            <label><input type="radio" name="topic" value="Something else" data-subject-value="New message from the AIS website"><span>Something else</span></label>
+          </fieldset>
           <label class="field"><span>Name</span><input type="text" name="name" required autocomplete="name"></label>
-          <label class="field"><span>Email</span><input type="email" name="email" required autocomplete="email"></label>
-          <label class="field field--full"><span>Message</span><textarea name="message" rows="4" required></textarea></label>
-          <button class="button button--light field--full" type="submit">Send a note</button>
-          <p class="form__note field--full" role="status" aria-live="polite"></p>
+          <label class="field"><span>Email</span><input type="email" name="email" required autocomplete="email" placeholder="netid@utdallas.edu"></label>
+          <label class="field"><span>Message <em class="field__opt">(optional)</em></span><textarea name="message" rows="3"></textarea></label>
+          <button class="button button--light" type="submit">Send</button>
+          <p class="form__note" role="status" aria-live="polite"></p>
         </form>
-        <dl class="contact__details">
-          <div><dt>Email</dt><dd><a href="mailto:utdallasais@gmail.com">utdallasais@gmail.com</a></dd></div>
-          <div><dt>Follow</dt><dd><a href="https://www.instagram.com/utdallasais/" target="_blank" rel="noopener">Instagram</a> · <a href="https://www.linkedin.com/company/utdallasais/" target="_blank" rel="noopener">LinkedIn</a></dd></div>
-          <div><dt>Find us</dt><dd>Jindal School of Management<br>800 W Campbell Rd, Richardson, TX</dd></div>
-        </dl>
       </div>
     </section>
   </main>

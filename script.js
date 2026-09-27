@@ -17,6 +17,9 @@ document.querySelectorAll("[data-form]").forEach((form) => {
     button.disabled = true;
     button.textContent = "Sending…";
     note.textContent = "";
+    const picked = form.querySelector("input[name=topic]:checked");
+    const subject = form.querySelector("[data-subject]");
+    if (picked && subject) subject.value = picked.dataset.subjectValue;
     try {
       const res = await fetch(`https://formsubmit.co/ajax/${INBOX}`, {
         method: "POST",
@@ -33,6 +36,14 @@ document.querySelectorAll("[data-form]").forEach((form) => {
       button.disabled = false;
       button.textContent = label;
     }
+  });
+});
+
+// Links like "Partner with the chapter" preselect the matching form topic
+document.querySelectorAll("[data-topic]").forEach((link) => {
+  link.addEventListener("click", () => {
+    const radio = document.querySelector(`input[name=topic][value="${link.dataset.topic}"]`);
+    if (radio) radio.checked = true;
   });
 });
 
@@ -86,7 +97,7 @@ onScroll();
 
 // Staggered fade-in as content enters the viewport
 const targets = document.querySelectorAll(
-  ".panel > *, .manifesto__card, .pillars li, .feature > *, .collage__item, .card, .contact__panel, .officers__grid li, .musings li"
+  ".panel > *, .manifesto__card, .pillars li, .feature > *, .collage__item, .contact__panel, .officers__grid li, .musings li"
 );
 if ("IntersectionObserver" in window && !reduceMotion) {
   const observer = new IntersectionObserver(
