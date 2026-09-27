@@ -62,7 +62,7 @@ onScroll();
 
 // Staggered fade-in as content enters the viewport
 const targets = document.querySelectorAll(
-  ".panel > *, .manifesto__card, .pillars li, .feature > *, .collage__item, .card, .contact__panel, .officers__grid li, .sponsors__row li, .musings li"
+  ".panel > *, .manifesto__card, .pillars li, .feature > *, .collage__item, .card, .contact__panel, .officers__grid li, .musings li"
 );
 if ("IntersectionObserver" in window && !reduceMotion) {
   const observer = new IntersectionObserver(
@@ -83,3 +83,24 @@ if ("IntersectionObserver" in window && !reduceMotion) {
     observer.observe(el);
   });
 }
+
+// Count up the alumni figure when it scrolls into view
+document.querySelectorAll("[data-count]").forEach((el) => {
+  const target = parseInt(el.dataset.count, 10);
+  if (reduceMotion || !("IntersectionObserver" in window)) return;
+  el.textContent = "0";
+  const io = new IntersectionObserver(([entry]) => {
+    if (!entry.isIntersecting) return;
+    io.disconnect();
+    const start = performance.now();
+    const duration = 2200;
+    const step = (now) => {
+      const t = Math.min((now - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - t, 4);
+      el.textContent = Math.round(target * eased).toLocaleString("en-US");
+      if (t < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  }, { threshold: 0.5 });
+  io.observe(el);
+});
