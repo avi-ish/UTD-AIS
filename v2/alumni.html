@@ -2,39 +2,38 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <base href="../">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Alumni · AIS at UT Dallas</title>
-  <meta name="description" content="The UT Dallas student chapter of the Association for Information Systems: workshops, industry speakers, case competitions and community for students in information systems.">
+  <meta name="description" content="The AIS alumni network and chapter partners.">
   <meta name="theme-color" content="#0f2233">
   <link rel="icon" type="image/png" href="favicon.png">
   <link rel="preload" href="fonts/italiana-QmWaXw.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="fonts/fonts.css?v=584db27">
-  <link rel="stylesheet" href="styles.css?v=584db27">
-  <link rel="stylesheet" href="v2/v2.css?v=584db27">
+  <link rel="stylesheet" href="fonts/fonts.css?v=2">
+  <link rel="stylesheet" href="css/base.css?v=2">
+  <link rel="stylesheet" href="css/pages.css?v=2">
 </head>
-<body class="v2">
+<body class="v2 page-alumni">
 
   <div class="progress" aria-hidden="true"></div>
   <header class="nav" data-nav>
-    <a class="nav__mark" href="v2/index.html"><img src="images/ais-logo-small.webp" alt="" width="36" height="36" data-nav-logo>AIS <em>at</em> UT Dallas</a>
+    <a class="nav__mark" href="index.html"><img src="images/ais-logo-small.webp" alt="" width="36" height="36" data-nav-logo>AIS <em>at</em> UT Dallas</a>
     <button class="nav__toggle" type="button" aria-expanded="false" aria-controls="nav-links" data-nav-toggle>
       <span></span><span></span><span class="sr-only">Menu</span>
     </button>
     <nav class="nav__links" id="nav-links" aria-label="Primary">
-      <a href="v2/index.html">Home</a>
-      <a href="v2/events.html">Events</a>
-      <a href="v2/officers.html">Officers</a>
-      <a href="v2/alumni.html" aria-current="page">Alumni</a>
-      <a href="v2/join.html">Join</a>
+      <a href="index.html">Home</a>
+      <a href="about.html">About</a>
+      <a href="events.html">Events</a>
+      <a href="officers.html">Officers</a>
+      <a href="alumni.html" aria-current="page">Alumni</a>
+      <a href="join.html">Join</a>
     </nav>
   </header>
 
-  <main id="top">
+  <main>
 
-    <!-- Page header -->
     <section class="page-hero" data-landing>
-      <img class="page-hero__img" src="images/hero.jpg" alt="">
+      <img class="page-hero__img" src="images/ais-celebration.jpg" alt="">
       <div class="page-hero__inner">
         <p class="eyebrow">10,000+ strong</p>
         <h1 class="display"><span class="line"><span>Alumni &amp; <em>Partners</em></span></span></h1>
@@ -42,8 +41,7 @@
       </div>
     </section>
 
-    <!-- Alumni network -->
-    <section class="alumni" id="alumni" aria-labelledby="alumni-title">
+    <section class="alumni" aria-labelledby="alumni-title">
       <div class="alumni__head">
         <p class="alumni__stat"><span class="alumni__ghost" aria-hidden="true">10,000+</span><span class="alumni__live"><span data-count="10000">10,000</span>+</span></p>
         <div>
@@ -56,41 +54,61 @@
         <ul class="ticker__row"><li>Goldman Sachs</li><li>JPMorgan Chase</li><li>Microsoft</li><li>Amazon</li><li>Google</li><li>Deloitte</li><li>Accenture</li><li>EY</li><li>PwC</li><li>KPMG</li><li>Bank of America</li><li>Capital One</li><li>Goldman Sachs</li><li>JPMorgan Chase</li><li>Microsoft</li><li>Amazon</li><li>Google</li><li>Deloitte</li><li>Accenture</li><li>EY</li><li>PwC</li><li>KPMG</li><li>Bank of America</li><li>Capital One</li></ul>
         <ul class="ticker__row ticker__row--reverse" aria-hidden="true"><li>Texas Instruments</li><li>IBM</li><li>Salesforce</li><li>Oracle</li><li>AT&amp;T</li><li>Charles Schwab</li><li>Dell Technologies</li><li>Toyota</li><li>American Airlines</li><li>Citi</li><li>Wells Fargo</li><li>Southwest Airlines</li><li>Texas Instruments</li><li>IBM</li><li>Salesforce</li><li>Oracle</li><li>AT&amp;T</li><li>Charles Schwab</li><li>Dell Technologies</li><li>Toyota</li><li>American Airlines</li><li>Citi</li><li>Wells Fargo</li><li>Southwest Airlines</li></ul>
       </div>
-      <div class="partners">
-        <p class="eyebrow partners__label">Current partners</p>
+    </section>
+
+    <section class="why">
+      <div class="why__intro" data-reveal>
+        <p class="eyebrow">For companies</p>
+        <h2 class="heading">Partner with <em>the chapter</em></h2>
+        <p class="body">Reach motivated students in information systems, analytics and technology before they hit the job market.</p>
+        <div class="partners partners--inline">
+          <p class="eyebrow partners__label">Current partners</p>
         <ul class="partners__list">
           <li>Red Bull</li>
           <li>DoorDash</li>
         </ul>
+        </div>
       </div>
-      <a class="link-line" href="v2/join.html?topic=partner" data-topic="Partnering or sponsoring">Partner with the chapter</a>
+      <ul class="pillars why__list">
+        <li><strong>Recruit early</strong><span>Meet members at workshops and info sessions, and get access to our résumé book.</span></li>
+        <li><strong>Host a workshop</strong><span>Teach the tools your teams use every day, and see who’s keen to learn them.</span></li>
+        <li><strong>Sponsor an event</strong><span>Put your brand in front of the chapter at socials, competitions and speaker nights.</span></li>
+      </ul>
     </section>
 
-    <!-- Next page -->
-    <a class="next-page" href="v2/join.html"><span class="eyebrow">Next</span><span class="next-page__title">Join the chapter <span aria-hidden="true">→</span></span></a>
+    <section class="cta cta--jade" data-reveal>
+      <p class="eyebrow">Partnerships</p>
+      <h2 class="heading">Let’s <em>work together</em></h2>
+      <p class="body">Tell us a little about your team and we’ll follow up with ways to get involved.</p>
+      <a class="button button--light" href="join.html?topic=partner#form">Partner with us</a>
+    </section>
+
+    <a class="next-page" href="join.html"><span class="eyebrow">Next</span><span class="next-page__title">Join the chapter <span aria-hidden="true">→</span></span></a>
 
   </main>
 
-  <footer class="footer">
+  <footer class="footer footer--v2">
     <span class="nav__mark">AIS <em>at</em> UT Dallas</span>
+    <nav class="footer__links" aria-label="Footer"><a href="index.html">Home</a> · <a href="about.html">About</a> · <a href="events.html">Events</a> · <a href="officers.html">Officers</a> · <a href="alumni.html">Alumni</a> · <a href="join.html">Join</a></nav>
     <span>© <span data-year></span> AIS Student Chapter at The University of Texas at Dallas</span>
   </footer>
 
   <!-- Floating logo: flies from the nav to the bottom right after the landing area, then opens the page menu -->
   <div class="fab" data-fab>
     <ul class="fab__menu" id="fab-menu" aria-label="Pages">
-      <li><a href="v2/index.html">Home</a></li>
-      <li><a href="v2/events.html">Events</a></li>
-      <li><a href="v2/officers.html">Officers</a></li>
-      <li><a href="v2/alumni.html" aria-current="page">Alumni</a></li>
-      <li><a href="v2/join.html">Join</a></li>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="events.html">Events</a></li>
+      <li><a href="officers.html">Officers</a></li>
+      <li><a href="alumni.html" aria-current="page">Alumni</a></li>
+      <li><a href="join.html">Join</a></li>
     </ul>
     <button class="fab__button" type="button" aria-expanded="false" aria-controls="fab-menu" aria-label="Open page menu" tabindex="-1">
       <img src="images/ais-logo-small.webp" alt="" width="160" height="160">
     </button>
   </div>
 
-  <script src="script.js?v=584db27"></script>
-  <script src="v2/v2.js?v=584db27"></script>
+  <script src="js/main.js?v=2"></script>
+  <script src="js/fab.js?v=2"></script>
 </body>
 </html>

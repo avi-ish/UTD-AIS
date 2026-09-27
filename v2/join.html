@@ -2,39 +2,38 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <base href="../">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Join · AIS at UT Dallas</title>
-  <meta name="description" content="The UT Dallas student chapter of the Association for Information Systems: workshops, industry speakers, case competitions and community for students in information systems.">
+  <meta name="description" content="Join AIS at UT Dallas, partner with the chapter, or get in touch.">
   <meta name="theme-color" content="#0f2233">
   <link rel="icon" type="image/png" href="favicon.png">
   <link rel="preload" href="fonts/italiana-QmWaXw.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="fonts/fonts.css?v=584db27">
-  <link rel="stylesheet" href="styles.css?v=584db27">
-  <link rel="stylesheet" href="v2/v2.css?v=584db27">
+  <link rel="stylesheet" href="fonts/fonts.css?v=2">
+  <link rel="stylesheet" href="css/base.css?v=2">
+  <link rel="stylesheet" href="css/pages.css?v=2">
 </head>
-<body class="v2">
+<body class="v2 page-join">
 
   <div class="progress" aria-hidden="true"></div>
   <header class="nav" data-nav>
-    <a class="nav__mark" href="v2/index.html"><img src="images/ais-logo-small.webp" alt="" width="36" height="36" data-nav-logo>AIS <em>at</em> UT Dallas</a>
+    <a class="nav__mark" href="index.html"><img src="images/ais-logo-small.webp" alt="" width="36" height="36" data-nav-logo>AIS <em>at</em> UT Dallas</a>
     <button class="nav__toggle" type="button" aria-expanded="false" aria-controls="nav-links" data-nav-toggle>
       <span></span><span></span><span class="sr-only">Menu</span>
     </button>
     <nav class="nav__links" id="nav-links" aria-label="Primary">
-      <a href="v2/index.html">Home</a>
-      <a href="v2/events.html">Events</a>
-      <a href="v2/officers.html">Officers</a>
-      <a href="v2/alumni.html">Alumni</a>
-      <a href="v2/join.html" aria-current="page">Join</a>
+      <a href="index.html">Home</a>
+      <a href="about.html">About</a>
+      <a href="events.html">Events</a>
+      <a href="officers.html">Officers</a>
+      <a href="alumni.html">Alumni</a>
+      <a href="join.html" aria-current="page">Join</a>
     </nav>
   </header>
 
-  <main id="top">
+  <main>
 
-    <!-- Page header -->
     <section class="page-hero" data-landing>
-      <img class="page-hero__img" src="images/hero.jpg" alt="">
+      <img class="page-hero__img" src="images/stones-cream.jpg" alt="">
       <div class="page-hero__inner">
         <p class="eyebrow">Open to every major</p>
         <h1 class="display"><span class="line"><span>Get <em>Involved</em></span></span></h1>
@@ -42,8 +41,15 @@
       </div>
     </section>
 
-    <!-- Join + contact -->
-    <section class="contact" id="join">
+    <section class="steps">
+      <ol class="steps__grid" data-reveal>
+        <li><span class="types__num">01</span><strong>Send the form</strong><p>Tell us your name and UTD email below. It takes under a minute.</p></li>
+        <li><span class="types__num">02</span><strong>Hear from an officer</strong><p>We’ll reach out with next steps and the next general meeting.</p></li>
+        <li><span class="types__num">03</span><strong>Show up</strong><p>Come to a meeting, workshop or social and meet the chapter.</p></li>
+      </ol>
+    </section>
+
+    <section class="contact" id="form">
       <img class="contact__bg" src="images/stones-cream.jpg" alt="" loading="lazy">
       <div class="contact__panel">
         <div class="contact__intro">
@@ -88,31 +94,32 @@
       </div>
     </section>
 
-    <!-- Next page -->
-    <a class="next-page" href="v2/index.html"><span class="eyebrow">Next</span><span class="next-page__title">Back to home <span aria-hidden="true">→</span></span></a>
+    <a class="next-page" href="index.html"><span class="eyebrow">Next</span><span class="next-page__title">Back to home <span aria-hidden="true">→</span></span></a>
 
   </main>
 
-  <footer class="footer">
+  <footer class="footer footer--v2">
     <span class="nav__mark">AIS <em>at</em> UT Dallas</span>
+    <nav class="footer__links" aria-label="Footer"><a href="index.html">Home</a> · <a href="about.html">About</a> · <a href="events.html">Events</a> · <a href="officers.html">Officers</a> · <a href="alumni.html">Alumni</a> · <a href="join.html">Join</a></nav>
     <span>© <span data-year></span> AIS Student Chapter at The University of Texas at Dallas</span>
   </footer>
 
   <!-- Floating logo: flies from the nav to the bottom right after the landing area, then opens the page menu -->
   <div class="fab" data-fab>
     <ul class="fab__menu" id="fab-menu" aria-label="Pages">
-      <li><a href="v2/index.html">Home</a></li>
-      <li><a href="v2/events.html">Events</a></li>
-      <li><a href="v2/officers.html">Officers</a></li>
-      <li><a href="v2/alumni.html">Alumni</a></li>
-      <li><a href="v2/join.html" aria-current="page">Join</a></li>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="events.html">Events</a></li>
+      <li><a href="officers.html">Officers</a></li>
+      <li><a href="alumni.html">Alumni</a></li>
+      <li><a href="join.html" aria-current="page">Join</a></li>
     </ul>
     <button class="fab__button" type="button" aria-expanded="false" aria-controls="fab-menu" aria-label="Open page menu" tabindex="-1">
       <img src="images/ais-logo-small.webp" alt="" width="160" height="160">
     </button>
   </div>
 
-  <script src="script.js?v=584db27"></script>
-  <script src="v2/v2.js?v=584db27"></script>
+  <script src="js/main.js?v=2"></script>
+  <script src="js/fab.js?v=2"></script>
 </body>
 </html>

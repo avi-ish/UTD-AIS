@@ -2,39 +2,38 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <base href="../">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>AIS at UT Dallas</title>
-  <meta name="description" content="The UT Dallas student chapter of the Association for Information Systems: workshops, industry speakers, case competitions and community for students in information systems.">
+  <meta name="description" content="The UT Dallas student chapter of the Association for Information Systems.">
   <meta name="theme-color" content="#0f2233">
   <link rel="icon" type="image/png" href="favicon.png">
   <link rel="preload" href="fonts/italiana-QmWaXw.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="fonts/fonts.css?v=584db27">
-  <link rel="stylesheet" href="styles.css?v=584db27">
-  <link rel="stylesheet" href="v2/v2.css?v=584db27">
+  <link rel="stylesheet" href="fonts/fonts.css?v=2">
+  <link rel="stylesheet" href="css/base.css?v=2">
+  <link rel="stylesheet" href="css/pages.css?v=2">
 </head>
-<body class="v2">
+<body class="v2 page-index">
 
   <div class="progress" aria-hidden="true"></div>
   <header class="nav" data-nav>
-    <a class="nav__mark" href="v2/index.html"><img src="images/ais-logo-small.webp" alt="" width="36" height="36" data-nav-logo>AIS <em>at</em> UT Dallas</a>
+    <a class="nav__mark" href="index.html"><img src="images/ais-logo-small.webp" alt="" width="36" height="36" data-nav-logo>AIS <em>at</em> UT Dallas</a>
     <button class="nav__toggle" type="button" aria-expanded="false" aria-controls="nav-links" data-nav-toggle>
       <span></span><span></span><span class="sr-only">Menu</span>
     </button>
     <nav class="nav__links" id="nav-links" aria-label="Primary">
-      <a href="v2/index.html" aria-current="page">Home</a>
-      <a href="v2/events.html">Events</a>
-      <a href="v2/officers.html">Officers</a>
-      <a href="v2/alumni.html">Alumni</a>
-      <a href="v2/join.html">Join</a>
+      <a href="index.html" aria-current="page">Home</a>
+      <a href="about.html">About</a>
+      <a href="events.html">Events</a>
+      <a href="officers.html">Officers</a>
+      <a href="alumni.html">Alumni</a>
+      <a href="join.html">Join</a>
     </nav>
   </header>
 
-  <main id="top">
+  <main>
 
-    <!-- Hero -->
     <section class="hero" data-landing>
-      <img class="hero__img" data-parallax="0.25" src="images/hero.jpg" alt="Stones, a shell and a jade roller resting on deep blue handmade paper">
+      <img class="hero__img" src="images/hero.jpg" alt="Stones, a shell and a jade roller resting on deep blue handmade paper">
       <div class="hero__inner">
         <p class="eyebrow">Student Chapter · Naveen Jindal School of Management</p>
         <h1 class="display">
@@ -43,28 +42,28 @@
         </h1>
         <p class="hero__sub">Where UT Dallas students learn the tools, meet the people, and build the experience behind a career in technology.</p>
         <div class="hero__actions">
-          <a class="link-line" href="v2/join.html">Become a member</a>
-          <a class="link-line" href="v2/events.html">See upcoming events</a>
+          <a class="link-line" href="join.html">Become a member</a>
+          <a class="link-line" href="events.html">See upcoming events</a>
         </div>
       </div>
     </section>
 
-    <!-- About: who we are + what we do -->
-    <section class="split" id="about">
-      <div class="panel panel--ink">
+    <section class="stats" data-reveal>
+      <div><strong><span data-count="10000">10,000</span>+</strong><span>Alumni in the AIS network</span></div>
+      <div><strong>Global</strong><span>Part of the Association for Information Systems</span></div>
+      <div><strong>All majors</strong><span>Open to every UT Dallas student</span></div>
+      <div><strong>JSOM</strong><span>Home at the Naveen Jindal School of Management</span></div>
+    </section>
+
+    <section class="split">
+      <div class="panel panel--ink" data-reveal>
         <h2 class="heading">Welcome to <em>AIS</em></h2>
         <p class="lede">We promote the study and practice of information systems through professional development, technical workshops, and a community of students who like figuring out how technology and business fit together.</p>
         <figure class="frame">
           <img src="images/stone-stack.jpg" alt="Three smooth stones balanced on a block of banded jasper" loading="lazy">
         </figure>
-        <dl class="facts">
-          <div><dt>Part of</dt><dd>Global AIS</dd></div>
-          <div><dt>Alumni</dt><dd>10,000+</dd></div>
-          <div><dt>Open to</dt><dd>All majors</dd></div>
-        </dl>
-        <a class="link-line" href="v2/officers.html">Meet the officers</a>
+        <a class="link-line" href="about.html">More about us</a>
       </div>
-
       <div class="panel panel--seaglass">
         <h2 class="heading">What we <em>do</em></h2>
         <p class="caps-display caps-display--small">Learn. Connect. Build. Compete.</p>
@@ -78,7 +77,6 @@
       </div>
     </section>
 
-    <!-- Marquee -->
     <div class="marquee" aria-hidden="true">
       <div class="marquee__track">
         <span>Technical workshops</span><span>Industry speakers</span><span>Case competitions</span><span>Career prep</span><span>Networking</span><span>Community</span>
@@ -86,31 +84,88 @@
       </div>
     </div>
 
-    <!-- Next page -->
-    <a class="next-page" href="v2/events.html"><span class="eyebrow">Next</span><span class="next-page__title">Upcoming events <span aria-hidden="true">→</span></span></a>
+    <section class="explore">
+      <div class="explore__head">
+        <p class="eyebrow">Explore</p>
+        <h2 class="heading">Find your <em>way in</em></h2>
+      </div>
+      <div class="explore__grid" data-reveal>
+        <a class="explore__card" href="events.html"><img src="images/ais-speaker.jpg" alt="" loading="lazy"><span class="explore__label">Events</span><span class="explore__text">Workshops, speakers, competitions and socials.</span></a>
+        <a class="explore__card" href="officers.html"><img src="images/officer-chinmayi.jpg" alt="" loading="lazy"><span class="explore__label">Officers</span><span class="explore__text">Meet the students who run the chapter.</span></a>
+        <a class="explore__card" href="alumni.html"><img src="images/ais-reception.jpg" alt="" loading="lazy"><span class="explore__label">Alumni</span><span class="explore__text">Where AIS members go next.</span></a>
+        <a class="explore__card" href="join.html"><img src="images/stones-cream.jpg" alt="" loading="lazy"><span class="explore__label">Join</span><span class="explore__text">Become a member in a minute.</span></a>
+      </div>
+    </section>
+
+    <section class="events upnext" data-calendar>
+      <div class="events__head">
+        <h2 class="heading"><em>Coming</em> up</h2>
+        <a class="link-line" href="events.html">All events</a>
+      </div>
+      <ol class="events__grid">
+        <li>
+          <a class="event" href="events.html">
+            <img src="images/ocean.jpg" alt="" loading="lazy">
+            <span class="event__meta">Sept 10 · Jindal School</span>
+            <span class="event__title">General Meeting &amp; Welcome Social</span>
+          </a>
+        </li>
+        <li>
+          <a class="event" href="events.html">
+            <img src="images/comb.jpg" alt="" loading="lazy">
+            <span class="event__meta">Sept 24 · Workshop</span>
+            <span class="event__title">SQL &amp; Power BI, hands-on</span>
+          </a>
+        </li>
+        <li>
+          <a class="event" href="events.html">
+            <img src="images/blue-table.jpg" alt="" loading="lazy">
+            <span class="event__meta">Oct 8 · Speaker series</span>
+            <span class="event__title">From intern to analyst: an industry panel</span>
+          </a>
+        </li>
+      </ol>
+    </section>
+
+    <section class="partners partners--band" data-reveal>
+      <p class="eyebrow partners__label">Current partners</p>
+        <ul class="partners__list">
+          <li>Red Bull</li>
+          <li>DoorDash</li>
+        </ul>
+    </section>
+
+    <section class="cta cta--jade" data-reveal>
+      <p class="eyebrow">Membership</p>
+      <h2 class="heading">Ready to <em>join</em>?</h2>
+      <p class="body">Membership is open to every UT Dallas student, whatever your major.</p>
+      <a class="button button--light" href="join.html">Become a member</a>
+    </section>
 
   </main>
 
-  <footer class="footer">
+  <footer class="footer footer--v2">
     <span class="nav__mark">AIS <em>at</em> UT Dallas</span>
+    <nav class="footer__links" aria-label="Footer"><a href="index.html">Home</a> · <a href="about.html">About</a> · <a href="events.html">Events</a> · <a href="officers.html">Officers</a> · <a href="alumni.html">Alumni</a> · <a href="join.html">Join</a></nav>
     <span>© <span data-year></span> AIS Student Chapter at The University of Texas at Dallas</span>
   </footer>
 
   <!-- Floating logo: flies from the nav to the bottom right after the landing area, then opens the page menu -->
   <div class="fab" data-fab>
     <ul class="fab__menu" id="fab-menu" aria-label="Pages">
-      <li><a href="v2/index.html" aria-current="page">Home</a></li>
-      <li><a href="v2/events.html">Events</a></li>
-      <li><a href="v2/officers.html">Officers</a></li>
-      <li><a href="v2/alumni.html">Alumni</a></li>
-      <li><a href="v2/join.html">Join</a></li>
+      <li><a href="index.html" aria-current="page">Home</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="events.html">Events</a></li>
+      <li><a href="officers.html">Officers</a></li>
+      <li><a href="alumni.html">Alumni</a></li>
+      <li><a href="join.html">Join</a></li>
     </ul>
     <button class="fab__button" type="button" aria-expanded="false" aria-controls="fab-menu" aria-label="Open page menu" tabindex="-1">
       <img src="images/ais-logo-small.webp" alt="" width="160" height="160">
     </button>
   </div>
 
-  <script src="script.js?v=584db27"></script>
-  <script src="v2/v2.js?v=584db27"></script>
+  <script src="js/main.js?v=2"></script>
+  <script src="js/fab.js?v=2"></script>
 </body>
 </html>

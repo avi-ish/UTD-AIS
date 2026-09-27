@@ -86,11 +86,7 @@ nav.querySelectorAll(".nav__links a").forEach((a) => a.addEventListener("click",
 document.addEventListener("keydown", (e) => { if (e.key === "Escape") setMenu(false); });
 
 const navLinks = [...nav.querySelectorAll(".nav__links a")];
-// Only in-page links (#section) have a section to track; page links (multi-page build) are skipped
-const sections = navLinks
-  .map((a) => a.getAttribute("href"))
-  .map((href) => (href.startsWith("#") && href.length > 1 ? document.querySelector(href) : null))
-  .filter(Boolean);
+const sections = navLinks.map((a) => document.querySelector(a.getAttribute("href"))).filter(Boolean);
 
 // Scroll-driven effects: progress bar, nav state, parallax
 const progress = document.querySelector(".progress");

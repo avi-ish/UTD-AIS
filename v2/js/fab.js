@@ -1,11 +1,4 @@
-// Multi-page build: floating logo button and page-to-page helpers
-
-// Arriving from "Partner with the chapter": preselect the Partnering topic
-if (new URLSearchParams(location.search).get("topic") === "partner") {
-  const radio = document.querySelector('input[name=topic][value="Partnering or sponsoring"]');
-  if (radio) radio.checked = true;
-}
-
+// Floating logo button
 // Once the landing area (hero or page header) scrolls away, the nav logo flies to the
 // bottom right and grows into a button; scrolling back up flies it home again.
 (() => {
