@@ -46,7 +46,10 @@ function onScroll() {
   sections.forEach((s) => { if (s.getBoundingClientRect().top < vh * 0.4) current = s; });
   navLinks.forEach((a) => a.classList.toggle("is-active", current && a.getAttribute("href") === "#" + current.id));
 
+  const stacked = window.innerWidth <= 900;
   parallaxEls.forEach((el) => {
+    // Collage tiles stack on small screens, where drifting would make them overlap
+    if (stacked && el.classList.contains("collage__item")) { el.style.translate = ""; return; }
     const r = el.getBoundingClientRect();
     if (r.bottom < -200 || r.top > vh + 200) return;
     const offset = (r.top + r.height / 2 - vh / 2) * parseFloat(el.dataset.parallax);

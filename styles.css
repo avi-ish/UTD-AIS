@@ -415,6 +415,18 @@ em { font-style: italic; font-family: var(--font-serif); font-weight: 300; }
 .collage__item--b { grid-column: 4 / span 3; grid-row: 3 / span 6; }
 .collage__item--c { grid-column: 8 / span 4; grid-row: 2 / span 3; }
 .collage__item--d { grid-column: 8 / span 2; grid-row: 7 / span 5; }
+.collage__item--photo img { object-position: 38% 50%; }
+.collage__item--photo span { opacity: 1; transform: none; }
+.collage__credit {
+  grid-column: 4 / span 4;
+  grid-row: 10;
+  align-self: end;
+  margin: 0;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  color: var(--on-dark-soft);
+}
+.collage__credit a { text-underline-offset: 3px; }
 
 /* ---------- Newsletter card ---------- */
 .card {
@@ -718,6 +730,7 @@ em { font-style: italic; font-family: var(--font-serif); font-weight: 300; }
 
   .collage { grid-template-columns: 1fr 1fr; grid-template-rows: none; gap: 14px; }
   .collage .eyebrow { grid-column: 1 / -1; grid-row: auto; margin-bottom: 1rem; }
+  .collage__credit { grid-column: 1 / -1 !important; grid-row: auto !important; margin-top: 0.6rem; }
   .collage__item { grid-column: auto !important; grid-row: auto !important; aspect-ratio: 3 / 4; }
   .collage__item span { opacity: 1; transform: none; font-size: 1rem; }
 }
