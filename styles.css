@@ -477,7 +477,10 @@ em { font-style: italic; font-family: var(--font-serif); font-weight: 300; }
 .button:hover { background: transparent; color: var(--ink); }
 .button--light { justify-self: center; background: var(--on-dark); color: var(--ocean-deep); border-color: var(--on-dark); }
 .button--light:hover { background: transparent; color: var(--on-dark); }
-.form__note { margin: 0; font-size: 0.8rem; opacity: 0.7; }
+.form__note { margin: 0; font-size: 0.85rem; opacity: 0.85; min-height: 1.2em; }
+.form__note a { text-underline-offset: 3px; }
+.honeypot { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+.button:disabled { opacity: 0.6; cursor: wait; }
 :focus-visible { outline: 2px solid var(--moss); outline-offset: 3px; }
 
 /* ---------- Contact ---------- */

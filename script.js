@@ -5,13 +5,34 @@ document.querySelectorAll("[data-year]").forEach((el) => {
   el.textContent = new Date().getFullYear();
 });
 
-// Forms are placeholders until a backend (e.g. Formspree, Google Forms) is wired up
+// Forms post to FormSubmit, which forwards every submission to the chapter inbox.
+// Without JavaScript the same forms still work as a normal POST.
+const INBOX = "utdallasais@gmail.com";
 document.querySelectorAll("[data-form]").forEach((form) => {
-  form.addEventListener("submit", (event) => {
+  form.addEventListener("submit", async (event) => {
     event.preventDefault();
     const note = form.querySelector(".form__note");
-    if (note) note.textContent = "Thank you — we’ll be in touch soon.";
-    form.reset();
+    const button = form.querySelector("button[type=submit]");
+    const label = button.textContent;
+    button.disabled = true;
+    button.textContent = "Sending…";
+    note.textContent = "";
+    try {
+      const res = await fetch(`https://formsubmit.co/ajax/${INBOX}`, {
+        method: "POST",
+        headers: { Accept: "application/json" },
+        body: new FormData(form),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || String(data.success) === "false") throw new Error(data.message || res.statusText);
+      form.reset();
+      note.textContent = "Thank you! Your message is on its way, and we’ll be in touch soon.";
+    } catch (err) {
+      note.innerHTML = `Something went wrong. Please email us directly at <a href="mailto:${INBOX}">${INBOX}</a>.`;
+    } finally {
+      button.disabled = false;
+      button.textContent = label;
+    }
   });
 });
 
