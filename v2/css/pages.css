@@ -304,3 +304,13 @@
 @media (max-width: 900px) {
   .stats > div:nth-child(3) { border-top: 0; }
 }
+/* Compact stats band */
+.stats { padding-top: clamp(18px, 2vw, 28px); padding-bottom: clamp(20px, 2.2vw, 32px); }
+.stats__label { margin-bottom: clamp(12px, 1.4vw, 18px); }
+.stats > div { gap: 0.2rem; }
+.stats strong { font-size: clamp(1.7rem, 2.4vw, 2.4rem); }
+.stats span:not([data-count]) { font-size: 0.85rem; line-height: 1.45; max-width: 26ch; }
+@media (max-width: 900px) {
+  .stats > div:nth-child(n + 4) { padding-top: 14px; }
+  .stats > div:nth-child(-n + 3) { padding-bottom: 14px; }
+}
