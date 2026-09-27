@@ -652,17 +652,6 @@ em { font-style: italic; font-family: var(--font-serif); font-weight: 300; }
 /* ---------- Logo ---------- */
 .nav__mark img { width: 36px; height: 36px; transition: transform 0.8s cubic-bezier(.2,.7,.2,1); }
 .nav__mark:hover img { transform: rotate(-12deg) scale(1.06); }
-.hero__badge {
-  width: clamp(88px, 11vw, 136px);
-  height: auto;
-  margin: 0 auto 1.6rem;
-  border-radius: 50%;
-  box-shadow: 0 18px 50px rgba(5, 15, 30, 0.45);
-  opacity: 0;
-  animation: badge-in 1.4s cubic-bezier(.2,.7,.2,1) 0.1s forwards, float 7s ease-in-out 1.6s infinite;
-}
-@keyframes badge-in { from { opacity: 0; transform: translateY(16px) rotate(-90deg) scale(0.7); } to { opacity: 1; transform: none; } }
-@keyframes float { 50% { transform: translateY(-8px) rotate(3deg); } }
 
 /* ---------- Alumni network ---------- */
 .alumni {
@@ -730,7 +719,7 @@ em { font-style: italic; font-family: var(--font-serif); font-weight: 300; }
   html { scroll-behavior: auto; }
   *, *::before, *::after { animation: none !important; transition: none !important; }
   .reveal { opacity: 1; transform: none; }
-  .display .line > span, .hero .eyebrow, .hero__sub, .hero__actions, .hero__badge { transform: none; opacity: 1; }
+  .display .line > span, .hero .eyebrow, .hero__sub, .hero__actions { transform: none; opacity: 1; }
 }
 
 /* ---------- Responsive ---------- */
