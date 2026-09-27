@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <base href="../">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Events · AIS at UT Dallas</title>
+  <meta name="description" content="The UT Dallas student chapter of the Association for Information Systems: workshops, industry speakers, case competitions and community for students in information systems.">
+  <meta name="theme-color" content="#0f2233">
+  <link rel="icon" type="image/png" href="favicon.png">
+  <link rel="preload" href="fonts/italiana-QmWaXw.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="fonts/fonts.css?v=584db27">
+  <link rel="stylesheet" href="styles.css?v=584db27">
+  <link rel="stylesheet" href="v2/v2.css?v=584db27">
+</head>
+<body class="v2">
+
+  <div class="progress" aria-hidden="true"></div>
+  <header class="nav" data-nav>
+    <a class="nav__mark" href="v2/index.html"><img src="images/ais-logo-small.webp" alt="" width="36" height="36" data-nav-logo>AIS <em>at</em> UT Dallas</a>
+    <button class="nav__toggle" type="button" aria-expanded="false" aria-controls="nav-links" data-nav-toggle>
+      <span></span><span></span><span class="sr-only">Menu</span>
+    </button>
+    <nav class="nav__links" id="nav-links" aria-label="Primary">
+      <a href="v2/index.html">Home</a>
+      <a href="v2/events.html" aria-current="page">Events</a>
+      <a href="v2/officers.html">Officers</a>
+      <a href="v2/alumni.html">Alumni</a>
+      <a href="v2/join.html">Join</a>
+    </nav>
+  </header>
+
+  <main id="top">
+
+    <!-- Page header -->
+    <section class="page-hero" data-landing>
+      <img class="page-hero__img" src="images/hero.jpg" alt="">
+      <div class="page-hero__inner">
+        <p class="eyebrow">Workshops · Speakers · Competitions</p>
+        <h1 class="display"><span class="line"><span>Chapter <em>Events</em></span></span></h1>
+        <p class="hero__sub">What’s coming up at the chapter, and moments from the wider AIS community.</p>
+      </div>
+    </section>
+
+    <!-- Events -->
+    <!--
+      Events come from the chapter's public Google Calendar.
+      Fill in both values below; until then the sample cards underneath are shown.
+      data-calendar-id: Google Calendar → Settings → your calendar → "Integrate calendar" → Calendar ID
+      data-api-key:     Google Cloud Console → Credentials → API key with the Google Calendar API enabled
+    -->
+    <section class="events" id="events" data-calendar-id="" data-api-key="">
+      <div class="events__head">
+        <h2 class="heading"><em>Upcoming</em> Events</h2>
+        <a class="link-line" href="v2/events.html" data-calendar-link target="_blank" rel="noopener">Full calendar</a>
+      </div>
+      <ol class="events__grid">
+        <li>
+          <a class="event" href="v2/events.html">
+            <img src="images/ocean.jpg" alt="" loading="lazy">
+            <span class="event__meta">Sept 10 · Jindal School</span>
+            <span class="event__title">General Meeting &amp; Welcome Social</span>
+          </a>
+        </li>
+        <li>
+          <a class="event" href="v2/events.html">
+            <img src="images/comb.jpg" alt="" loading="lazy">
+            <span class="event__meta">Sept 24 · Workshop</span>
+            <span class="event__title">SQL &amp; Power BI, hands-on</span>
+          </a>
+        </li>
+        <li>
+          <a class="event" href="v2/events.html">
+            <img src="images/blue-table.jpg" alt="" loading="lazy">
+            <span class="event__meta">Oct 8 · Speaker series</span>
+            <span class="event__title">From intern to analyst: an industry panel</span>
+          </a>
+        </li>
+      </ol>
+    </section>
+
+    <!-- Feature: conference -->
+    <section class="feature">
+      <figure class="feature__photo">
+        <img src="images/ais-conference.jpg" data-parallax="0.08" alt="A packed room of attendees listening to a session at an AIS conference" loading="lazy">
+        <figcaption>
+          <strong>Inside an AIS conference session</strong>
+          <span>Photo: <a href="https://ishistory.aisnet.org/home/photo-gallery/" target="_blank" rel="noopener">AIS IS History photo gallery</a></span>
+        </figcaption>
+      </figure>
+      <ul class="feature__tags" aria-label="Highlights">
+        <li>Case competitions</li>
+        <li>Leadership sessions</li>
+        <li>Chapters nationwide</li>
+      </ul>
+      <div class="feature__text">
+        <h2 class="heading">Compete on a <em>national</em> stage</h2>
+        <p class="meta">AIS Student Chapter Leadership Conference</p>
+        <p class="body">As a chapter of the global Association for Information Systems, our members can take part in the AIS Student Chapter Leadership Conference, where teams from universities across the country go head to head in case and technology competitions.</p>
+        <p class="body">It’s the best way to test what you’ve learned against the strongest IS students in the country, and to come home with connections that last well beyond the weekend.</p>
+        <a class="link-line link-line--dark" href="https://aisnet.org/" target="_blank" rel="noopener">About AIS national</a>
+      </div>
+    </section>
+
+    <!-- Chapter life collage -->
+    <section class="collage" aria-labelledby="collage-title">
+      <p class="eyebrow" id="collage-title">Moments from the AIS community</p>
+      <a class="collage__item collage__item--a collage__item--photo" href="https://aisnet.org/about-ais/awards/" target="_blank" rel="noopener">
+        <img src="images/ais-awards.jpg" alt="A presenter speaking at an AIS-bannered podium during an awards ceremony" loading="lazy" style="object-position: 52% 40%">
+        <span>Awards &amp; recognition</span>
+      </a>
+      <a class="collage__item collage__item--b collage__item--photo" href="v2/events.html">
+        <img src="images/ais-reception.jpg" alt="Conference attendees gathered at a reception in a gilded mosaic hall" loading="lazy" style="object-position: 50% 60%">
+        <span>Socials &amp; receptions</span>
+      </a>
+      <a class="collage__item collage__item--d collage__item--photo" href="https://ishistory.aisnet.org/awards/30-anniversary/" target="_blank" rel="noopener">
+        <img src="images/ais-celebration.jpg" alt="AIS members celebrating a colleague's 50 years in academia with a cake" loading="lazy" style="object-position: 62% 50%">
+        <span>Celebrating milestones</span>
+      </a>
+      <a class="collage__item collage__item--c collage__item--photo" href="https://aisnet.org/conferences/" target="_blank" rel="noopener">
+        <img src="images/ais-speaker.jpg" style="object-position: 38% 50%" alt="A speaker at a lectern introducing a keynote at the AIS PACIS conference" loading="lazy">
+        <span>Speaker series</span>
+      </a>
+      <p class="collage__credit">Event photos: <a href="https://ishistory.aisnet.org/home/photo-gallery/" target="_blank" rel="noopener">AIS IS History photo gallery</a></p>
+    </section>
+
+    <!-- Next page -->
+    <a class="next-page" href="v2/officers.html"><span class="eyebrow">Next</span><span class="next-page__title">Meet the officers <span aria-hidden="true">→</span></span></a>
+
+  </main>
+
+  <footer class="footer">
+    <span class="nav__mark">AIS <em>at</em> UT Dallas</span>
+    <span>© <span data-year></span> AIS Student Chapter at The University of Texas at Dallas</span>
+  </footer>
+
+  <!-- Floating logo: flies from the nav to the bottom right after the landing area, then opens the page menu -->
+  <div class="fab" data-fab>
+    <ul class="fab__menu" id="fab-menu" aria-label="Pages">
+      <li><a href="v2/index.html">Home</a></li>
+      <li><a href="v2/events.html" aria-current="page">Events</a></li>
+      <li><a href="v2/officers.html">Officers</a></li>
+      <li><a href="v2/alumni.html">Alumni</a></li>
+      <li><a href="v2/join.html">Join</a></li>
+    </ul>
+    <button class="fab__button" type="button" aria-expanded="false" aria-controls="fab-menu" aria-label="Open page menu" tabindex="-1">
+      <img src="images/ais-logo-small.webp" alt="" width="160" height="160">
+    </button>
+  </div>
+
+  <script src="script.js?v=584db27"></script>
+  <script src="v2/v2.js?v=584db27"></script>
+</body>
+</html>

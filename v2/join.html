@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <base href="../">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Join · AIS at UT Dallas</title>
+  <meta name="description" content="The UT Dallas student chapter of the Association for Information Systems: workshops, industry speakers, case competitions and community for students in information systems.">
+  <meta name="theme-color" content="#0f2233">
+  <link rel="icon" type="image/png" href="favicon.png">
+  <link rel="preload" href="fonts/italiana-QmWaXw.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="fonts/fonts.css?v=584db27">
+  <link rel="stylesheet" href="styles.css?v=584db27">
+  <link rel="stylesheet" href="v2/v2.css?v=584db27">
+</head>
+<body class="v2">
+
+  <div class="progress" aria-hidden="true"></div>
+  <header class="nav" data-nav>
+    <a class="nav__mark" href="v2/index.html"><img src="images/ais-logo-small.webp" alt="" width="36" height="36" data-nav-logo>AIS <em>at</em> UT Dallas</a>
+    <button class="nav__toggle" type="button" aria-expanded="false" aria-controls="nav-links" data-nav-toggle>
+      <span></span><span></span><span class="sr-only">Menu</span>
+    </button>
+    <nav class="nav__links" id="nav-links" aria-label="Primary">
+      <a href="v2/index.html">Home</a>
+      <a href="v2/events.html">Events</a>
+      <a href="v2/officers.html">Officers</a>
+      <a href="v2/alumni.html">Alumni</a>
+      <a href="v2/join.html" aria-current="page">Join</a>
+    </nav>
+  </header>
+
+  <main id="top">
+
+    <!-- Page header -->
+    <section class="page-hero" data-landing>
+      <img class="page-hero__img" src="images/hero.jpg" alt="">
+      <div class="page-hero__inner">
+        <p class="eyebrow">Open to every major</p>
+        <h1 class="display"><span class="line"><span>Get <em>Involved</em></span></span></h1>
+        <p class="hero__sub">Become a member, partner with us, or just say hello.</p>
+      </div>
+    </section>
+
+    <!-- Join + contact -->
+    <section class="contact" id="join">
+      <img class="contact__bg" src="images/stones-cream.jpg" alt="" loading="lazy">
+      <div class="contact__panel">
+        <div class="contact__intro">
+          <h2 class="caps-display caps-display--light">Join the chapter</h2>
+          <p class="contact__lede">Membership is open to every UT Dallas student, whatever your major. Want to partner with us, or just have a question? Use the same form.</p>
+          <ul class="checks checks--light">
+            <li>Priority access to workshops and company events</li>
+            <li>Eligibility for AIS national case competitions</li>
+            <li>A 10,000+ strong alumni network to learn from</li>
+            <li>Résumé book shared with our industry partners</li>
+            <li>A community of students heading the same way</li>
+          </ul>
+          <dl class="contact__details">
+            <div><dt>Email</dt><dd><a href="mailto:utdallasais@gmail.com">utdallasais@gmail.com</a></dd></div>
+            <div><dt>Follow</dt><dd><a href="https://www.instagram.com/utdallasais/" target="_blank" rel="noopener">Instagram</a> · <a href="https://www.linkedin.com/company/utdallasais/" target="_blank" rel="noopener">LinkedIn</a></dd></div>
+            <div><dt>Find us</dt><dd>Jindal School of Management<br>800 W Campbell Rd, Richardson, TX</dd></div>
+            <div><dt>Flare</dt><dd><a href="https://flare-event.app.link/EcJCg0AUW0b" target="_blank" rel="noopener">Join our Flare</a></dd></div>
+          </dl>
+        </div>
+
+        <form class="form contact__form" action="https://formsubmit.co/utdallasais@gmail.com" method="POST" data-form>
+          <input type="hidden" name="_subject" value="New AIS membership interest" data-subject>
+          <input type="hidden" name="_template" value="table">
+          <input type="hidden" name="_captcha" value="false">
+          <input class="honeypot" type="text" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true">
+          <fieldset class="choice">
+            <legend>I’m interested in</legend>
+            <label><input type="radio" name="topic" value="Joining AIS" data-subject-value="New AIS membership interest" checked><span>Joining AIS</span></label>
+            <label><input type="radio" name="topic" value="Partnering or sponsoring" data-subject-value="New AIS partnership inquiry"><span>Partnering</span></label>
+            <label><input type="radio" name="topic" value="Something else" data-subject-value="New message from the AIS website"><span>Something else</span></label>
+          </fieldset>
+          <label class="field"><span>Name</span><input type="text" name="name" required autocomplete="name"></label>
+          <label class="field"><span>Email</span><input type="email" name="email" required autocomplete="email" placeholder="netid@utdallas.edu"></label>
+          <label class="field"><span>Message <em class="field__opt">(optional)</em></span><textarea name="message" rows="3"></textarea></label>
+          <label class="optin">
+            <input type="checkbox" name="Email list" value="Yes, add me to the event email list">
+            <span>Add me to the email list for event notifications</span>
+          </label>
+          <button class="button button--light" type="submit">Send</button>
+          <p class="form__note" role="status" aria-live="polite"></p>
+        </form>
+      </div>
+    </section>
+
+    <!-- Next page -->
+    <a class="next-page" href="v2/index.html"><span class="eyebrow">Next</span><span class="next-page__title">Back to home <span aria-hidden="true">→</span></span></a>
+
+  </main>
+
+  <footer class="footer">
+    <span class="nav__mark">AIS <em>at</em> UT Dallas</span>
+    <span>© <span data-year></span> AIS Student Chapter at The University of Texas at Dallas</span>
+  </footer>
+
+  <!-- Floating logo: flies from the nav to the bottom right after the landing area, then opens the page menu -->
+  <div class="fab" data-fab>
+    <ul class="fab__menu" id="fab-menu" aria-label="Pages">
+      <li><a href="v2/index.html">Home</a></li>
+      <li><a href="v2/events.html">Events</a></li>
+      <li><a href="v2/officers.html">Officers</a></li>
+      <li><a href="v2/alumni.html">Alumni</a></li>
+      <li><a href="v2/join.html" aria-current="page">Join</a></li>
+    </ul>
+    <button class="fab__button" type="button" aria-expanded="false" aria-controls="fab-menu" aria-label="Open page menu" tabindex="-1">
+      <img src="images/ais-logo-small.webp" alt="" width="160" height="160">
+    </button>
+  </div>
+
+  <script src="script.js?v=584db27"></script>
+  <script src="v2/v2.js?v=584db27"></script>
+</body>
+</html>
