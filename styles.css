@@ -239,6 +239,7 @@ em { font-style: italic; font-family: var(--font-serif); font-weight: 300; }
 
 
 .frame { margin: 0 0 2.4rem; overflow: hidden; }
+.panel--ink .frame { max-width: 520px; }
 .frame img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; transition: transform 1.2s ease; }
 .frame:hover img { transform: scale(1.03); }
 .frame--flush { margin-bottom: 1.6rem; }
