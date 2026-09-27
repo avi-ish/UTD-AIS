@@ -162,3 +162,55 @@ document.querySelectorAll("[data-count]").forEach((el) => {
   }, { threshold: 0.5 });
   io.observe(el);
 });
+
+// Upcoming events from Google Calendar (see the comment above #events in index.html)
+(async () => {
+  const section = document.querySelector("#events");
+  const calendarId = section?.dataset.calendarId?.trim();
+  const apiKey = section?.dataset.apiKey?.trim();
+  if (!calendarId) return;
+
+  const calLink = section.querySelector("[data-calendar-link]");
+  if (calLink) calLink.href = `https://calendar.google.com/calendar/embed?src=${encodeURIComponent(calendarId)}&ctz=America%2FChicago`;
+  if (!apiKey) return;
+
+  const params = new URLSearchParams({
+    key: apiKey,
+    timeMin: new Date().toISOString(),
+    singleEvents: "true",
+    orderBy: "startTime",
+    maxResults: "3",
+  });
+  let items;
+  try {
+    const res = await fetch(`https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(calendarId)}/events?${params}`);
+    if (!res.ok) throw new Error(res.status);
+    items = (await res.json()).items || [];
+  } catch (err) {
+    return; // keep whatever cards are already on the page
+  }
+
+  const grid = section.querySelector(".events__grid");
+  const images = ["images/ocean.jpg", "images/comb.jpg", "images/blue-table.jpg"];
+  const esc = (t) => String(t ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  const when = (ev) => {
+    const allDay = !ev.start.dateTime;
+    const d = new Date(ev.start.dateTime || ev.start.date + "T12:00:00");
+    const date = d.toLocaleDateString("en-US", { month: "short", day: "numeric", timeZone: "America/Chicago" });
+    const time = allDay ? "" : " · " + d.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", timeZone: "America/Chicago" });
+    return date + time;
+  };
+
+  if (!items.length) {
+    grid.innerHTML = '<li class="events__empty">No upcoming events right now. Check back soon!</li>';
+    return;
+  }
+  grid.innerHTML = items.map((ev, i) => `
+        <li>
+          <a class="event" href="${esc(ev.htmlLink)}" target="_blank" rel="noopener">
+            <img src="${images[i % images.length]}" alt="" loading="lazy">
+            <span class="event__meta">${esc(when(ev))}${ev.location ? " · " + esc(ev.location.split(",")[0]) : ""}</span>
+            <span class="event__title">${esc(ev.summary || "AIS event")}</span>
+          </a>
+        </li>`).join("");
+})();

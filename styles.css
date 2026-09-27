@@ -288,6 +288,7 @@ em { font-style: italic; font-family: var(--font-serif); font-weight: 300; }
 .event img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; margin-bottom: 0.9rem; }
 .event__meta { font-size: 0.75rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--moss); padding: 0 0.3rem; }
 .event__title { font-family: var(--font-serif); font-size: clamp(1.3rem, 1.6vw, 2rem); line-height: 1.2; padding: 0 0.3rem; }
+.events__empty { grid-column: 1 / -1; font-family: var(--font-serif); font-size: 1.4rem; }
 .event:hover { transform: translateY(-6px); box-shadow: 0 18px 40px rgba(15, 34, 51, 0.25); }
 .event:hover .event__title { text-decoration: underline; text-underline-offset: 4px; text-decoration-thickness: 1px; }
 

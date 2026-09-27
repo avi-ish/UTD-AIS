@@ -8,8 +8,8 @@
   <meta name="theme-color" content="#0f2233">
   <link rel="icon" type="image/png" href="favicon.png">
   <link rel="preload" href="fonts/italiana-QmWaXw.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="fonts/fonts.css?v=fe0522f">
-  <link rel="stylesheet" href="styles.css?v=fe0522f">
+  <link rel="stylesheet" href="fonts/fonts.css?v=d2efe81">
+  <link rel="stylesheet" href="styles.css?v=d2efe81">
 </head>
 <body>
 
@@ -84,10 +84,16 @@
     </div>
 
     <!-- Events -->
-    <section class="events" id="events">
+    <!--
+      Events come from the chapter's public Google Calendar.
+      Fill in both values below; until then the sample cards underneath are shown.
+      data-calendar-id: Google Calendar → Settings → your calendar → "Integrate calendar" → Calendar ID
+      data-api-key:     Google Cloud Console → Credentials → API key with the Google Calendar API enabled
+    -->
+    <section class="events" id="events" data-calendar-id="" data-api-key="">
       <div class="events__head">
         <h2 class="heading"><em>Upcoming</em> Events</h2>
-        <a class="link-line" href="#">Full calendar</a>
+        <a class="link-line" href="#" data-calendar-link target="_blank" rel="noopener">Full calendar</a>
       </div>
       <ol class="events__grid">
         <li>
@@ -246,6 +252,6 @@
     <span>© <span data-year></span> AIS Student Chapter at The University of Texas at Dallas</span>
   </footer>
 
-  <script src="script.js?v=fe0522f"></script>
+  <script src="script.js?v=d2efe81"></script>
 </body>
 </html>
