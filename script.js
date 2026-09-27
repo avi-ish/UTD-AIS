@@ -97,7 +97,7 @@ onScroll();
 
 // Staggered fade-in as content enters the viewport
 const targets = document.querySelectorAll(
-  ".panel > *, .pillars li, .events__grid li, .feature > *, .collage__item, .contact__panel, .officers__grid li"
+  ".panel > *, .pillars li, .events__grid li, .feature > *, .collage__item, .contact__panel, .exec__lead, .exec__item"
 );
 if ("IntersectionObserver" in window && !reduceMotion) {
   const observer = new IntersectionObserver(
