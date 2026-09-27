@@ -529,7 +529,8 @@ em { font-style: italic; font-family: var(--font-serif); font-weight: 300; }
   gap: 2.4rem;
   margin: 0 0 2.4rem;
 }
-.facts dt,   font-size: 0.7rem;
+.facts dt, .officers__grid span:last-child, .checks li::before {
+  font-size: 0.7rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
 }
@@ -564,72 +565,30 @@ em { font-style: italic; font-family: var(--font-serif); font-weight: 300; }
 }
 .officers__head .heading, .officers__head .body { margin: 0; }
 .officers__head .body { max-width: 40ch; }
-/* Exec board: president featured, the rest stacked beside */
-.exec {
-  max-width: 1200px;
+.officers__grid {
+  list-style: none;
   margin: 0 auto;
+  padding: 0;
+  max-width: 1200px;
   display: grid;
-  grid-template-columns: 1fr 1.15fr;
-  gap: clamp(32px, 5vw, 80px);
-  align-items: start;
+  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+  gap: clamp(28px, 3vw, 44px) clamp(16px, 2vw, 28px);
 }
-.exec__photo {
-  position: relative;
-  overflow: hidden;
-  border-radius: 14px;
-  background: var(--ocean);
-}
-.exec__photo img { display: block; width: 100%; height: auto; aspect-ratio: 4 / 5; object-fit: cover; transition: transform 1.2s cubic-bezier(.2,.7,.2,1); }
-/* Corner brackets, like a viewfinder */
-.exec__photo::before, .exec__photo::after {
-  content: "";
-  position: absolute;
-  z-index: 1;
-  width: 22%;
-  height: 16%;
-  pointer-events: none;
-  transition: width 0.6s cubic-bezier(.2,.7,.2,1), height 0.6s cubic-bezier(.2,.7,.2,1);
-}
-.exec__photo::before { top: 10px; left: 10px; border-top: 1.5px solid var(--on-dark); border-left: 1.5px solid var(--on-dark); border-top-left-radius: 6px; }
-.exec__photo::after { bottom: 10px; right: 10px; border-bottom: 1.5px solid var(--on-dark); border-right: 1.5px solid var(--on-dark); border-bottom-right-radius: 6px; }
-.exec__lead:hover .exec__photo img, .exec__item:hover .exec__photo img { transform: scale(1.04); }
-.exec__lead:hover .exec__photo::before, .exec__lead:hover .exec__photo::after,
-.exec__item:hover .exec__photo::before, .exec__item:hover .exec__photo::after { width: 34%; height: 26%; }
-
-.exec__role {
-  display: block;
-  font-size: 0.72rem;
-  font-weight: 500;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--moss);
-}
-.exec__name {
-  display: block;
-  margin: 0.35rem 0 0.2rem;
+.officers__grid li { display: grid; gap: 0.25rem; }
+.officers__grid strong { font-family: var(--font-serif); font-weight: 400; font-size: 1.3rem; }
+.officers__grid span:last-child { color: var(--moss); line-height: 1.5; }
+.avatar {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 4 / 5;
+  margin-bottom: 0.9rem;
   font-family: var(--font-display);
-  font-weight: 400;
-  font-size: clamp(1.6rem, 2.4vw, 2.1rem);
-  line-height: 1.1;
-  color: var(--ink);
+  font-size: 3.4rem;
+  color: var(--on-dark);
+  background: var(--ocean) var(--grain);
 }
-.exec__meta { display: block; font-size: 1.1rem; color: var(--text-soft); }
-
-.exec__lead { margin: 0; }
-.exec__lead figcaption { margin-top: 1.6rem; text-align: center; }
-.exec__lead .exec__name { font-size: clamp(2.2rem, 4vw, 3.3rem); }
-.exec__lead .exec__meta { font-size: 1.25rem; }
-
-.exec__list { list-style: none; margin: 0; padding: 0; }
-.exec__item {
-  display: grid;
-  grid-template-columns: clamp(120px, 14vw, 180px) 1fr;
-  gap: clamp(20px, 3vw, 40px);
-  align-items: center;
-  padding: clamp(18px, 2.4vw, 28px) 0;
-}
-.exec__item:first-child { padding-top: 0; }
-.exec__item + .exec__item { border-top: 1px solid rgba(28, 43, 46, 0.16); }
+.officers__grid li:nth-child(3n+2) .avatar { background-color: var(--jade); }
+.officers__grid li:nth-child(3n) .avatar { background-color: var(--moss); }
 
 .checks { list-style: none; margin: 0 0 0.4rem; padding: 0; }
 .checks li { position: relative; padding: 0.45rem 0 0.45rem 1.6rem; font-size: 0.95rem; color: var(--text-soft); }
@@ -661,6 +620,21 @@ em { font-style: italic; font-family: var(--font-serif); font-weight: 300; }
 @keyframes marquee { to { transform: translateX(-50%); } }
 
 /* Officer cards lift on hover */
+.avatar { transition: transform 0.6s cubic-bezier(.2,.7,.2,1), letter-spacing 0.6s ease; }
+.officers__grid li:hover .avatar { transform: translateY(-6px); letter-spacing: 0.08em; }
+
+/* ---------- Logo ---------- */
+.nav__mark img { width: 36px; height: 36px; transition: transform 0.8s cubic-bezier(.2,.7,.2,1); }
+.nav__mark:hover img { transform: rotate(-12deg) scale(1.06); }
+
+/* ---------- Alumni network ---------- */
+.alumni {
+  padding: var(--section) 0;
+  background: var(--ink) var(--grain);
+  color: var(--on-dark);
+  text-align: center;
+  overflow: hidden;
+}
 .alumni__head {
   display: grid;
   grid-template-columns: auto minmax(0, 520px);
@@ -724,7 +698,7 @@ em { font-style: italic; font-family: var(--font-serif); font-weight: 300; }
 
 /* ---------- Responsive ---------- */
 @media (max-width: 900px) {
-  .split, .feature__text, .contact__panel, .events__grid, .exec { grid-template-columns: 1fr; }
+  .split, .feature__text, .contact__panel, .events__grid { grid-template-columns: 1fr; }
   .contact__intro { display: contents; }
   .contact__intro > * { order: 0; }
   .contact__form { order: 1; }
@@ -760,7 +734,8 @@ em { font-style: italic; font-family: var(--font-serif); font-weight: 300; }
   .nav.is-open .nav__links { opacity: 1; visibility: visible; }
   .facts { gap: 1.4rem; }
   .facts dd { font-size: 1.2rem; }
-    .feature__tags { flex-direction: column; gap: 0.3rem; }
+  .officers__grid { grid-template-columns: 1fr 1fr; }
+  .feature__tags { flex-direction: column; gap: 0.3rem; }
 }
 
 /* Backdrop-filter would trap the fixed mobile menu inside the bar */
