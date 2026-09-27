@@ -634,7 +634,6 @@ em { font-style: italic; font-family: var(--font-serif); font-weight: 300; }
   padding-right: clamp(28px, 4vw, 56px);
 }
 .marquee__track span::after { content: "✦"; font-size: 0.45em; vertical-align: middle; margin-left: clamp(28px, 4vw, 56px); color: var(--gold); }
-.marquee:hover .marquee__track { animation-play-state: paused; }
 @keyframes marquee { to { transform: translateX(-50%); } }
 
 /* Officer cards lift on hover */
