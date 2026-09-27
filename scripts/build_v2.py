@@ -351,11 +351,7 @@ PAGES_CONTENT["index"] = ("AIS at UT Dallas", "The UT Dallas student chapter of 
     </section>
 
 {FAQ}
-    <section class="partners partners--band" data-reveal>
-      <p class="eyebrow partners__label">Current partners</p>
-{PARTNERS}
-    </section>
-{cta("Membership", "Ready to <em>join</em>?", "Membership is open to every UT Dallas student, whatever your major.", "join.html", "Become a member")}""")
+""")
 
 PAGES_CONTENT["events"] = ("Events · AIS at UT Dallas", "Upcoming AIS at UT Dallas events.", page_hero("Workshops · Speakers · Competitions", "Chapter <em>Events</em>", "What’s coming up at the chapter, and moments from the wider AIS community.", "ais-speaker.jpg") + f"""
     <!-- Filled from the chapter's Google Calendar once CALENDAR is set in js/main.js -->

@@ -269,3 +269,7 @@
   .types__grid { grid-template-columns: 1fr; }
   .explore__card { aspect-ratio: 4 / 5; }
 }
+
+/* Leave room for the floating logo so it never covers the footer text */
+.footer--v2 { padding-right: calc(var(--gutter) + clamp(64px, 6vw, 84px) + 16px); }
+@media (max-width: 600px) { .footer--v2 { padding-bottom: calc(36px + 84px); padding-right: var(--gutter); } }
