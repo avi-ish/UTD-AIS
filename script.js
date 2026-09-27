@@ -6,35 +6,61 @@ document.querySelectorAll("[data-year]").forEach((el) => {
 });
 
 // Forms post to FormSubmit, which forwards every submission to the chapter inbox.
-// Without JavaScript the same forms still work as a normal POST.
+// The first ever submission triggers an "Activate Form" email to that inbox.
 const INBOX = "utdallasais@gmail.com";
+const THANKS = "Thank you! Your message is on its way, and we’ll be in touch soon.";
+
+// Returning from a plain (non-AJAX) submission: FormSubmit sends people back here with ?sent=1
+if (new URLSearchParams(location.search).has("sent")) {
+  const note = document.querySelector("[data-form] .form__note");
+  if (note) note.textContent = THANKS;
+  history.replaceState(null, "", location.pathname + "#join");
+}
+
 document.querySelectorAll("[data-form]").forEach((form) => {
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
     const note = form.querySelector(".form__note");
     const button = form.querySelector("button[type=submit]");
     const label = button.textContent;
-    button.disabled = true;
-    button.textContent = "Sending…";
-    note.textContent = "";
     const picked = form.querySelector("input[name=topic]:checked");
     const subject = form.querySelector("[data-subject]");
     if (picked && subject) subject.value = picked.dataset.subjectValue;
+    button.disabled = true;
+    button.textContent = "Sending…";
+    note.textContent = "";
+
+    let data;
     try {
       const res = await fetch(`https://formsubmit.co/ajax/${INBOX}`, {
         method: "POST",
         headers: { Accept: "application/json" },
         body: new FormData(form),
       });
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok || String(data.success) === "false") throw new Error(data.message || res.statusText);
-      form.reset();
-      note.textContent = "Thank you! Your message is on its way, and we’ll be in touch soon.";
+      data = await res.json();
     } catch (err) {
+      // The background request was blocked (network, extension, embedded preview):
+      // fall back to a normal form submission, which FormSubmit redirects back from.
+      let next = form.querySelector("input[name=_next]");
+      if (!next) {
+        next = Object.assign(document.createElement("input"), { type: "hidden", name: "_next" });
+        form.append(next);
+      }
+      next.value = location.origin + location.pathname + "?sent=1#join";
+      HTMLFormElement.prototype.submit.call(form);
+      return;
+    }
+
+    button.disabled = false;
+    button.textContent = label;
+    if (String(data.success) === "true") {
+      form.reset();
+      note.textContent = THANKS;
+    } else if (data.message) {
+      // e.g. the one-time "This form needs Activation" notice
+      note.textContent = data.message;
+    } else {
       note.innerHTML = `Something went wrong. Please email us directly at <a href="mailto:${INBOX}">${INBOX}</a>.`;
-    } finally {
-      button.disabled = false;
-      button.textContent = label;
     }
   });
 });

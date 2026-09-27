@@ -412,6 +412,13 @@ em { font-style: italic; font-family: var(--font-serif); font-weight: 300; }
   resize: vertical;
 }
 .field input::placeholder { color: inherit; opacity: 0.4; }
+/* Keep browser autofill from painting fields light blue */
+.field input:-webkit-autofill, .field input:-webkit-autofill:hover, .field input:-webkit-autofill:focus {
+  -webkit-text-fill-color: currentColor;
+  -webkit-box-shadow: 0 0 0 100px var(--ocean) inset;
+  caret-color: currentColor;
+  transition: background-color 9999s;
+}
 .field input:focus, .field textarea:focus { outline: none; border-bottom-width: 2px; }
 .button {
   justify-self: start;
