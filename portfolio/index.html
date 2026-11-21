@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Your Name — Portfolio</title>
+  <meta name="description" content="Independent design engineer building stunning websites for ambitious startups and worldwide brands.">
+  <meta name="theme-color" content="#000000">
+  <link rel="preload" href="fonts/silkscreen-400.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="fonts/chakra-petch-500.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Everything visual (sphere grid, portrait, lens, quadtree, glitch band) is drawn here -->
+  <canvas id="stage" aria-hidden="true"></canvas>
+
+  <header class="bar">
+    <a class="bar__name" href="./" data-scramble>YOUR NAME</a>
+    <nav class="bar__nav" aria-label="Primary">
+      <a class="bar__talk" href="mailto:hello@example.com"><span data-scramble>LET'S TALK</span><i class="bar__dot" aria-hidden="true"></i></a>
+      <button class="bar__menu" type="button" aria-expanded="false" aria-controls="menu">
+        <span class="bar__menu-label" data-scramble>MENU</span>
+        <i class="burger" aria-hidden="true"><b></b><b></b><b></b></i>
+      </button>
+    </nav>
+  </header>
+
+  <main class="hero">
+    <div class="hero__id">
+      <h1 class="hero__name" data-scramble data-glitch>YOUR NAME</h1>
+      <p class="hero__sub"><span>// PORTFOLIO</span><span data-year>©2026</span></p>
+    </div>
+    <p class="hero__tag" data-scramble>INDEPENDENT DESIGN ENGINEER BUILDING STUNNING WEBSITES FOR AMBITIOUS STARTUPS AND WORLDWIDE BRANDS</p>
+  </main>
+
+  <!-- Full-screen menu -->
+  <div class="menu" id="menu" hidden>
+    <nav class="menu__list" aria-label="Site">
+      <a href="#work"><span class="menu__n">01</span><span class="menu__t" data-scramble>WORK</span></a>
+      <a href="#about"><span class="menu__n">02</span><span class="menu__t" data-scramble>ABOUT</span></a>
+      <a href="#services"><span class="menu__n">03</span><span class="menu__t" data-scramble>SERVICES</span></a>
+      <a href="mailto:hello@example.com"><span class="menu__n">04</span><span class="menu__t" data-scramble>CONTACT</span></a>
+    </nav>
+    <div class="menu__foot">
+      <span>// AVAILABLE FOR NEW PROJECTS</span>
+      <span class="menu__social"><a href="#" data-scramble>INSTAGRAM</a><a href="#" data-scramble>LINKEDIN</a><a href="#" data-scramble>X</a></span>
+    </div>
+  </div>
+
+  <!-- Little assistant in the corner -->
+  <button class="bot" type="button" aria-label="Say hi" aria-expanded="false" aria-controls="bot-bubble">
+    <svg viewBox="0 0 64 76" aria-hidden="true">
+      <defs>
+        <linearGradient id="bot-head" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#9db0ff"/>
+          <stop offset="1" stop-color="#5f74f2"/>
+        </linearGradient>
+        <linearGradient id="bot-body" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#8296ff"/>
+          <stop offset="1" stop-color="#5368e6"/>
+        </linearGradient>
+      </defs>
+      <g class="bot__float">
+        <line x1="32" y1="5" x2="32" y2="14" stroke="#7e92ff" stroke-width="3" stroke-linecap="round"/>
+        <circle class="bot__beacon" cx="32" cy="5" r="3.6" fill="#cdd7ff"/>
+        <rect x="2" y="25" width="7" height="13" rx="3.5" fill="#5366e0"/>
+        <rect x="55" y="25" width="7" height="13" rx="3.5" fill="#5366e0"/>
+        <rect x="7" y="13" width="50" height="37" rx="15" fill="url(#bot-head)"/>
+        <rect x="13" y="20" width="38" height="22" rx="10" fill="#151b3d"/>
+        <g class="bot__eyes" fill="#d7e2ff">
+          <rect x="21" y="27" width="7" height="8" rx="3.5"/>
+          <rect x="36" y="27" width="7" height="8" rx="3.5"/>
+        </g>
+        <rect x="20" y="50" width="24" height="15" rx="7" fill="url(#bot-body)"/>
+        <rect x="28" y="55" width="8" height="3" rx="1.5" fill="#dfe6ff" opacity=".85"/>
+      </g>
+      <rect x="21" y="66" width="8" height="8" rx="4" fill="#4b5ed6"/>
+      <rect x="35" y="66" width="8" height="8" rx="4" fill="#4b5ed6"/>
+    </svg>
+  </button>
+  <div class="bubble" id="bot-bubble" role="status" hidden>
+    <p data-scramble>HEY. GOT A PROJECT IN MIND?</p>
+    <a href="mailto:hello@example.com">LET'S TALK →</a>
+  </div>
+
+  <div class="cursor" aria-hidden="true"></div>
+  <p class="drop-hint" aria-hidden="true">DROP A PHOTO OR VIDEO TO USE IT AS THE PORTRAIT</p>
+
+  <script src="main.js" type="module"></script>
+</body>
+</html>
