@@ -1,9 +1,8 @@
 // Placeholder projects. Every name, client and description here is made up:
-// swap in your own work (and real screenshots via `images`) when you have it.
+// swap in your own work when you have it.
 //
 // env   – the 3D environment the project detail opens into: space | fog | studio | void
-// art   – which generated artwork to draw for the cover and screens
-// images (optional) – array of image URLs to use instead of generated screens
+// art   – which generated artwork (js/art.js) draws the cover and screens
 
 export const PROJECTS = [
   {
