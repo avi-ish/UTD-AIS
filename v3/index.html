@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AIS at UT Dallas</title>
+  <meta name="description" content="The UT Dallas student chapter of the Association for Information Systems.">
+  <meta name="theme-color" content="#0b1a28">
+  <link rel="icon" type="image/png" href="favicon.png">
+  <link rel="preload" href="fonts/italiana-QmWaXw.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="fonts/fonts.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="is-loading">
+
+  <!-- Loader: counts to 100, then the curtain lifts -->
+  <div class="loader" aria-hidden="true">
+    <div class="loader__count"><span data-loader-count>0</span>%</div>
+    <div class="loader__word">Association for Information Systems</div>
+  </div>
+
+  <!-- Custom cursor -->
+  <div class="cursor" aria-hidden="true"><span class="cursor__label"></span></div>
+
+  <header class="top">
+    <a class="top__mark" href="#top" data-magnetic><img src="images/ais-logo-small.webp" alt="" width="32" height="32">AIS <em>at</em> UTD</a>
+    <nav class="top__nav" aria-label="Sections">
+      <a href="#about" data-magnetic>About</a>
+      <a href="#events" data-magnetic>Events</a>
+      <a href="#officers" data-magnetic>Officers</a>
+      <a href="#alumni" data-magnetic>Alumni</a>
+      <a href="#join" class="top__cta" data-magnetic>Join</a>
+    </nav>
+    <span class="top__clock" data-clock>Richardson, TX</span>
+  </header>
+
+  <main id="top">
+
+    <!-- Hero: giant split type over a slowly scaling photo -->
+    <section class="hero">
+      <div class="hero__media"><img src="images/hero.jpg" alt="" data-hero-img></div>
+      <p class="hero__kicker" data-split-lines>Student chapter — Naveen Jindal School of Management</p>
+      <h1 class="hero__title" aria-label="AIS UT Dallas">
+        <span class="hero__row" data-split>Information</span>
+        <span class="hero__row hero__row--italic" data-split>Systems</span>
+      </h1>
+      <div class="hero__foot">
+        <p>Where UT Dallas students learn the tools, meet the people, and build the experience behind a career in technology.</p>
+        <span class="hero__scroll">Scroll <i></i></span>
+      </div>
+    </section>
+
+    <!-- Statement: words light up as you scroll -->
+    <section class="statement" id="about">
+      <p class="label">(01) — Who we are</p>
+      <p class="statement__text" data-words>We promote the study and practice of information systems through professional development, technical workshops, and a community of students who like figuring out how technology and business fit together.</p>
+      <div class="statement__grid">
+        <figure class="statement__img" data-cursor="AIS"><img src="images/ais-podium.jpg" alt="Two speakers at an AIS-bannered podium" loading="lazy" data-parallax="0.12"></figure>
+        <ol class="pillars">
+          <li><span>01</span><strong>Professional development</strong><p>Résumé reviews, mock interviews, and career prep aimed at IS, analytics, and consulting roles.</p></li>
+          <li><span>02</span><strong>Technical workshops</strong><p>Hands-on sessions in SQL, Python, cloud, data visualisation, and the tools employers actually use.</p></li>
+          <li><span>03</span><strong>Industry speakers</strong><p>Talks and panels with professionals from the companies that hire UT Dallas students.</p></li>
+          <li><span>04</span><strong>Case competitions</strong><p>Real business problems, tight deadlines, and a chance to present to judges from industry.</p></li>
+          <li><span>05</span><strong>Social events</strong><p>Mixers, game nights, and outings that turn members into friends outside the classroom.</p></li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- Marquee band -->
+    <div class="band" aria-hidden="true">
+      <div class="band__track">
+        <span>Learn</span><span>Connect</span><span>Build</span><span>Compete</span><span>Learn</span><span>Connect</span><span>Build</span><span>Compete</span>
+      </div>
+    </div>
+
+    <!-- Events: vertical scroll drives a horizontal strip -->
+    <section class="hscroll" id="events">
+      <div class="hscroll__sticky">
+        <div class="hscroll__head">
+          <p class="label">(02) — Events</p>
+          <h2 class="big">Moments<br><em>that matter</em></h2>
+        </div>
+        <div class="hscroll__track" data-hscroll>
+          <article class="card card--intro">
+            <p>From workshops to national competitions, here’s what a year in AIS looks like.</p>
+            <span class="card__hint">Keep scrolling →</span>
+          </article>
+          <a class="card" href="https://aisnet.org/conferences/" target="_blank" rel="noopener" data-cursor="View">
+            <img src="images/ais-speaker.jpg" alt="" loading="lazy"><span class="card__num">01</span><strong>Speaker series</strong><em>Industry voices, every month</em>
+          </a>
+          <a class="card" href="#join" data-cursor="Join">
+            <img src="images/ais-conference.jpg" alt="" loading="lazy"><span class="card__num">02</span><strong>National conference</strong><em>Compete against the best IS chapters</em>
+          </a>
+          <a class="card" href="https://aisnet.org/about-ais/awards/" target="_blank" rel="noopener" data-cursor="View">
+            <img src="images/ais-awards.jpg" alt="" loading="lazy"><span class="card__num">03</span><strong>Awards &amp; recognition</strong><em>Celebrating the work</em>
+          </a>
+          <a class="card" href="#join" data-cursor="Join">
+            <img src="images/ais-reception.jpg" alt="" loading="lazy"><span class="card__num">04</span><strong>Socials &amp; receptions</strong><em>Where friendships start</em>
+          </a>
+          <a class="card" href="https://ishistory.aisnet.org/awards/30-anniversary/" target="_blank" rel="noopener" data-cursor="View">
+            <img src="images/ais-celebration.jpg" alt="" loading="lazy"><span class="card__num">05</span><strong>Milestones</strong><em>A global community, 30+ years strong</em>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Officers: hover list with a floating photo that follows the cursor -->
+    <section class="team" id="officers">
+      <p class="label">(03) — The team</p>
+      <h2 class="big">Meet the <em>officers</em></h2>
+      <ul class="team__list">
+        <li data-img="images/officer-chinmayi.jpg"><span class="team__name">Chinmayi Maddali</span><span class="team__role">President</span><span class="team__meta">Business Analytics and AI, Junior</span></li>
+        <li data-img="images/officer-avi.jpg"><span class="team__name">Avi Pandya</span><span class="team__role">Vice President</span><span class="team__meta">Finance and CIS Tech, Junior</span></li>
+        <li data-img="images/officer-myiesha.jpg"><span class="team__name">Myiesha Panjwani</span><span class="team__role">VP of Operations</span><span class="team__meta">Finance, Junior</span></li>
+        <li data-img="images/officer-aaron.jpg"><span class="team__name">Aaron Sen</span><span class="team__role">Treasurer</span><span class="team__meta">Finance, Junior</span></li>
+        <li data-img="images/officer-nirmal.jpg"><span class="team__name">Nirmal Shah</span><span class="team__role">Tech Dev Officer</span><span class="team__meta">Computer Science, Junior</span></li>
+        <li data-img="images/officer-sanika.jpg"><span class="team__name">Sanika Tripathi</span><span class="team__role">Head of Marketing</span><span class="team__meta">Data Science, Junior</span></li>
+      </ul>
+      <div class="team__float" aria-hidden="true"><img alt=""></div>
+    </section>
+
+    <!-- Alumni -->
+    <section class="alumni" id="alumni">
+      <p class="label">(04) — Network</p>
+      <div class="alumni__num"><span class="alumni__ghost" aria-hidden="true">10,000+</span><span class="alumni__live"><span data-count="10000">10,000</span>+</span></div>
+      <p class="alumni__sub">AIS alumni building careers at the world’s leading banks, tech companies, and consultancies.</p>
+      <div class="logos" aria-label="Where AIS alumni work">
+        <div class="logos__row"><span>Goldman Sachs</span><span>JPMorgan Chase</span><span>Microsoft</span><span>Amazon</span><span>Google</span><span>Deloitte</span><span>Accenture</span><span>EY</span><span>PwC</span><span>KPMG</span><span>Goldman Sachs</span><span>JPMorgan Chase</span><span>Microsoft</span><span>Amazon</span><span>Google</span><span>Deloitte</span><span>Accenture</span><span>EY</span><span>PwC</span><span>KPMG</span></div>
+        <div class="logos__row logos__row--rev" aria-hidden="true"><span>Texas Instruments</span><span>IBM</span><span>Salesforce</span><span>Oracle</span><span>AT&amp;T</span><span>Charles Schwab</span><span>Dell</span><span>Capital One</span><span>Citi</span><span>Wells Fargo</span><span>Texas Instruments</span><span>IBM</span><span>Salesforce</span><span>Oracle</span><span>AT&amp;T</span><span>Charles Schwab</span><span>Dell</span><span>Capital One</span><span>Citi</span><span>Wells Fargo</span></div>
+      </div>
+      <p class="alumni__partners"><span class="label">Current partners</span> <strong>Red Bull</strong> <strong>DoorDash</strong></p>
+    </section>
+
+    <!-- Join -->
+    <section class="join" id="join">
+      <p class="label">(05) — Get involved</p>
+      <h2 class="join__title"><span data-split>Let’s</span> <em data-split>talk</em></h2>
+      <div class="join__grid">
+        <form class="form" action="https://formsubmit.co/utdallasais@gmail.com" method="POST" data-form>
+          <input type="hidden" name="_subject" value="New AIS membership interest" data-subject>
+          <input type="hidden" name="_template" value="table">
+          <input type="hidden" name="_captcha" value="false">
+          <input class="honeypot" type="text" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true">
+          <fieldset class="chips">
+            <legend>I’m interested in</legend>
+            <label><input type="radio" name="topic" value="Joining AIS" data-subject-value="New AIS membership interest" checked><span>Joining AIS</span></label>
+            <label><input type="radio" name="topic" value="Partnering or sponsoring" data-subject-value="New AIS partnership inquiry"><span>Partnering</span></label>
+            <label><input type="radio" name="topic" value="Something else" data-subject-value="New message from the AIS website"><span>Something else</span></label>
+          </fieldset>
+          <label class="field"><input type="text" name="name" required autocomplete="name" placeholder=" "><span>Your name</span></label>
+          <label class="field"><input type="email" name="email" required autocomplete="email" placeholder=" "><span>UTD email</span></label>
+          <label class="field"><textarea name="message" rows="2" placeholder=" "></textarea><span>Message (optional)</span></label>
+          <label class="optin"><input type="checkbox" name="Email list" value="Yes, add me to the event email list"><span>Add me to the email list for event notifications</span></label>
+          <button class="send" type="submit" data-magnetic><span>Send</span></button>
+          <p class="form__note" role="status" aria-live="polite"></p>
+        </form>
+        <dl class="contact">
+          <div><dt>Email</dt><dd><a href="mailto:utdallasais@gmail.com" data-cursor="Write">utdallasais@gmail.com</a></dd></div>
+          <div><dt>Social</dt><dd><a href="https://www.instagram.com/utdallasais/" target="_blank" rel="noopener">Instagram</a>, <a href="https://www.linkedin.com/company/utdallasais/" target="_blank" rel="noopener">LinkedIn</a>, <a href="https://flare-event.app.link/EcJCg0AUW0b" target="_blank" rel="noopener">Flare</a></dd></div>
+          <div><dt>Find us</dt><dd>Jindal School of Management<br>800 W Campbell Rd, Richardson, TX</dd></div>
+        </dl>
+      </div>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <div class="foot__giant" aria-hidden="true">AIS UTD</div>
+    <div class="foot__bar">
+      <span>© <span data-year></span> AIS Student Chapter at UT Dallas</span>
+      <a href="#top" data-magnetic>Back to top ↑</a>
+    </div>
+  </footer>
+
+  <script src="main.js"></script>
+</body>
+</html>
