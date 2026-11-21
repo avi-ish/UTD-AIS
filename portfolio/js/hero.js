@@ -1,118 +1,22 @@
 /*
-  Portfolio hero
+  Hero renderer (WebGL2, no dependencies)
   ------------------------------------------------------------
-  One WebGL2 canvas draws everything behind the type:
-    1. a portrait pass  – a raymarched bust (or your own photo / video) rendered
-                          at half the glyph-cell size, with mipmaps;
-    2. a screen pass    – fisheye sphere grid, dot-matrix glyphs, quadtree
-                          subdivision in the dark areas, the iridescent lens
-                          that follows the cursor, and the glitch band.
+    1. portrait pass – a raymarched bust (or your own photo / video) rendered at
+                       half the glyph-cell size, with mipmaps;
+    2. trail pass    – where the cursor moves fast, cells get pushed out as pins;
+    3. screen pass   – fisheye sphere grid, dot-matrix glyphs, quadtree
+                       subdivision in the dark areas, the iridescent lens that
+                       follows the cursor, and the glitch band.
 
-  To use your own portrait set CONFIG.portrait (an image or video URL; a dark
-  background works best), add ?portrait=<url> to the address, or just drop a
-  photo / video onto the page.
+  The canvas keeps its drawing buffer so the 3D world can reuse the frame as a
+  texture while the hero flies away on scroll.
 */
 
-const CONFIG = {
-  portrait: null,          // e.g. "images/me.jpg" or "images/me.mp4"
+export const HERO_CONFIG = {
+  portrait: null,          // e.g. "images/me.jpg" or "images/me.mp4" (dark background works best)
   lensRadius: 0.064,       // lens radius as a fraction of the viewport width
   maxDpr: 2,
 };
-
-/* ------------------------------------------------------------------ */
-/* DOM helpers: year, scramble, cursor, menu, assistant               */
-/* ------------------------------------------------------------------ */
-
-const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
-const finePointer = matchMedia('(pointer: fine)').matches;
-
-document.querySelectorAll('[data-year]').forEach((el) => {
-  el.textContent = `©${new Date().getFullYear()}`;
-});
-
-const GLYPHS = '#%&*+=-/\\<>[]{}01?!$@';
-function scramble(el, duration = 700) {
-  if (reduceMotion) return;
-  const target = el.dataset.text || (el.dataset.text = el.textContent);
-  const start = performance.now();
-  cancelAnimationFrame(el._scr);
-  const tick = (now) => {
-    const p = Math.min(1, (now - start) / duration);
-    let out = '';
-    for (let i = 0; i < target.length; i++) {
-      const ch = target[i];
-      if (ch === ' ' || i / target.length < p * 1.15 - 0.15) out += ch;
-      else out += GLYPHS[(Math.random() * GLYPHS.length) | 0];
-    }
-    el.textContent = out;
-    if (p < 1) el._scr = requestAnimationFrame(tick);
-    else el.textContent = target;
-  };
-  el._scr = requestAnimationFrame(tick);
-}
-
-document.querySelectorAll('[data-scramble]').forEach((el) => {
-  const host = el.closest('a, button') || el;
-  host.addEventListener('pointerenter', () => scramble(el, 420));
-});
-
-// cursor dot
-const cursor = document.querySelector('.cursor');
-if (finePointer) {
-  addEventListener('pointermove', (e) => {
-    cursor.style.transform = `translate3d(${e.clientX}px, ${e.clientY}px, 0)`;
-    cursor.classList.add('is-on');
-    cursor.classList.toggle('is-link', !!e.target.closest('a, button'));
-  }, { passive: true });
-  document.documentElement.addEventListener('pointerleave', () => cursor.classList.remove('is-on'));
-}
-
-// menu
-const menu = document.getElementById('menu');
-const menuBtn = document.querySelector('.bar__menu');
-const menuLabel = document.querySelector('.bar__menu-label');
-function setMenu(open) {
-  menuBtn.setAttribute('aria-expanded', String(open));
-  document.body.classList.toggle('menu-open', open);
-  menuLabel.dataset.text = open ? 'CLOSE' : 'MENU';
-  menuLabel.textContent = menuLabel.dataset.text;
-  scramble(menuLabel, 380);
-  if (open) {
-    menu.hidden = false;
-    requestAnimationFrame(() => menu.classList.add('is-open'));
-    menu.querySelectorAll('[data-scramble]').forEach((el, i) => setTimeout(() => scramble(el, 520), i * 60));
-    menu.querySelector('a').focus({ preventScroll: true });
-  } else {
-    menu.classList.remove('is-open');
-    menu.hidden = true;
-  }
-}
-menuBtn.addEventListener('click', () => setMenu(menu.hidden));
-menu.addEventListener('click', (e) => { if (e.target.closest('a')) setMenu(false); });
-
-// assistant
-const bot = document.querySelector('.bot');
-const bubble = document.getElementById('bot-bubble');
-bot.addEventListener('click', () => {
-  const open = bubble.hidden;
-  bubble.hidden = !open;
-  bot.setAttribute('aria-expanded', String(open));
-  if (open) scramble(bubble.querySelector('[data-scramble]'), 600);
-});
-
-addEventListener('keydown', (e) => {
-  if (e.key !== 'Escape') return;
-  if (!menu.hidden) { setMenu(false); menuBtn.focus(); }
-  if (!bubble.hidden) { bubble.hidden = true; bot.setAttribute('aria-expanded', 'false'); }
-});
-
-// intro type
-const introEls = [...document.querySelectorAll('.bar [data-scramble], .hero [data-scramble]')];
-introEls.forEach((el, i) => setTimeout(() => scramble(el, el.classList.contains('hero__tag') ? 1100 : 800), 250 + i * 90));
-
-/* ------------------------------------------------------------------ */
-/* Shaders                                                            */
-/* ------------------------------------------------------------------ */
 
 const VERT = /* glsl */`#version 300 es
 const vec2 V[3] = vec2[3](vec2(-1.0,-1.0), vec2(3.0,-1.0), vec2(-1.0,3.0));
@@ -341,6 +245,9 @@ uniform float uBandAmp;
 uniform float uGlitch;
 uniform float uIntro;
 uniform vec2 uGridRot;
+uniform sampler2D uTrail; // cursor trail intensity, row 0 = top
+uniform vec2 uTrailScale; // 1 / (trail texture size in device px)
+uniform vec2 uVP;         // vanishing point for the extruded pins, device px
 out vec4 o;
 
 #define TAU 6.28318530718
@@ -441,6 +348,25 @@ void main(){
     glyph(lc, q.b + dith, aa) * (0.28 + 0.85 * q.b));
   vec3 col = gcol * vec3(0.84, 0.89, 1.0);
 
+  /* ---- fast cursor moves leave a trail of cells pushed out toward the viewer,
+          seen in perspective as iridescent pins ---- */
+  float tr = texture(uTrail, cc * uTrailScale).r;
+  float pinK = smoothstep(0.04, 0.22, tr) * uLensOn;
+  if (pinK > 0.001) {
+    vec2 dir = normalize(cc - uVP + vec2(1e-3));
+    float L = mix(0.2, 1.05, smoothstep(0.05, 0.85, tr)) * (0.75 + 0.5 * h21(ci + 4.1));
+    vec2 a0 = -dir * L * 0.45, b0 = dir * L * 0.55;
+    vec2 pa = lc - a0, ba = b0 - a0;
+    float hseg = clamp(dot(pa, ba) / max(dot(ba, ba), 1e-4), 0.0, 1.0);
+    float pin = 1.0 - smoothstep(-aa, aa, length(pa - ba * hseg) - mix(0.13, 0.08, hseg));
+    float tip = 1.0 - smoothstep(-aa, aa, length(lc - b0) - 0.12);
+    float under0 = P(cc, log2(cell / uTexel)).r;
+    vec3 irc = 0.5 + 0.5 * cos(TAU * (vec3(0.0, 0.33, 0.67) + h21(ci) * 0.35 + tr * 0.9 + hseg * 0.25 + t * 0.15));
+    irc = mix(vec3(0.32, 0.72, 1.0), irc, 0.55);
+    vec3 pc = irc * (0.3 + 0.95 * max(under0, 0.22)) * max(pin * (0.55 + 0.6 * hseg), tip * 1.25);
+    col = mix(col, pc, pinK);
+  }
+
   /* ---- quadtree on the dark parts: cells split where the image varies ---- */
   float qMean = 0.0, qK = 0.0, qS = cell;
   vec2 qO = vec2(0.0);
@@ -458,7 +384,7 @@ void main(){
   vec2 lp = fd - qO;
   float edge = max(step(lp.x, uDpr), step(lp.y, uDpr));
   float dark = 1.0 - smoothstep(0.06, 0.2, qMean);
-  float qt = dark * step(qK, 3.5) * step(0.5, uIntro);
+  float qt = dark * step(qK, 3.5) * step(0.5, uIntro) * (1.0 - pinK);
   col += qt * mix(vec3(qMean * 0.45), vec3(0.2), edge);
 
   /* ---- sphere grid behind the figure (dispersed through the lens) ---- */
@@ -495,76 +421,131 @@ void main(){
   o = vec4(max(col, 0.0), 1.0);
 }`;
 
-/* ------------------------------------------------------------------ */
-/* WebGL setup                                                        */
-/* ------------------------------------------------------------------ */
 
-const canvas = document.getElementById('stage');
-const gl = canvas.getContext('webgl2', {
-  antialias: false, alpha: false, depth: false, stencil: false,
-  premultipliedAlpha: false, powerPreference: 'high-performance',
-});
+// Cursor trail: decays every frame, the latest pointer segment is stamped in.
+const TRAIL = /* glsl */`#version 300 es
+precision highp float;
+uniform sampler2D uPrev;
+uniform vec2 uSize;      // trail texture size
+uniform vec2 uScreen;    // device px
+uniform vec2 uA;         // segment start, device px, y down
+uniform vec2 uB;         // segment end
+uniform float uRadius;
+uniform float uDecay;
+uniform float uPower;
+uniform float uTime;
+out vec4 o;
+float h21(vec2 p){ p = fract(p * vec2(123.34, 456.21)); p += dot(p, p + 45.32); return fract(p.x * p.y); }
+float vnoise(vec2 p){ vec2 i = floor(p), f = fract(p); f = f * f * (3.0 - 2.0 * f);
+  return mix(mix(h21(i), h21(i + vec2(1,0)), f.x), mix(h21(i + vec2(0,1)), h21(i + vec2(1,1)), f.x), f.y); }
+void main(){
+  vec2 uv = gl_FragCoord.xy / uSize;
+  float prev = texture(uPrev, uv).r * uDecay;
+  vec2 px = uv * uScreen;
+  vec2 pa = px - uA, ba = uB - uA;
+  float h = clamp(dot(pa, ba) / max(dot(ba, ba), 1e-3), 0.0, 1.0);
+  float d = length(pa - ba * h);
+  float wob = 0.65 + 0.7 * vnoise(px / uRadius * 1.8 + uTime * 0.7);
+  float add = smoothstep(uRadius * wob, uRadius * wob * 0.3, d) * uPower;
+  o = vec4(min(1.0, prev + add * (1.0 - prev)), 0.0, 0.0, 1.0);
+}`;
 
-if (!gl) {
-  document.documentElement.classList.add('no-gl');
-} else {
-  run();
-}
+function smooth(x) { return x * x * (3 - 2 * x); }
 
-function compile(type, src) {
-  const s = gl.createShader(type);
-  gl.shaderSource(s, src);
-  gl.compileShader(s);
-  if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) {
-    const log = gl.getShaderInfoLog(s);
-    gl.deleteShader(s);
-    throw new Error(log);
-  }
-  return s;
-}
-function program(fsSrc) {
-  const p = gl.createProgram();
-  gl.attachShader(p, compile(gl.VERTEX_SHADER, VERT));
-  gl.attachShader(p, compile(gl.FRAGMENT_SHADER, fsSrc));
-  gl.linkProgram(p);
-  if (!gl.getProgramParameter(p, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(p));
-  const u = {};
-  const n = gl.getProgramParameter(p, gl.ACTIVE_UNIFORMS);
-  for (let i = 0; i < n; i++) {
-    const name = gl.getActiveUniform(p, i).name;
-    u[name] = gl.getUniformLocation(p, name);
-  }
-  return { p, u };
-}
+/**
+ * @param {HTMLCanvasElement} canvas
+ * @param {{x:number,y:number,active:boolean,last:number}} input shared pointer state (CSS px)
+ * @param {{reduceMotion:boolean, finePointer:boolean, onGlitch?:Function}} env
+ */
+export function createHero(canvas, input, env) {
+  const gl = canvas.getContext('webgl2', {
+    antialias: false, alpha: false, depth: false, stencil: false,
+    premultipliedAlpha: false, preserveDrawingBuffer: true, powerPreference: 'high-performance',
+  });
+  if (!gl) return null;
 
-function run() {
-  let progSdf, progImg, progScreen;
+  const compile = (type, src) => {
+    const sh = gl.createShader(type);
+    gl.shaderSource(sh, src);
+    gl.compileShader(sh);
+    if (!gl.getShaderParameter(sh, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(sh));
+    return sh;
+  };
+  const program = (fs) => {
+    const p = gl.createProgram();
+    gl.attachShader(p, compile(gl.VERTEX_SHADER, VERT));
+    gl.attachShader(p, compile(gl.FRAGMENT_SHADER, fs));
+    gl.linkProgram(p);
+    if (!gl.getProgramParameter(p, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(p));
+    const u = {};
+    const n = gl.getProgramParameter(p, gl.ACTIVE_UNIFORMS);
+    for (let i = 0; i < n; i++) { const name = gl.getActiveUniform(p, i).name; u[name] = gl.getUniformLocation(p, name); }
+    return { p, u };
+  };
+
+  let progSdf, progImg, progScreen, progTrail;
   try {
     progSdf = program(PORTRAIT_SDF);
     progImg = program(PORTRAIT_IMAGE);
     progScreen = program(SCREEN);
+    progTrail = program(TRAIL);
   } catch (err) {
     console.error(err);
-    document.documentElement.classList.add('no-gl');
-    return;
+    return null;
   }
 
-  const vao = gl.createVertexArray();
-  gl.bindVertexArray(vao);
+  gl.bindVertexArray(gl.createVertexArray());
 
-  // portrait target (mipmapped so the quadtree can read local mean/variance)
-  const pTex = gl.createTexture();
-  const fbo = gl.createFramebuffer();
-  let pW = 0, pH = 0;
-
-  // optional user image / video
+  const makeTarget = (mip) => {
+    const tex = gl.createTexture();
+    const fbo = gl.createFramebuffer();
+    return { tex, fbo, mip };
+  };
+  const portrait = makeTarget(true);
+  const trail = [makeTarget(false), makeTarget(false)];
+  let trailIdx = 0;
   const imgTex = gl.createTexture();
   let source = { kind: 'sdf', el: null, w: 1, h: 1 };
 
-  // sizes
-  let dpr = 1, W = 0, H = 0, cellD = 6, texel = 3;
-  let dprCap = Math.min(window.devicePixelRatio || 1, CONFIG.maxDpr);
+  let dpr = 1, W = 0, H = 0, cellD = 6, texel = 3, pW = 0, pH = 0, tW = 0, tH = 0;
+  let dprCap = Math.min(window.devicePixelRatio || 1, HERO_CONFIG.maxDpr);
   const view = { cx: 0.54, cy: 0.5, tanH: 0.265, camY: -0.33, camZ: 6.0 };
+
+  function alloc(t, w, h, mip) {
+    gl.bindTexture(gl.TEXTURE_2D, t.tex);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA8, w, h, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, mip ? gl.LINEAR_MIPMAP_LINEAR : gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, t.fbo);
+    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, t.tex, 0);
+    gl.clearColor(0, 0, 0, 1);
+    gl.clear(gl.COLOR_BUFFER_BIT);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+  }
+
+  // where the bust's (viewer's) left eye lands on screen, in CSS px, for a given head turn
+  function eyeOnScreen(yaw, pitch) {
+    const piv = [0, -0.85, -0.1];
+    let x = -0.255 - piv[0], y = 0.045 - piv[1], z = 0.565 - piv[2];
+    // undo the pitch, then the yaw (inverse of headSpace in the shader)
+    let c = Math.cos(pitch), s = Math.sin(pitch);
+    [y, z] = [c * y - s * z, s * y + c * z];
+    c = Math.cos(yaw); s = Math.sin(yaw);
+    [x, z] = [c * x - s * z, s * x + c * z];
+    x += piv[0]; y += piv[1]; z += piv[2];
+    const dz = view.camZ - z;
+    const sx = x / dz / view.tanH, sy = (y - view.camY) / dz / view.tanH;
+    const aspect = innerWidth / innerHeight;
+    return { x: (view.cx + sx / (2 * aspect)) * innerWidth, y: (view.cy - sy / 2) * innerHeight };
+  }
+
+  const lens = { x: 0, y: 0 };
+  const look = { x: 0, y: 0 };
+  const idle = { x: 0, y: 0, next: 1.5 };
+  const prevPtr = { x: -1, y: -1 };
+  let home = { x: innerWidth * 0.45, y: innerHeight * 0.4 };
 
   function layout() {
     const cssW = innerWidth, cssH = innerHeight;
@@ -573,24 +554,17 @@ function run() {
     H = Math.max(1, Math.round(cssH * dpr));
     canvas.width = W;
     canvas.height = H;
-
     const cellCss = Math.max(5, Math.min(9, Math.round(cssW / 210)));
     cellD = cellCss * dpr;
     texel = cellD / 2;
-
     pW = Math.ceil(W / texel);
     pH = Math.ceil(H / texel);
-    gl.bindTexture(gl.TEXTURE_2D, pTex);
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA8, pW, pH, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-    gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
-    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, pTex, 0);
-    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+    tW = Math.ceil(W / cellD);
+    tH = Math.ceil(H / cellD);
+    alloc(portrait, pW, pH, true);
+    alloc(trail[0], tW, tH, false);
+    alloc(trail[1], tW, tH, false);
 
-    // portrait framing: slightly right of centre on wide screens, centred and smaller on tall ones
     const aspect = cssW / cssH;
     if (aspect < 0.9) {
       view.cx = 0.5;
@@ -601,48 +575,16 @@ function run() {
       view.tanH = 0.265;
       view.camY = -0.33;
     }
-    home = eyeOnScreen();
-    if (!pointer.active) { lens.x = home.x; lens.y = home.y; }
+    home = eyeOnScreen(look.x, look.y);
+    if (!input.active) { lens.x = home.x; lens.y = home.y; }
   }
-
-  // where the bust's (viewer's) left eye lands on screen, in CSS px
-  function eyeOnScreen() {
-    const ex = -0.255, ey = 0.045, ez = 0.62;
-    const dz = view.camZ - ez;
-    const sx = ex / dz / view.tanH, sy = (ey - view.camY) / dz / view.tanH;
-    const aspect = innerWidth / innerHeight;
-    return {
-      x: (view.cx + sx / (2 * aspect)) * innerWidth,
-      y: (view.cy - sy / 2) * innerHeight,
-    };
-  }
-
-  /* ---- input ---- */
-  const pointer = { x: 0, y: 0, active: false, last: 0 };
-  let home = { x: innerWidth * 0.5, y: innerHeight * 0.45 };
-  const lens = { x: 0, y: 0 };
-  const look = { x: 0, y: 0 };
-
-  addEventListener('pointermove', (e) => {
-    if (e.clientX === 0 && e.clientY === 0 && !pointer.active) return; // synthetic event, no real position yet
-    pointer.x = e.clientX; pointer.y = e.clientY;
-    pointer.active = true; pointer.last = performance.now();
-  }, { passive: true });
-  addEventListener('pointerdown', (e) => {
-    pointer.x = e.clientX; pointer.y = e.clientY;
-    pointer.active = true; pointer.last = performance.now();
-  }, { passive: true });
-  document.documentElement.addEventListener('pointerleave', () => { pointer.active = false; });
-  addEventListener('blur', () => { pointer.active = false; });
 
   /* ---- custom portrait: config, ?portrait=, or drag & drop ---- */
   function useMedia(url, isVideo) {
     if (isVideo) {
       const v = document.createElement('video');
       v.src = url; v.muted = true; v.loop = true; v.playsInline = true; v.crossOrigin = 'anonymous';
-      v.addEventListener('loadeddata', () => {
-        source = { kind: 'video', el: v, w: v.videoWidth, h: v.videoHeight };
-      }, { once: true });
+      v.addEventListener('loadeddata', () => { source = { kind: 'video', el: v, w: v.videoWidth, h: v.videoHeight }; }, { once: true });
       v.play().catch(() => {});
     } else {
       const img = new Image();
@@ -659,96 +601,103 @@ function run() {
     }
   }
   const qp = new URLSearchParams(location.search).get('portrait');
-  const initial = qp || CONFIG.portrait;
+  const initial = qp || HERO_CONFIG.portrait;
   if (initial) useMedia(initial, /\.(mp4|webm|mov)(\?|$)/i.test(initial));
 
-  let dragDepth = 0;
-  addEventListener('dragenter', (e) => { e.preventDefault(); dragDepth++; document.body.classList.add('is-dragging'); });
-  addEventListener('dragleave', () => { if (--dragDepth <= 0) { dragDepth = 0; document.body.classList.remove('is-dragging'); } });
-  addEventListener('dragover', (e) => e.preventDefault());
-  addEventListener('drop', (e) => {
-    e.preventDefault();
-    dragDepth = 0;
-    document.body.classList.remove('is-dragging');
-    const f = e.dataTransfer.files && e.dataTransfer.files[0];
-    if (!f || !/^(image|video)\//.test(f.type)) return;
-    useMedia(URL.createObjectURL(f), f.type.startsWith('video/'));
-  });
-
-  /* ---- timeline: glitch bursts and the drifting band ---- */
   let glitch = 0, glitchUntil = 0, nextGlitch = 3.2, bandJump = 0;
-  const glitchEls = document.querySelectorAll('[data-glitch]');
-
-  /* ---- adaptive quality ---- */
-  let frames = 0, acc = 0, checked = false;
+  let frames = 0, acc = 0, checked = false, started = -1;
 
   layout();
   lens.x = home.x; lens.y = home.y;
-  let resizeT;
-  addEventListener('resize', () => { clearTimeout(resizeT); resizeT = setTimeout(layout, 80); });
 
-  const t0 = performance.now();
-  let last = t0;
+  function render(time, dt) {
+    if (started < 0) started = time;
+    const t = time - started;
+    const reduce = env.reduceMotion;
 
-  function frame(now) {
-    const t = (now - t0) / 1000;
-    const dt = Math.min(0.05, (now - last) / 1000);
-    last = now;
-
-    // quality: if we're slow after the intro, drop resolution once or twice
+    // quality: if slow after the intro, drop resolution once or twice
     if (t > 2.5 && !checked) {
       acc += dt; frames++;
       if (frames >= 90) {
-        if (acc / frames > 0.028 && dprCap > 1) {
-          dprCap = Math.max(1, dprCap - 0.5);
-          layout();
-        } else {
-          checked = true;
-        }
+        if (acc / frames > 0.028 && dprCap > 1) { dprCap = Math.max(1, dprCap - 0.5); layout(); }
+        else checked = true;
         frames = 0; acc = 0;
       }
     }
 
-    // lens follows the pointer; when idle it settles back on the eye and wanders a little
-    const idle = !pointer.active || (now - pointer.last > 9000 && !finePointer);
-    const tx = idle ? home.x + Math.sin(t * 0.7) * 6 : pointer.x;
-    const ty = idle ? home.y + Math.sin(t * 0.9 + 1.3) * 4 : pointer.y;
-    const k = 1 - Math.exp(-dt * (idle ? 2.5 : 11));
-    lens.x += (tx - lens.x) * k;
-    lens.y += (ty - lens.y) * k;
+    const nowMs = performance.now();
+    const moving = input.active && nowMs - input.last < 2500;
 
-    // head turns a little toward the cursor
-    const mx = (idle ? 0.5 : pointer.x / innerWidth) - 0.5;
-    const my = (idle ? 0.45 : pointer.y / innerHeight) - 0.45;
-    const lk = 1 - Math.exp(-dt * 2.2);
-    look.x += (mx * 0.42 + Math.sin(t * 0.4) * 0.03 - look.x) * lk;
-    look.y += (my * 0.22 + Math.sin(t * 0.31) * 0.015 - look.y) * lk;
+    // the head looks around on its own, and toward the cursor while it moves
+    if (t > idle.next) {
+      idle.next = t + 3.5 + Math.random() * 3.5;
+      const side = Math.random() < 0.5 ? -1 : 1;
+      idle.x = Math.random() < 0.3 ? 0 : side * (0.25 + Math.random() * 0.45);
+      idle.y = (Math.random() - 0.4) * 0.22;
+    }
+    const mx = (input.active ? input.x / innerWidth : 0.5) - 0.5;
+    const my = (input.active ? input.y / innerHeight : 0.45) - 0.45;
+    const tx = moving ? mx * 0.5 : (reduce ? 0 : idle.x);
+    const ty = moving ? my * 0.24 : (reduce ? 0 : idle.y);
+    const lk = 1 - Math.exp(-dt * (moving ? 2.4 : 1.1));
+    look.x += (tx + Math.sin(t * 0.4) * 0.025 - look.x) * lk;
+    look.y += (ty + Math.sin(t * 0.31) * 0.012 - look.y) * lk;
+    home = eyeOnScreen(look.x, look.y);
+
+    // lens follows the pointer; when idle it settles on the eye
+    const idleLens = !input.active || (nowMs - input.last > 9000 && !env.finePointer);
+    const lx = idleLens ? home.x + Math.sin(t * 0.7) * 5 : input.x;
+    const ly = idleLens ? home.y + Math.sin(t * 0.9 + 1.3) * 3 : input.y;
+    const k = 1 - Math.exp(-dt * (idleLens ? 4 : 11));
+    lens.x += (lx - lens.x) * k;
+    lens.y += (ly - lens.y) * k;
 
     // glitch bursts
-    if (!reduceMotion && t > nextGlitch) {
+    if (!reduce && t > nextGlitch) {
       glitchUntil = t + 0.12 + Math.random() * 0.16;
       nextGlitch = t + 3.5 + Math.random() * 5.5;
       bandJump = (Math.random() - 0.5) * 0.18;
-      glitchEls.forEach((el) => {
-        el.classList.remove('is-glitch');
-        void el.offsetWidth;
-        el.classList.add('is-glitch');
-      });
+      env.onGlitch && env.onGlitch();
     }
     glitch = t < glitchUntil ? 1 : 0;
     bandJump *= Math.exp(-dt * 3);
 
-    const intro = reduceMotion ? 1 : Math.min(1, Math.max(0, (t - 0.15) / 1.5));
-    const lensOn = reduceMotion ? 1 : smooth(Math.min(1, Math.max(0, (t - 1.2) / 0.9)));
-    const bandY = 0.305 + (reduceMotion ? 0 : 0.03 * Math.sin(t * 0.37) + 0.012 * Math.sin(t * 1.7) + bandJump);
-    const bandAmp = reduceMotion ? 0.6 : 0.85 + 0.15 * Math.sin(t * 9.0) + glitch * 0.6;
+    const intro = reduce ? 1 : Math.min(1, Math.max(0, (t - 0.15) / 1.5));
+    const lensOn = reduce ? 1 : smooth(Math.min(1, Math.max(0, (t - 1.2) / 0.9)));
+    const bandY = 0.305 + (reduce ? 0 : 0.03 * Math.sin(t * 0.37) + 0.012 * Math.sin(t * 1.7) + bandJump);
+    const bandAmp = reduce ? 0.6 : 0.85 + 0.15 * Math.sin(t * 9.0) + glitch * 0.6;
+
+    /* trail pass (ping-pong) */
+    const ptrX = input.active ? input.x : lens.x, ptrY = input.active ? input.y : lens.y;
+    if (prevPtr.x < 0) { prevPtr.x = ptrX; prevPtr.y = ptrY; }
+    const speed = Math.hypot(ptrX - prevPtr.x, ptrY - prevPtr.y) / Math.max(dt, 1e-3);
+    const power = reduce ? 0 : Math.min(1, Math.max(0, (speed - 220) / 1200)) * lensOn;
+    const src = trail[trailIdx], dst = trail[1 - trailIdx];
+    gl.bindFramebuffer(gl.FRAMEBUFFER, dst.fbo);
+    gl.viewport(0, 0, tW, tH);
+    gl.useProgram(progTrail.p);
+    let u = progTrail.u;
+    gl.activeTexture(gl.TEXTURE0);
+    gl.bindTexture(gl.TEXTURE_2D, src.tex);
+    gl.uniform1i(u.uPrev, 0);
+    gl.uniform2f(u.uSize, tW, tH);
+    gl.uniform2f(u.uScreen, tW * cellD, tH * cellD);
+    gl.uniform2f(u.uA, prevPtr.x * dpr, prevPtr.y * dpr);
+    gl.uniform2f(u.uB, ptrX * dpr, ptrY * dpr);
+    gl.uniform1f(u.uRadius, Math.max(40, Math.min(110, innerWidth * 0.055)) * dpr);
+    gl.uniform1f(u.uDecay, Math.pow(0.955, dt * 60));
+    gl.uniform1f(u.uPower, power);
+    gl.uniform1f(u.uTime, t);
+    gl.drawArrays(gl.TRIANGLES, 0, 3);
+    trailIdx = 1 - trailIdx;
+    prevPtr.x = ptrX; prevPtr.y = ptrY;
 
     /* portrait pass */
-    gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, portrait.fbo);
     gl.viewport(0, 0, pW, pH);
     if (source.kind === 'sdf') {
       gl.useProgram(progSdf.p);
-      const u = progSdf.u;
+      u = progSdf.u;
       gl.uniform2f(u.uScreen, W, H);
       gl.uniform1f(u.uTexel, texel);
       gl.uniform1f(u.uTime, t);
@@ -765,7 +714,7 @@ function run() {
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
       }
       gl.useProgram(progImg.p);
-      const u = progImg.u;
+      u = progImg.u;
       gl.activeTexture(gl.TEXTURE0);
       gl.bindTexture(gl.TEXTURE_2D, imgTex);
       gl.uniform1i(u.uImg, 0);
@@ -778,21 +727,27 @@ function run() {
     gl.drawArrays(gl.TRIANGLES, 0, 3);
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
     gl.activeTexture(gl.TEXTURE0);
-    gl.bindTexture(gl.TEXTURE_2D, pTex);
+    gl.bindTexture(gl.TEXTURE_2D, portrait.tex);
     gl.generateMipmap(gl.TEXTURE_2D);
 
     /* screen pass */
     gl.viewport(0, 0, W, H);
     gl.useProgram(progScreen.p);
-    const u = progScreen.u;
+    u = progScreen.u;
     gl.uniform1i(u.uP, 0);
+    gl.activeTexture(gl.TEXTURE1);
+    gl.bindTexture(gl.TEXTURE_2D, trail[trailIdx].tex);
+    gl.uniform1i(u.uTrail, 1);
+    gl.uniform2f(u.uTrailScale, 1 / (tW * cellD), 1 / (tH * cellD));
+    gl.uniform2f(u.uVP, view.cx * W, 0.42 * H);
+    gl.activeTexture(gl.TEXTURE0);
     gl.uniform2f(u.uRes, W, H);
     gl.uniform2f(u.uPScale, 1 / (pW * texel), 1 / (pH * texel));
     gl.uniform1f(u.uTexel, texel);
     gl.uniform1f(u.uDpr, dpr);
     gl.uniform1f(u.uTime, t);
     gl.uniform2f(u.uMouse, lens.x * dpr, lens.y * dpr);
-    gl.uniform1f(u.uLensR, Math.max(46, Math.min(130, innerWidth * CONFIG.lensRadius)) * dpr);
+    gl.uniform1f(u.uLensR, Math.max(46, Math.min(130, innerWidth * HERO_CONFIG.lensRadius)) * dpr);
     gl.uniform1f(u.uLensOn, lensOn);
     gl.uniform1f(u.uCell, cellD);
     gl.uniform1f(u.uBandY, bandY);
@@ -802,10 +757,7 @@ function run() {
     gl.uniform1f(u.uIntro, intro);
     gl.uniform2f(u.uGridRot, t * 0.006 + mx * 0.05, my * 0.035);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
-
-    requestAnimationFrame(frame);
   }
-  requestAnimationFrame(frame);
-}
 
-function smooth(x) { return x * x * (3 - 2 * x); }
+  return { canvas, render, resize: layout, useMedia, get introDone() { return started >= 0; } };
+}

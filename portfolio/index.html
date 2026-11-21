@@ -9,16 +9,19 @@
   <link rel="preload" href="fonts/silkscreen-400.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="fonts/chakra-petch-500.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="style.css">
+  <script type="importmap">{ "imports": { "three": "./vendor/three.module.min.js" } }</script>
 </head>
-<body>
+<body class="is-hero">
 
-  <!-- Everything visual (sphere grid, portrait, lens, quadtree, glitch band) is drawn here -->
-  <canvas id="stage" aria-hidden="true"></canvas>
+  <!-- 3D world (work, machine hall, city, alley, project details) -->
+  <canvas id="world" aria-hidden="true"></canvas>
+  <!-- the hero portrait; it also feeds the first card of Selected Work -->
+  <canvas id="hero" aria-hidden="true"></canvas>
 
   <header class="bar">
-    <a class="bar__name" href="./" data-scramble>YOUR NAME</a>
+    <a class="bar__name" href="#top" data-goto="0" data-scramble>YOUR NAME</a>
     <nav class="bar__nav" aria-label="Primary">
-      <a class="bar__talk" href="mailto:hello@example.com"><span data-scramble>LET'S TALK</span><i class="bar__dot" aria-hidden="true"></i></a>
+      <a class="bar__talk" href="#contact" data-goto="contact"><span data-scramble>LET'S TALK</span><i class="bar__dot" aria-hidden="true"></i></a>
       <button class="bar__menu" type="button" aria-expanded="false" aria-controls="menu">
         <span class="bar__menu-label" data-scramble>MENU</span>
         <i class="burger" aria-hidden="true"><b></b><b></b><b></b></i>
@@ -26,21 +29,82 @@
     </nav>
   </header>
 
-  <main class="hero">
-    <div class="hero__id">
-      <h1 class="hero__name" data-scramble data-glitch>YOUR NAME</h1>
-      <p class="hero__sub"><span>// PORTFOLIO</span><span data-year>©2026</span></p>
+  <h1 class="sr-only">Your Name — independent design engineer</h1>
+
+  <!-- Left label: the name in the hero, the project list in Selected Work -->
+  <div class="label" data-mode="hero">
+    <p class="label__title" data-label-title data-glitch aria-hidden="true">YOUR NAME</p>
+    <p class="label__sub"><span>// PORTFOLIO</span><span data-year>©2026</span></p>
+    <h2 class="sr-only" id="work">Selected work</h2>
+    <ol class="label__list" aria-labelledby="work"></ol>
+  </div>
+
+  <p class="tagline" data-scramble>INDEPENDENT DESIGN ENGINEER BUILDING STUNNING WEBSITES FOR AMBITIOUS STARTUPS AND WORLDWIDE BRANDS</p>
+
+  <section class="copy copy--about" id="about" aria-labelledby="about-h">
+    <span class="copy__rail" aria-hidden="true"></span>
+    <h2 id="about-h" data-scramble>ABOUT ME</h2>
+    <p class="copy__lead">I MAKE WEBSITES THAT FEEL LIKE PLACES YOU VISIT, NOT PAGES YOU SCROLL PAST.</p>
+    <p>I'M A DESIGNER WHO WRITES THE CODE, SO THE IDEA SURVIVES ALL THE WAY TO LAUNCH: TYPE, MOTION AND REAL-TIME 3D, TUNED UNTIL IT RUNS SMOOTHLY ON AN OLD PHONE.</p>
+    <a class="copy__more" href="#contact" data-goto="contact">&gt; <span data-scramble>LEARN MORE</span></a>
+  </section>
+
+  <section class="copy copy--clients" id="clients" aria-labelledby="clients-h">
+    <span class="copy__rail" aria-hidden="true"></span>
+    <h2 id="clients-h" data-scramble>WHO I WORK WITH</h2>
+    <p>STARTUPS FINDING THEIR VOICE, STUDIOS THAT NEED A SECOND PAIR OF HANDS, AND BRANDS LAUNCHING SOMETHING LOUD. EVERY PROJECT STARTS WITH WHO IT'S FOR AND WHAT IT HAS TO CHANGE.</p>
+    <a class="copy__more" href="#contact" data-goto="contact">&gt; <span data-scramble>LEARN MORE</span></a>
+  </section>
+
+  <section class="contact" id="contact" aria-labelledby="contact-h">
+    <svg class="contact__icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10.5" fill="none" stroke="currentColor" stroke-width="1.2"/><path d="M8 14.2c1 1.4 2.4 2.1 4 2.1s3-.7 4-2.1" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><circle cx="9" cy="9.8" r=".9" fill="currentColor"/><circle cx="15" cy="9.8" r=".9" fill="currentColor"/></svg>
+    <h2 id="contact-h" class="contact__title">LET'S TALK ABOUT<br>YOUR NEXT PROJECT</h2>
+    <p class="contact__sub">SEND A FEW LINES ABOUT WHAT YOU'RE BUILDING.<br>I REPLY WITHIN ONE WORKING DAY.</p>
+    <ul class="contact__links">
+      <li><a href="#" data-scramble>LINKEDIN</a></li>
+      <li><a href="#" data-scramble>X</a></li>
+      <li><a href="mailto:hello@example.com" data-scramble>MAIL</a></li>
+      <li><a href="#" data-scramble>INSTAGRAM</a></li>
+    </ul>
+  </section>
+  <footer class="foot">
+    <a href="#">PRIVACY POLICY</a>
+    <span>© YOUR NAME. ALL RIGHTS RESERVED</span>
+    <span data-year>©2026</span>
+  </footer>
+
+  <!-- Project detail -->
+  <div class="detail" id="detail" role="dialog" aria-modal="true" aria-labelledby="detail-name" hidden>
+    <button class="detail__close" type="button">&gt; <span data-scramble>CLOSE</span> &lt;</button>
+    <div class="detail__info">
+      <div class="detail__col detail__col--name">
+        <span class="detail__k">PROJECT</span>
+        <h2 class="detail__name" id="detail-name">—</h2>
+      </div>
+      <div class="detail__col detail__col--info">
+        <span class="detail__k">INFO</span>
+        <p class="detail__text"></p>
+      </div>
+      <div class="detail__col">
+        <span class="detail__k">ROLE</span>
+        <p class="detail__role"></p>
+      </div>
+      <div class="detail__thumbs" role="tablist" aria-label="Screens"></div>
     </div>
-    <p class="hero__tag" data-scramble>INDEPENDENT DESIGN ENGINEER BUILDING STUNNING WEBSITES FOR AMBITIOUS STARTUPS AND WORLDWIDE BRANDS</p>
-  </main>
+    <div class="detail__nav">
+      <button type="button" class="detail__prev" aria-label="Previous project">&lt; PREV</button>
+      <span class="detail__count">01 / 04</span>
+      <button type="button" class="detail__next" aria-label="Next project">NEXT &gt;</button>
+    </div>
+  </div>
 
   <!-- Full-screen menu -->
   <div class="menu" id="menu" hidden>
     <nav class="menu__list" aria-label="Site">
-      <a href="#work"><span class="menu__n">01</span><span class="menu__t" data-scramble>WORK</span></a>
-      <a href="#about"><span class="menu__n">02</span><span class="menu__t" data-scramble>ABOUT</span></a>
-      <a href="#services"><span class="menu__n">03</span><span class="menu__t" data-scramble>SERVICES</span></a>
-      <a href="mailto:hello@example.com"><span class="menu__n">04</span><span class="menu__t" data-scramble>CONTACT</span></a>
+      <a href="#work" data-goto="work"><span class="menu__n">01</span><span class="menu__t" data-scramble>WORK</span></a>
+      <a href="#about" data-goto="about"><span class="menu__n">02</span><span class="menu__t" data-scramble>ABOUT</span></a>
+      <a href="#clients" data-goto="clients"><span class="menu__n">03</span><span class="menu__t" data-scramble>CLIENTS</span></a>
+      <a href="#contact" data-goto="contact"><span class="menu__n">04</span><span class="menu__t" data-scramble>CONTACT</span></a>
     </nav>
     <div class="menu__foot">
       <span>// AVAILABLE FOR NEW PROJECTS</span>
@@ -72,6 +136,10 @@
           <rect x="21" y="27" width="7" height="8" rx="3.5"/>
           <rect x="36" y="27" width="7" height="8" rx="3.5"/>
         </g>
+        <g class="bot__prompt" fill="none" stroke="#d7e2ff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 26.5l5 4.5-5 4.5"/>
+          <path class="bot__caret" d="M30 36h10"/>
+        </g>
         <rect x="20" y="50" width="24" height="15" rx="7" fill="url(#bot-body)"/>
         <rect x="28" y="55" width="8" height="3" rx="1.5" fill="#dfe6ff" opacity=".85"/>
       </g>
@@ -81,12 +149,15 @@
   </button>
   <div class="bubble" id="bot-bubble" role="status" hidden>
     <p data-scramble>HEY. GOT A PROJECT IN MIND?</p>
-    <a href="mailto:hello@example.com">LET'S TALK →</a>
+    <a href="#contact" data-goto="contact">LET'S TALK →</a>
   </div>
 
   <div class="cursor" aria-hidden="true"></div>
   <p class="drop-hint" aria-hidden="true">DROP A PHOTO OR VIDEO TO USE IT AS THE PORTRAIT</p>
 
-  <script src="main.js" type="module"></script>
+  <!-- gives the page its scroll length -->
+  <div class="scroll-space" id="top" aria-hidden="true"></div>
+
+  <script src="js/main.js" type="module"></script>
 </body>
 </html>
