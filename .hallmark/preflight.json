@@ -1,0 +1,13 @@
+{
+  "scanned": "2026-11-22",
+  "findings": {
+    "fonts": "Chakra Petch 500 + Silkscreen 400, self-hosted (portfolio/style.css L1-14)",
+    "palette": "CSS custom properties at :root: black ground, near-white ink, green signal (portfolio/style.css L16-27)",
+    "motion": "hand-written WebGL2 hero + Three.js r160 scenes, scroll-driven, reduced-motion handled (portfolio/js/)",
+    "spacing": "--pad clamp scale (portfolio/style.css L22)",
+    "framework": "none: static HTML + ES modules in portfolio/, no package.json"
+  },
+  "reference": "https://www.fojcikdominik.com/ (unreachable from this environment; another person's site: mood reference only, not a brand to theme or copy)",
+  "preserve": ["Avi's facts and copy", "headshot cut-out", "the dark 3D world: portrait, grid, CRT, city canyon, machine hall, alley"],
+  "introduce": ["shape", "direction", "the Floor", "hero discipline", "sweep"]
+}
