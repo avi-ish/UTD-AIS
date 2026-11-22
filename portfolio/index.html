@@ -1,190 +1,189 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" class="no-js">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>Avi Pandya — Finance × Computer Information Systems</title>
-  <meta name="description" content="Avi Pandya: Finance and CIS student at The University of Texas at Dallas, focused on financial analysis, M&amp;A, valuation, and technology-driven strategy.">
-  <meta name="theme-color" content="#000000">
-  <link rel="preload" href="fonts/silkscreen-400.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="preload" href="fonts/chakra-petch-500.woff2" as="font" type="font/woff2" crossorigin>
+  <title>Avi Pandya, finance and information systems</title>
+  <meta name="description" content="Avi Pandya studies finance and information systems at UT Dallas and works as an analyst intern at Inogen.">
+  <meta name="theme-color" content="#0b0f17">
+  <script>document.documentElement.classList.replace('no-js', 'js');</script>
+  <link rel="preload" href="fonts/spline-sans-mono-400.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="fonts/spline-sans-mono-600.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="style.css">
-  <script type="importmap">{ "imports": { "three": "./vendor/three.module.min.js", "three/addons/": "./vendor/addons/" } }</script>
 </head>
-<body class="is-hero">
+<body>
 
-  <a class="skip" href="#about" data-goto="about">Skip to content</a>
+  <a class="skip" href="#credentials">Skip to the resume</a>
 
-  <!-- 3D journey: credentials, city, machine hall, alley -->
+  <!-- the backdrop: the white sheet, the city drop-down video, the workshop, the alley -->
   <canvas id="world" aria-hidden="true"></canvas>
-  <!-- the hero portrait; it also feeds the first floating panel -->
-  <canvas id="hero" role="img" aria-label="Dot-matrix portrait of Avi Pandya, smiling, wearing glasses, a dark suit and tie, in front of a glowing wireframe grid"></canvas>
-  <img class="hero-fallback" src="assets/portrait.webp" alt="Portrait of Avi Pandya, smiling, wearing glasses, a dark suit and tie" width="640" height="800">
+  <!-- the certification cards, floating over the white sheet -->
+  <div class="cards" aria-hidden="true"></div>
+  <!-- the dot-matrix portrait; it also becomes the first floating card -->
+  <canvas id="hero" role="img" aria-label="Dot-matrix portrait of Avi Pandya, smiling, in glasses, a dark suit and tie, in front of a glowing wireframe grid"></canvas>
+  <img class="hero-fallback" src="assets/portrait.webp" alt="Avi Pandya, smiling, in glasses, a dark suit and tie" width="640" height="800">
 
-  <header class="bar">
-    <a class="bar__name" href="#top" data-goto="top" data-scramble>AVI PANDYA</a>
-    <nav class="bar__nav" aria-label="Primary">
-      <a class="bar__talk" href="#connect" data-goto="connect"><span data-scramble>LET'S CONNECT</span><i class="bar__dot" aria-hidden="true"></i></a>
-      <button class="bar__menu" type="button" aria-expanded="false" aria-controls="menu">
-        <span class="bar__menu-label" data-scramble>MENU</span>
-        <i class="burger" aria-hidden="true"><b></b><b></b><b></b></i>
-      </button>
-    </nav>
+  <header class="nav">
+    <a class="nav__mark" href="#top" data-goto="top" data-scramble>Avi Pandya</a>
+    <div class="nav__end">
+      <button class="nav__link nav__motion" type="button" aria-pressed="false">Pause motion</button>
+      <a class="nav__link nav__mail" href="mailto:avi.pandya@utdallas.edu" data-scramble>Email Avi</a>
+      <button class="nav__link nav__menu" type="button" aria-expanded="false" aria-controls="menu"><span class="nav__menu-label">Menu</span></button>
+    </div>
   </header>
 
-  <main id="top">
-    <h1 class="sr-only">Avi Pandya — Finance × Computer Information Systems</h1>
-
-    <!-- Left label: the name in the hero, the credential list further down -->
-    <div class="label" data-mode="hero">
-      <p class="label__title" data-label-title data-glitch aria-hidden="true">AVI PANDYA</p>
-      <p class="label__sub">FINANCE × COMPUTER INFORMATION SYSTEMS</p>
-      <h2 class="sr-only" id="credentials">Selected credentials</h2>
-      <ol class="label__list" aria-labelledby="credentials"></ol>
-    </div>
-
-    <div class="intro">
-      <p class="intro__lead" data-scramble>Finance and CIS student at The University of Texas at Dallas, focused on financial analysis, M&amp;A, valuation, and technology-driven strategy.</p>
-      <p class="intro__now">Currently contributing to Financial Integrations at Inogen.</p>
-      <p class="intro__loc"><i aria-hidden="true"></i>Frisco, Texas</p>
-    </div>
-
-    <section class="copy copy--about" id="about" aria-labelledby="about-h">
-      <span class="copy__rail" aria-hidden="true"></span>
-      <h2 id="about-h" data-scramble>ABOUT / FOCUS</h2>
-      <p class="copy__lead">I’m pursuing dual bachelor’s degrees in Finance and Computer Information Systems at The University of Texas at Dallas.</p>
-      <p>I’m interested in applying data-driven insights to corporate finance and technology-driven strategies, with a focus on valuation and market analysis.</p>
-      <h3 class="copy__k">Top skills</h3>
-      <ul class="skills">
-        <li>Mergers &amp; Acquisitions</li>
-        <li>Microsoft Excel</li>
-        <li>Argus Modeling</li>
-        <li>Financial Analysis</li>
-        <li>Artificial Intelligence</li>
-      </ul>
-      <a class="copy__more" href="#experience" data-goto="experience">&gt; <span data-scramble>LEARN MORE</span></a>
+  <main>
+    <section class="hero" id="top" data-s="0 0.6" aria-labelledby="hero-h">
+      <div class="container hero__inner">
+        <h1 class="hero__name" id="hero-h" data-glitch>Avi Pandya</h1>
+        <p class="hero__line">Finance and CIS student at UT Dallas, focused on valuation and M&amp;A.</p>
+        <div class="hero__actions">
+          <a class="btn" href="mailto:avi.pandya@utdallas.edu">Email Avi</a>
+          <a class="btn btn--quiet" href="https://www.linkedin.com/in/avipandya" target="_blank" rel="noopener">LinkedIn profile</a>
+        </div>
+      </div>
     </section>
 
-    <section class="tl" id="experience" aria-labelledby="exp-h">
-      <h2 id="exp-h" class="tl__title" data-scramble>EXPERIENCE</h2>
-      <ol class="tl__list">
-        <li class="tl__item">
-          <h3 class="tl__org">Association for Information Systems at UT Dallas</h3>
-          <ul class="tl__roles">
-            <li><span class="tl__role">Vice President</span><span class="tl__meta"><time datetime="2026-05">May 2026</time> – Present</span></li>
-            <li><span class="tl__role">Outreach Officer</span><span class="tl__meta"><time datetime="2026-02">Feb 2026</time> – Present</span></li>
-          </ul>
-        </li>
-        <li class="tl__item">
-          <h3 class="tl__org">Inogen</h3>
-          <ul class="tl__roles">
-            <li><span class="tl__role">Summer Intern</span><span class="tl__meta"><time datetime="2026-05">May</time> – <time datetime="2026-08">Aug 2026</time> · Dallas</span></li>
-            <li><span class="tl__role">Spring Intern</span><span class="tl__meta"><time datetime="2026-01">Jan</time> – <time datetime="2026-04">Apr 2026</time> · Plano · On-site</span></li>
-          </ul>
-          <p class="tl__note">Contributing to Financial Integrations.</p>
-        </li>
-        <li class="tl__item">
-          <h3 class="tl__org">Dutch Bros Coffee</h3>
-          <ul class="tl__roles">
-            <li><span class="tl__role">Shift Supervisor</span><span class="tl__meta"><time datetime="2025-05">May</time> – <time datetime="2025-09">Sep 2025</time></span></li>
-          </ul>
-        </li>
-        <li class="tl__item">
-          <h3 class="tl__org">Eagle Point Solution</h3>
-          <ul class="tl__roles">
-            <li><span class="tl__role">Financial Data Analyst</span><span class="tl__meta"><time datetime="2025-05">May</time> – <time datetime="2025-08">Aug 2025</time> · Remote</span></li>
-          </ul>
-        </li>
-        <li class="tl__item">
-          <h3 class="tl__org">Andy’s Frozen Custard</h3>
-          <ul class="tl__roles">
-            <li><span class="tl__role">Manager</span><span class="tl__meta"><time datetime="2024-08">Aug 2024</time> – <time datetime="2025-05">May 2025</time></span></li>
-          </ul>
-          <ul class="tl__points">
-            <li>Managed more than $2 million in store supplies and assets, reducing asset loss by 5% over two months.</li>
-            <li>Led daily operations and improved team productivity by 10%.</li>
-            <li>Reduced labor costs by 8% through scheduling.</li>
-            <li>Trained and guided a team of 20+ staff.</li>
-            <li>Achieved 100% customer satisfaction ratings during peak hours.</li>
-          </ul>
-        </li>
-      </ol>
+    <section class="certs" id="credentials" data-s="0.6 6.0" aria-labelledby="certs-h">
+      <div class="container certs__track">
+        <div class="certs__sheet">
+          <h2 class="certs__h" id="certs-h">Nineteen certifications, eight issuers</h2>
+          <ol class="certs__list">
+            <li><details><summary><span class="certs__issuer">FINRA</span><span class="certs__count">1</span></summary><p>Securities Industry Essentials (SIE) exam: regulations, products and trading practices, from equity and debt to market structure.</p></details></li>
+            <li><details><summary><span class="certs__issuer">Bloomberg</span><span class="certs__count">4</span></summary><p>Finance Fundamentals, Market Concepts, ESG and Spreadsheet Analysis.</p></details></li>
+            <li><details><summary><span class="certs__issuer">LSEG</span><span class="certs__count">4</span></summary><p>Finance Essentials, Workspace, World-Check One and Datastream.</p></details></li>
+            <li><details><summary><span class="certs__issuer">S&amp;P Global Capital IQ</span><span class="certs__count">6</span></summary><p>Capital IQ Pro 101 and 201, Banking 101, Energy 101, Insurance 101, Metals and Mining 101.</p></details></li>
+            <li><details><summary><span class="certs__issuer">J.P. Morgan Chase &amp; Co.</span><span class="certs__count">1</span></summary><p>Investment banking: chose an acquisition target, built a DCF valuation with competitive and operational risks, and wrote a two-page client briefing.</p></details></li>
+            <li><details><summary><span class="certs__issuer">Citi</span><span class="certs__count">1</span></summary><p>Wealth management: built a diversified client portfolio through asset allocation, security selection and tax-efficient strategy.</p></details></li>
+            <li><details><summary><span class="certs__issuer">Bank of America</span><span class="certs__count">1</span></summary><p>Investment banking: built integrated DCF and comparable company models whose analysis guided a potential $25M acquisition.</p></details></li>
+            <li><details><summary><span class="certs__issuer">FactSet</span><span class="certs__count">1</span></summary><p>FactSet Essentials: Core Products.</p></details></li>
+          </ol>
+        </div>
+      </div>
     </section>
 
-    <section class="contact" id="connect" aria-labelledby="connect-h">
-      <p class="contact__kicker">// FINANCE × COMPUTER INFORMATION SYSTEMS</p>
-      <h2 id="connect-h" class="contact__title" data-scramble>LET’S CONNECT</h2>
-      <p class="contact__sub">Frisco, Texas</p>
-      <a class="contact__cta" href="https://www.linkedin.com/in/avipandya" target="_blank" rel="noopener">
-        <span data-scramble>CONNECT ON LINKEDIN</span> <span aria-hidden="true">↗</span><span class="sr-only"> (opens in a new tab)</span>
-      </a>
+    <section class="about" id="about" data-s="6.0 8.3" aria-labelledby="about-h">
+      <div class="container about__grid">
+        <div class="panel about__school">
+          <h2 class="section-h" id="about-h">UT Dallas, class of 2028</h2>
+          <p>Bachelor of Science in Finance and Computer Information Systems and Technology, with a concentration in Investments. GPA 3.3.</p>
+          <p>I’m interested in applying data-driven insights to corporate finance and technology strategy, with a focus on valuation and market analysis.</p>
+        </div>
+        <div class="panel about__tools">
+          <h3 class="panel__h">Over 800 hours in the tools</h3>
+          <ul class="tools">
+            <li>Excel</li><li>Python</li><li>SQL</li><li>Snowflake</li><li>Power BI</li><li>Tableau</li><li>NetSuite</li><li>Oracle EBS</li><li>Boomi</li><li>Word</li>
+          </ul>
+          <a class="text-link" href="#experience" data-goto="experience">See where I’ve used them</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="work" id="experience" data-s="8.3 11.6" aria-labelledby="exp-h">
+      <div class="container">
+        <h2 class="section-h work__h" id="exp-h">Three roles since March 2025</h2>
+        <article class="panel role tl__item">
+          <header class="role__head">
+            <h3 class="role__org">Inogen</h3>
+            <p class="role__title">Analyst Intern</p>
+            <p class="role__meta">Plano, Texas<br><time datetime="2026-01">January 2026</time> to now</p>
+          </header>
+          <ul class="role__points">
+            <li>Built financial models and reporting in Oracle EBS to analyze AI token spend; the cost drivers it found informed capital allocation.</li>
+            <li>Replaced static workbooks with forecasting dashboards in Snowflake and Excel that track warranty costs against fiscal performance.</li>
+            <li>Built a cost mapping dashboard with Finance and Operations that exposed overlapping spend across departments.</li>
+          </ul>
+        </article>
+        <article class="panel role tl__item">
+          <header class="role__head">
+            <h3 class="role__org">Eagle Point Solution</h3>
+            <p class="role__title">Financial Analyst</p>
+            <p class="role__meta">Frisco, Texas<br><time datetime="2025-05">May</time> to <time datetime="2025-08">August 2025</time></p>
+          </header>
+          <ul class="role__points">
+            <li>Engineered NetSuite integrations with onboarding platforms that cut system onboarding time by 25%.</li>
+            <li>Deployed automated Boomi Flow workflows for NetSuite data sync and approvals across the transaction lifecycle.</li>
+            <li>Reconciled integration output with SQL and Excel, then built dashboards for leadership.</li>
+          </ul>
+        </article>
+        <article class="panel role tl__item">
+          <header class="role__head">
+            <h3 class="role__org">Dutch Bros</h3>
+            <p class="role__title">Shift Manager</p>
+            <p class="role__meta">Frisco, Texas<br><time datetime="2025-03">March</time> to <time datetime="2025-08">August 2025</time></p>
+          </header>
+          <ul class="role__points">
+            <li>Supervised shift operations and staff during high-volume service periods.</li>
+            <li>Trained new team members on product standards, the point-of-sale system and customer service.</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <section class="work work--more" id="involvement" data-s="11.6 13.3" aria-labelledby="inv-h">
+      <div class="container">
+        <article class="panel role tl__item">
+          <header class="role__head">
+            <h2 class="role__org" id="inv-h">Leading AIS at UT Dallas</h2>
+            <p class="role__title">Vice President, Association of Information Systems</p>
+            <p class="role__meta">Richardson, Texas<br><time datetime="2026-01">January 2026</time> to now</p>
+          </header>
+          <ul class="role__points">
+            <li>Lead outreach, using a network of 10,000+ alumni to set up mixers with Goldman Sachs employees and social poker nights.</li>
+            <li>Tripled event attendance with event registration, rewards for regulars, partnerships with Red Bull and DoorDash, and joint events with other clubs.</li>
+          </ul>
+        </article>
+        <article class="panel role tl__item">
+          <header class="role__head">
+            <h3 class="role__org">Personal investing and equity trading</h3>
+            <p class="role__meta">Frisco, Texas<br><time datetime="2021-02">February 2021</time> to now</p>
+          </header>
+          <ul class="role__points">
+            <li>Generated over 11% month over month portfolio growth, surpassing the annual performance of the S&amp;P 500 and Nasdaq.</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <section class="contact" id="connect" data-s="13.3 14.3" aria-labelledby="connect-h">
+      <div class="container contact__grid">
+        <div class="panel contact__panel">
+          <h2 class="contact__h" id="connect-h">Let’s connect</h2>
+          <p class="contact__line">Email is the quickest way to reach me.</p>
+          <div class="hero__actions">
+            <a class="btn" href="mailto:avi.pandya@utdallas.edu">Email Avi</a>
+            <a class="btn btn--quiet" href="https://www.linkedin.com/in/avipandya" target="_blank" rel="noopener">LinkedIn profile</a>
+          </div>
+          <dl class="contact__facts">
+            <div><dt>Email</dt><dd><a href="mailto:avi.pandya@utdallas.edu">avi.pandya@utdallas.edu</a></dd></div>
+            <div><dt>Based in</dt><dd>Frisco, Texas</dd></div>
+            <div><dt>Studying</dt><dd>UT Dallas, graduating May 2028</dd></div>
+          </dl>
+        </div>
+        <div class="contact__stage" id="spline-slot" aria-hidden="true"></div>
+      </div>
     </section>
   </main>
 
   <footer class="foot">
-    <span>FRISCO, TEXAS</span>
-    <span>© <span data-year>2026</span> AVI PANDYA</span>
-    <a href="#top" data-goto="top">BACK TO TOP ↑</a>
+    <div class="container foot__grid">
+      <p class="foot__mark">Avi Pandya</p>
+      <p class="foot__links"><a href="mailto:avi.pandya@utdallas.edu">avi.pandya@utdallas.edu</a><a href="https://www.linkedin.com/in/avipandya" target="_blank" rel="noopener">LinkedIn</a></p>
+      <p class="foot__note">Frisco, Texas. 3D backdrops and textures from Poly Haven, public domain. © <span data-year>2026</span></p>
+    </div>
   </footer>
 
   <!-- Full-screen menu -->
   <div class="menu" id="menu" hidden>
-    <nav class="menu__list" aria-label="Sections">
-      <a href="#credentials" data-goto="credentials"><span class="menu__n">01</span><span class="menu__t" data-scramble>CREDENTIALS</span></a>
-      <a href="#about" data-goto="about"><span class="menu__n">02</span><span class="menu__t" data-scramble>ABOUT</span></a>
-      <a href="#experience" data-goto="experience"><span class="menu__n">03</span><span class="menu__t" data-scramble>EXPERIENCE</span></a>
-      <a href="#connect" data-goto="connect"><span class="menu__n">04</span><span class="menu__t" data-scramble>CONNECT</span></a>
+    <nav class="container menu__list" aria-label="Sections">
+      <a href="#credentials" data-goto="credentials"><span class="menu__n">01</span><span data-scramble>Certifications</span></a>
+      <a href="#about" data-goto="about"><span class="menu__n">02</span><span data-scramble>Education</span></a>
+      <a href="#experience" data-goto="experience"><span class="menu__n">03</span><span data-scramble>Experience</span></a>
+      <a href="#connect" data-goto="connect"><span class="menu__n">04</span><span data-scramble>Contact</span></a>
     </nav>
-    <div class="menu__foot">
-      <span>// FRISCO, TEXAS</span>
-      <span class="menu__social"><a href="https://www.linkedin.com/in/avipandya" target="_blank" rel="noopener" data-scramble>LINKEDIN</a></span>
-    </div>
-  </div>
-
-  <!-- Little assistant in the corner -->
-  <button class="bot" type="button" aria-label="Say hi" aria-expanded="false" aria-controls="bot-bubble">
-    <svg viewBox="0 0 64 76" aria-hidden="true">
-      <defs>
-        <linearGradient id="bot-head" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stop-color="#9db0ff"/>
-          <stop offset="1" stop-color="#5f74f2"/>
-        </linearGradient>
-        <linearGradient id="bot-body" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stop-color="#8296ff"/>
-          <stop offset="1" stop-color="#5368e6"/>
-        </linearGradient>
-      </defs>
-      <g class="bot__float">
-        <line x1="32" y1="5" x2="32" y2="14" stroke="#7e92ff" stroke-width="3" stroke-linecap="round"/>
-        <circle class="bot__beacon" cx="32" cy="5" r="3.6" fill="#cdd7ff"/>
-        <rect x="2" y="25" width="7" height="13" rx="3.5" fill="#5366e0"/>
-        <rect x="55" y="25" width="7" height="13" rx="3.5" fill="#5366e0"/>
-        <rect x="7" y="13" width="50" height="37" rx="15" fill="url(#bot-head)"/>
-        <rect x="13" y="20" width="38" height="22" rx="10" fill="#151b3d"/>
-        <g class="bot__eyes" fill="#d7e2ff">
-          <rect x="21" y="27" width="7" height="8" rx="3.5"/>
-          <rect x="36" y="27" width="7" height="8" rx="3.5"/>
-        </g>
-        <g class="bot__prompt" fill="none" stroke="#d7e2ff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M20 26.5l5 4.5-5 4.5"/>
-          <path class="bot__caret" d="M30 36h10"/>
-        </g>
-        <rect x="20" y="50" width="24" height="15" rx="7" fill="url(#bot-body)"/>
-        <rect x="28" y="55" width="8" height="3" rx="1.5" fill="#dfe6ff" opacity=".85"/>
-      </g>
-      <rect x="21" y="66" width="8" height="8" rx="4" fill="#4b5ed6"/>
-      <rect x="35" y="66" width="8" height="8" rx="4" fill="#4b5ed6"/>
-    </svg>
-  </button>
-  <div class="bubble" id="bot-bubble" role="status" hidden>
-    <p data-scramble>HEY, I'M AVI.</p>
-    <a href="#connect" data-goto="connect">LET'S CONNECT →</a>
   </div>
 
   <div class="cursor" aria-hidden="true"></div>
-
-  <!-- gives the page its scroll length -->
-  <div class="scroll-space" aria-hidden="true"></div>
 
   <script src="js/main.js" type="module"></script>
 </body>

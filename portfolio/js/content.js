@@ -1,14 +1,13 @@
-// Credentials shown on the floating cards. Titles are exactly as provided;
-// `motif` and `accent` only choose the generated artwork for each card.
+// Certifications, grouped by issuer as on Avi's resume. The names are his;
+// `motif` and `accent` only pick the generated artwork for each card.
 
 export const CREDENTIALS = [
-  { title: 'FactSet Essentials: Core Products', motif: 'candles', accent: '#4c8dff' },
-  { title: 'Capital IQ Pro 101 and Capital IQ Pro 201', short: 'Capital IQ Pro 101 / 201', motif: 'stack', accent: '#ff6a5c' },
-  { title: 'LSEG Workspace', motif: 'globe', accent: '#21d0b2' },
-  { title: 'LSEG Datastream', motif: 'series', accent: '#8b7dff' },
-  { title: 'LSEG Finance Essentials', motif: 'ledger', accent: '#ffb54d' },
-  { title: 'LSEG World-Check One: Case Management Screener Pathway', motif: 'scan', accent: '#56d4ff' },
-  { title: 'Energy 101', motif: 'wave', accent: '#ffd84a' },
-  { title: 'Insurance 101', motif: 'shield', accent: '#62e294' },
-  { title: 'Metals & Mining 101', motif: 'facets', accent: '#d8c3a5' },
+  { issuer: 'FINRA', items: ['Securities Industry Essentials (SIE) exam'], motif: 'shield', accent: '#ff9b52' },
+  { issuer: 'Bloomberg', items: ['Finance Fundamentals', 'Market Concepts', 'ESG', 'Spreadsheet Analysis'], motif: 'candles', accent: '#ffb547' },
+  { issuer: 'LSEG', items: ['Finance Essentials', 'Workspace', 'World-Check One', 'Datastream'], motif: 'globe', accent: '#21d0b2' },
+  { issuer: 'S&P Global Capital IQ', items: ['Capital IQ Pro 101', 'Capital IQ Pro 201', 'Banking 101', 'Energy 101', 'Insurance 101', 'Metals & Mining 101'], motif: 'stack', accent: '#ff6a5c' },
+  { issuer: 'J.P. Morgan Chase & Co.', items: ['Investment Banking'], motif: 'series', accent: '#9aa7ff' },
+  { issuer: 'Citi', items: ['Wealth Management'], motif: 'facets', accent: '#56d4ff' },
+  { issuer: 'Bank of America', items: ['Investment Banking'], motif: 'ledger', accent: '#ff7a7a' },
+  { issuer: 'FactSet', items: ['FactSet Essentials: Core Products'], motif: 'scan', accent: '#62e294' },
 ];

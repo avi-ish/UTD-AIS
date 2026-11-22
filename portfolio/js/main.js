@@ -1,16 +1,16 @@
 import { createHero } from './hero.js';
 import { CREDENTIALS } from './content.js';
-import { makeCredentialCard } from './art.js';
-import { TL, SPOTS, CARD_STEP } from './timeline.js';
-import { reduceMotion, finePointer, scramble, setupHoverScramble, setupCursor, setupMenu, setupBot } from './ui.js';
+import { makeCredentialCard, glyphFloor } from './art.js';
+import { createMedia } from './media.js';
+import { createCards } from './cards.js';
+import { TL, CARD_STEP, measureSections, timelineAt } from './timeline.js';
+import { CONFIG } from './config.js';
+import { reduceMotion, finePointer, scramble, setupHoverScramble, setupCursor, setupMenu } from './ui.js';
 
 const $ = (sel) => document.querySelector(sel);
-const clamp01 = (x) => Math.max(0, Math.min(1, x));
-const ease = (x) => x * x * (3 - 2 * x);
-const pad = (n) => String(n).padStart(2, '0');
+const root = document.documentElement;
 
 document.querySelectorAll('[data-year]').forEach((el) => { el.textContent = String(new Date().getFullYear()); });
-$('.scroll-space').style.height = `${(TL.end + 1) * 100}vh`;
 
 /* ---- shared pointer ---- */
 const input = { x: innerWidth / 2, y: innerHeight / 2, active: false, last: 0, inside: false };
@@ -21,223 +21,159 @@ const setPtr = (e) => {
 };
 addEventListener('pointermove', setPtr, { passive: true });
 addEventListener('pointerdown', setPtr, { passive: true });
-document.documentElement.addEventListener('pointerleave', () => { input.active = false; input.inside = false; });
+root.addEventListener('pointerleave', () => { input.active = false; input.inside = false; });
 addEventListener('blur', () => { input.active = false; input.inside = false; });
 
-/* ---- DOM ---- */
-const label = $('.label');
-const labelTitle = $('[data-label-title]');
-const list = $('.label__list');
-const intro = $('.intro');
-const about = $('.copy--about');
-const exp = $('.tl');
-const expItems = [...exp.querySelectorAll('.tl__item')];
-const contact = $('.contact');
-const foot = $('.foot');
-const heroCanvas = $('#hero');
-const worldCanvas = $('#world');
+/* ---- motion switch: pauses every animation; scrolling still moves the scenes ---- */
+let still = reduceMotion;
+const motionBtn = $('.nav__motion');
+function setStill(v) {
+  still = v;
+  root.classList.toggle('is-still', v);
+  motionBtn.setAttribute('aria-pressed', String(v));
+  motionBtn.textContent = v ? 'Play motion' : 'Pause motion';
+}
+setStill(still);
+motionBtn.addEventListener('click', () => setStill(!still));
 
 /* ---- hero ---- */
+const heroCanvas = $('#hero');
+const heroName = $('.hero__name');
+const heroInner = $('.hero__inner');
 const hero = createHero(heroCanvas, input, {
   reduceMotion,
   finePointer,
   onGlitch() {
-    if (label.dataset.mode !== 'hero') return;
-    labelTitle.classList.remove('is-glitch');
-    void labelTitle.offsetWidth;
-    labelTitle.classList.add('is-glitch');
+    if (still) return;
+    heroName.classList.remove('is-glitch');
+    void heroName.offsetWidth;
+    heroName.classList.add('is-glitch');
   },
 });
-if (!hero) document.documentElement.classList.add('no-gl');
-
-/* ---- credential list ---- */
-CREDENTIALS.forEach((c, i) => {
-  const li = document.createElement('li');
-  const b = document.createElement('button');
-  b.type = 'button';
-  b.innerHTML = `<span class="label__n">[${pad(i + 1)}]</span> <span>${c.title.toUpperCase()}</span>`;
-  b.addEventListener('click', () => goTo(CARD_STEP * (i + 1)));
-  li.append(b);
-  list.append(li);
-});
+if (!hero) root.classList.add('no-gl');
 
 setupHoverScramble();
 setupCursor();
-const bot = setupBot();
 const menu = setupMenu({ onNavigate: goto });
+setTimeout(() => scramble(heroName, 900), 250);
 
-// intro type
-[...document.querySelectorAll('.bar [data-scramble]'), labelTitle, $('.intro__lead')].forEach((el, i) => {
-  setTimeout(() => scramble(el, el.classList.contains('intro__lead') ? 1200 : 800), 250 + i * 90);
-});
+/* ---- scroll timeline, measured from the sections themselves ---- */
+let sections = measureSections();
+const remeasure = () => { sections = measureSections(); };
+addEventListener('load', remeasure);
+document.fonts && document.fonts.ready.then(remeasure);
 
-/* ---- 3D world, loaded after the fonts since the cards draw text ---- */
-let world = null;
-(async () => {
-  try {
-    await Promise.race([
-      Promise.all([document.fonts.load('16px Silkscreen'), document.fonts.load('500 16px "Chakra Petch"')]),
-      new Promise((r) => setTimeout(r, 2500)),
-    ]);
-    const cards = CREDENTIALS.map((c, i) => makeCredentialCard(c, i, CREDENTIALS.length));
-    const mod = await import('./world.js');
-    world = mod.createWorld(worldCanvas, { heroCanvas, cards });
-  } catch (err) {
-    console.error(err);
+function yForTimeline(s) {
+  for (const sec of sections) {
+    if (s >= sec.s0 && s <= sec.s1) return sec.top + ((s - sec.s0) / Math.max(1e-6, sec.s1 - sec.s0)) * sec.height;
   }
-  if (!world) document.documentElement.classList.add('no-world');
-})();
-
-/* ---- navigation ---- */
-function goTo(s) { scrollTo({ top: s * innerHeight, behavior: reduceMotion ? 'auto' : 'smooth' }); }
+  return 0;
+}
+function goTo(y) { scrollTo({ top: y, behavior: reduceMotion ? 'auto' : 'smooth' }); }
 function goto(where) {
-  if (where === 'credentials') return goTo(CARD_STEP);
-  goTo(SPOTS[where] ?? 0);
+  const target = where === 'top' ? $('#top') : document.getElementById(where);
+  if (!target) return;
+  const y = target.getBoundingClientRect().top + scrollY - (where === 'top' ? 0 : 0);
+  goTo(where === 'credentials' ? yForTimeline(CARD_STEP) : y);
 }
 document.addEventListener('click', (e) => {
   const a = e.target.closest('[data-goto]');
   if (!a || a.closest('.menu')) return;
   e.preventDefault();
-  if (a.closest('.bubble')) bot.close();
   goto(a.dataset.goto);
 });
-addEventListener('keydown', (e) => {
-  if (e.key !== 'Escape') return;
-  if (menu.open) menu.close();
-  if (bot.open) bot.close();
-});
+addEventListener('keydown', (e) => { if (e.key === 'Escape' && menu.open) menu.close(); });
 
-// clicking a floating card centres it
-worldCanvas.addEventListener('click', () => {
-  if (!world) return;
-  requestAnimationFrame(() => requestAnimationFrame(() => {
-    const i = world.hoveredCard;
-    if (i >= 0) goTo(CARD_STEP * (i + 1));
-  }));
-});
-
-/* ---- scroll-driven overlays ---- */
-let mode = 'hero', active = -1, aboutOn = false, expOn = false, contactOn = false, introHidden = false;
-
-function setMode(m) {
-  if (m === mode) return;
-  mode = m;
-  label.classList.toggle('is-hidden', m === 'none');
-  if (m === 'none') return;
-  label.dataset.mode = m;
-  scramble(labelTitle, 650, m === 'hero' ? 'AVI PANDYA' : 'SELECTED CREDENTIALS');
-  if (m === 'work') list.querySelectorAll('button span:last-child').forEach((b, i) => setTimeout(() => scramble(b, 500), i * 45));
-}
-
-function reveal(el, on, was) {
-  if (on !== was) {
-    el.classList.toggle('is-on', on);
-    if (on) el.querySelectorAll('[data-scramble]').forEach((x, i) => setTimeout(() => scramble(x, 600), i * 120));
-  }
-  return on;
-}
-
-// short blocks: enter at the bottom-left, rise to the top, then leave
-function placeCopy(el, s, s0, s1, was) {
-  const p = (s - s0) / (s1 - s0);
-  const on = reveal(el, p > -0.08 && p < 1.05, was);
-  if (!on) return false;
-  const h = el.offsetHeight, padPx = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--pad')) || 32;
-  const yStart = innerHeight - h - padPx * 1.6, yEnd = padPx * 2.4;
-  let y = yStart + (yEnd - yStart) * ease(clamp01(p / 0.85));
-  if (p > 0.85) y -= (p - 0.85) * innerHeight * 1.2;
-  el.style.transform = `translate3d(0, ${y}px, 0)`;
-  el.style.opacity = String(clamp01((p + 0.08) / 0.12) * (1 - clamp01((p - 0.92) / 0.1)));
-  return true;
-}
-
-// the timeline is taller than the screen: it scrolls through at its own pace
-function placeTimeline(s, s0, s1, was) {
-  const p = (s - s0) / (s1 - s0);
-  const on = reveal(exp, p > -0.05 && p < 1.05, was);
-  if (!on) return false;
-  const h = exp.offsetHeight;
-  const y = innerHeight * 0.72 + (innerHeight * 0.18 - h - innerHeight * 0.72) * clamp01(p);
-  exp.style.transform = `translate3d(0, ${y}px, 0)`;
-  exp.style.opacity = String(clamp01((p + 0.05) / 0.08) * (1 - clamp01((p - 0.95) / 0.1)));
-  // highlight the entry nearest the middle of the screen
-  const mid = innerHeight * 0.48;
-  let best = -1, bestD = Infinity;
-  expItems.forEach((it, i) => {
-    const r = it.getBoundingClientRect();
-    const d = Math.abs(r.top + r.height / 2 - mid);
-    if (d < bestD) { bestD = d; best = i; }
+/* ---- certifications: the list follows the cards, and picking one brings its card forward ---- */
+const certItems = [...document.querySelectorAll('.certs__list details')];
+certItems.forEach((d, i) => {
+  d.querySelector('summary').addEventListener('click', (e) => {
+    e.preventDefault();
+    goTo(yForTimeline(CARD_STEP * (i + 1)));
   });
-  expItems.forEach((it, i) => it.classList.toggle('is-active', i === best));
-  return true;
+});
+let activeCert = -2;
+function syncCerts(s) {
+  const r = s / CARD_STEP;
+  const a = r < 0.5 || s > TL.ringEnd ? -1 : Math.max(0, Math.min(certItems.length - 1, Math.round(r) - 1));
+  if (a === activeCert) return;
+  activeCert = a;
+  certItems.forEach((d, i) => { d.open = i === a; });
+}
+
+/* ---- backdrop pictures and the certification cards ---- */
+const worldCanvas = $('#world');
+const media = createMedia(worldCanvas, { floorCanvas: glyphFloor() });
+if (!media) root.classList.add('no-media');
+let cards = null;
+(async () => {
+  try {
+    await Promise.race([document.fonts.load('600 16px "Spline Sans Mono"'), new Promise((r) => setTimeout(r, 2500))]);
+    const canvases = CREDENTIALS.map((c, i) => makeCredentialCard(c, i));
+    cards = createCards($('.cards'), canvases, { onPick: (i) => goTo(yForTimeline(CARD_STEP * (i + 1))) });
+  } catch (err) {
+    console.error(err);
+  }
+  if (CONFIG.splineScene) loadSpline();
+})();
+
+/* ---- your Spline scene, when one is configured ---- */
+async function loadSpline() {
+  try {
+    await import(CONFIG.splineViewer);
+    const v = document.createElement('spline-viewer');
+    v.setAttribute('url', CONFIG.splineScene);
+    const slot = $('#spline-slot');
+    slot.append(v);
+    slot.classList.add('has-scene');
+  } catch (err) {
+    console.error('Spline scene could not load', err);
+  }
 }
 
 /* ---- loop ---- */
-let s = scrollY / innerHeight, last = performance.now();
-addEventListener('resize', () => { hero && hero.resize(); world && world.resize(); });
+let s = 0, last = performance.now(), clock = 0, lastS = -1, lastPtr = '';
+addEventListener('resize', () => { remeasure(); hero && hero.resize(); media && media.resize(); cards && cards.resize(); });
 
 function loop(now) {
   const dt = Math.min(0.05, (now - last) / 1000);
   last = now;
-  const t = now / 1000;
+  if (!still) clock += dt;
 
-  const sTarget = scrollY / innerHeight;
+  const target = timelineAt(scrollY, sections);
   const prev = s;
-  s += (sTarget - s) * (1 - Math.exp(-dt * (reduceMotion ? 30 : 9)));
-  if (Math.abs(sTarget - s) < 1e-4) s = sTarget;
+  s += (target - s) * (1 - Math.exp(-dt * (reduceMotion ? 30 : 9)));
+  if (Math.abs(target - s) < 1e-4) s = target;
   const vel = (s - prev) / Math.max(dt, 1e-3);
 
-  // which canvas is on screen
-  const heroOnly = s < 0.004;
-  if (hero && s < 1.6) hero.render(t, dt);
-  heroCanvas.classList.toggle('is-off', !heroOnly || !hero);
-  document.body.classList.toggle('is-hero', s < 0.25);
-  document.documentElement.classList.toggle('is-scrolled', s > 0.3);
+  // when motion is paused, draw only when something the visitor did changed
+  const ptrKey = `${input.x | 0},${input.y | 0}`;
+  const changed = s !== lastS || ptrKey !== lastPtr;
+  lastS = s; lastPtr = ptrKey;
+  const draw = !still || changed;
 
-  if (world && (!heroOnly || !hero)) {
-    const hx = (input.x / innerWidth) * 2 - 1, hy = (input.y / innerHeight) * 2 - 1;
-    world.frame(t, dt, {
+  if (hero && s < 1.6 && draw) hero.render(clock, still ? 0 : dt);
+  document.body.classList.toggle('is-hero', s < 0.25);
+  root.classList.toggle('is-scrolled', s > 0.3);
+
+  if (media && draw && s > 0.004) {
+    media.frame(clock, still ? 0 : dt, {
       s: Math.min(s, TL.end),
-      vel,
-      reduceMotion,
+      vel: still ? 0 : vel,
+      still,
       pointer: {
-        nx: input.inside && finePointer ? hx : 0,
-        ny: input.inside && finePointer ? hy : 0,
-        hx, hy,
+        x: input.x, y: input.y,
+        nx: input.inside && finePointer ? (input.x / innerWidth) * 2 - 1 : 0,
+        ny: input.inside && finePointer ? (input.y / innerHeight) * 2 - 1 : 0,
         inside: input.inside && !menu.open,
       },
     });
-    worldCanvas.classList.toggle('is-pointer', world.hoveredCard >= 0);
   }
+  if (cards) cards.frame(s, hero ? heroCanvas : null);
+  // the hero's words leave before the white sheet slides under them
+  heroInner.style.opacity = String(Math.max(0, 1 - s / 0.22));
 
-  // left label, intro text, active credential
-  setMode(s < 0.45 ? 'hero' : s < TL.ringEnd - 0.3 ? 'work' : 'none');
-  const hideIntro = s > 0.3;
-  if (hideIntro !== introHidden) {
-    introHidden = hideIntro;
-    intro.classList.toggle('is-hidden', hideIntro);
-    if (!hideIntro) scramble($('.intro__lead'), 700);
-  }
-  const r = s / CARD_STEP;
-  const a = r < 0.5 ? -1 : Math.max(0, Math.min(CREDENTIALS.length - 1, Math.round(r) - 1));
-  if (a !== active) {
-    active = a;
-    [...list.children].forEach((li, i) => {
-      li.classList.toggle('is-active', i === a);
-      if (i === a) li.firstChild.setAttribute('aria-current', 'true'); else li.firstChild.removeAttribute('aria-current');
-    });
-  }
-
-  // sections
-  aboutOn = placeCopy(about, s, TL.growEnd - 0.1, TL.fallEnd - 0.15, aboutOn);
-  expOn = placeTimeline(s, TL.mixEnd - 0.2, TL.mix2Start + 0.05, expOn);
-  const c = clamp01((s - (TL.mix2End - 0.1)) / 0.35);
-  contactOn = reveal(contact, c > 0, contactOn);
-  foot.classList.toggle('is-on', c > 0);
-  contact.style.opacity = String(c);
-  contact.style.transform = `translate(-50%, ${-50 + (1 - c) * 6}%)`;
-  foot.style.opacity = String(c);
-
+  syncCerts(s);
   requestAnimationFrame(loop);
 }
 requestAnimationFrame(loop);

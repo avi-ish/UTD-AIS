@@ -1,8 +1,9 @@
 // Generated artwork, drawn with Canvas 2D at runtime (no image files):
 // credential cards, the faint glyph floor, lantern skins and soft glows.
 
-const PIXEL = 'Silkscreen, ui-monospace, monospace';
-const TECH = '"Chakra Petch", system-ui, sans-serif';
+// the page's one family (loaded by tokens.css before the cards are drawn)
+const PIXEL = '"Spline Sans Mono", ui-monospace, monospace';
+const TECH = PIXEL;
 
 function rng(seed) {
   let s = seed >>> 0 || 1;
@@ -202,70 +203,78 @@ const MOTIFS = {
   },
 };
 
-/** A credential card: dark panel in a thin bezel with index, title and a motif. */
-export function makeCredentialCard(cred, i, n) {
+/** A certification card: dark panel in a thin bezel, the issuer large, its certifications listed, a motif. */
+export function makeCredentialCard(cred, i) {
   const W = 1600, H = 1000, c = canvas(W, H), ctx = c.getContext('2d'), r = rng(19 + i * 37);
   const A = cred.accent;
-  ctx.fillStyle = '#0b0b0d';
+  ctx.fillStyle = '#0b0c10';
   rrect(ctx, 0, 0, W, H, 34); ctx.fill();
   const b = 16, x0 = b, y0 = b, w0 = W - b * 2, h0 = H - b * 2;
   ctx.save();
   rrect(ctx, x0, y0, w0, h0, 20); ctx.clip();
 
-  // background: deep gradient, accent glow, fine grid, faint terminal text
+  // background: deep gradient, accent bloom, fine grid, faint terminal text
   const g = ctx.createLinearGradient(0, y0, 0, y0 + h0);
-  g.addColorStop(0, '#0d1018'); g.addColorStop(1, '#05060a');
+  g.addColorStop(0, '#0e1119'); g.addColorStop(1, '#06070b');
   ctx.fillStyle = g; ctx.fillRect(x0, y0, w0, h0);
   const rg = ctx.createRadialGradient(W * 0.78, H * 0.35, 0, W * 0.78, H * 0.35, W * 0.55);
-  rg.addColorStop(0, rgba(A, 0.22)); rg.addColorStop(1, rgba(A, 0));
+  rg.addColorStop(0, rgba(A, 0.2)); rg.addColorStop(1, rgba(A, 0));
   ctx.fillStyle = rg; ctx.fillRect(x0, y0, w0, h0);
   ctx.strokeStyle = 'rgba(255,255,255,.035)'; ctx.lineWidth = 1;
   for (let gx = x0; gx < W; gx += 40) { ctx.beginPath(); ctx.moveTo(gx, y0); ctx.lineTo(gx, H); ctx.stroke(); }
   for (let gy = y0; gy < H; gy += 40) { ctx.beginPath(); ctx.moveTo(x0, gy); ctx.lineTo(W, gy); ctx.stroke(); }
   ctx.font = `16px ${PIXEL}`; ctx.textBaseline = 'top';
-  const chars = '0123456789ABCDEF.:/-+=#';
+  const chars = '0123456789abcdef.:/-+=';
   for (let row = 0; row < 40; row++) {
     let s = '';
-    for (let k = 0; k < 90; k++) s += r() < 0.18 ? ' ' : chars[Math.floor(r() * chars.length)];
-    ctx.fillStyle = `rgba(255,255,255,${0.025 + r() * 0.03})`;
+    for (let k = 0; k < 90; k++) s += r() < 0.2 ? ' ' : chars[Math.floor(r() * chars.length)];
+    ctx.fillStyle = `rgba(255,255,255,${0.02 + r() * 0.025})`;
     ctx.fillText(s, x0 + 20, y0 + 20 + row * 24);
   }
 
-  // header row
-  ctx.fillStyle = 'rgba(255,255,255,.55)'; ctx.font = `22px ${PIXEL}`;
-  ctx.fillText('CREDENTIAL', x0 + 56, y0 + 50);
-  ctx.textAlign = 'right';
-  ctx.fillText(`${String(i + 1).padStart(2, '0')} / ${String(n).padStart(2, '0')}`, x0 + w0 - 56, y0 + 50);
-  ctx.textAlign = 'left';
-  ctx.fillStyle = A; ctx.fillRect(x0 + 56, y0 + 92, 64, 4);
-  ctx.fillStyle = 'rgba(255,255,255,.12)'; ctx.fillRect(x0 + 120, y0 + 93, w0 - 176, 2);
+  // top row: how many, in plain words
+  const n = cred.items.length;
+  ctx.fillStyle = 'rgba(236,238,242,.62)'; ctx.font = `400 26px ${PIXEL}`;
+  ctx.fillText(n === 1 ? '1 certification' : `${n} certifications`, x0 + 64, y0 + 56);
+  ctx.fillStyle = A; ctx.fillRect(x0 + 64, y0 + 104, 72, 4);
 
   // motif on the right
   ctx.save();
-  ctx.shadowColor = rgba(A, 0.6); ctx.shadowBlur = 18;
-  MOTIFS[cred.motif](ctx, x0 + w0 * 0.53, y0 + h0 * 0.2, w0 * 0.42, h0 * 0.68, A, r);
+  ctx.shadowColor = rgba(A, 0.55); ctx.shadowBlur = 16;
+  MOTIFS[cred.motif](ctx, x0 + w0 * 0.56, y0 + h0 * 0.2, w0 * 0.39, h0 * 0.64, A, r);
   ctx.restore();
 
-  // title on the left, sized to fit
-  const title = (cred.short || cred.title).toUpperCase();
-  const maxW = w0 * 0.44;
-  let size = 96, lines;
+  // the issuer, large, sized to fit the left column
+  const maxW = w0 * 0.48;
+  let size = 104, lines;
   for (;;) {
-    ctx.font = `500 ${size}px ${TECH}`;
-    lines = wrap(ctx, title, maxW);
-    if ((lines.length <= 4 && lines.every((l) => ctx.measureText(l).width <= maxW)) || size < 40) break;
+    ctx.font = `600 ${size}px ${TECH}`;
+    lines = wrap(ctx, cred.issuer, maxW);
+    if ((lines.length <= 2 && lines.every((l) => ctx.measureText(l).width <= maxW)) || size < 48) break;
     size -= 4;
   }
-  const lh = size * 1.02;
-  const ty = y0 + h0 * 0.58 - (lines.length * lh) / 2;
-  ctx.fillStyle = '#f2f3f5'; ctx.textBaseline = 'alphabetic';
-  lines.forEach((l, k) => ctx.fillText(l, x0 + 56, ty + (k + 1) * lh));
+  const lh = size * 1.05;
+  let y = y0 + 190;
+  ctx.fillStyle = '#f1f2f5'; ctx.textBaseline = 'alphabetic';
+  lines.forEach((l) => { y += lh; ctx.fillText(l, x0 + 64, y); });
+
+  // the certifications under it
+  y += 56;
+  const fs = n > 4 ? 30 : 34;
+  ctx.font = `400 ${fs}px ${PIXEL}`;
+  cred.items.forEach((item) => {
+    wrap(ctx, item, maxW).forEach((l) => {
+      ctx.fillStyle = 'rgba(236,238,242,.86)';
+      ctx.fillText(l, x0 + 64, y);
+      y += fs * 1.45;
+    });
+  });
   ctx.restore();
 
   // glass sheen
-  const s = ctx.createLinearGradient(0, 0, W, H);
-  s.addColorStop(0, 'rgba(255,255,255,.06)'); s.addColorStop(0.4, 'rgba(255,255,255,0)');
-  ctx.fillStyle = s; rrect(ctx, x0, y0, w0, h0, 20); ctx.fill();
+  const sh = ctx.createLinearGradient(0, 0, W, H);
+  sh.addColorStop(0, 'rgba(255,255,255,.05)'); sh.addColorStop(0.4, 'rgba(255,255,255,0)');
+  ctx.fillStyle = sh; rrect(ctx, x0, y0, w0, h0, 20); ctx.fill();
   return c;
 }
 
@@ -291,29 +300,5 @@ export function glyphFloor() {
       x += ctx.measureText(s).width + 14 + r() * 80;
     }
   }
-  return c;
-}
-
-/** Paper lantern skin: warm stripes with ribs and a simple mark. */
-export function lantern(seed = 1, white = false) {
-  const r = rng(seed);
-  const W = 256, H = 256, c = canvas(W, H), ctx = c.getContext('2d');
-  const g = ctx.createLinearGradient(0, 0, 0, H);
-  if (white) { g.addColorStop(0, '#fff1d6'); g.addColorStop(1, '#ffd29a'); } else { g.addColorStop(0, '#ff4a2a'); g.addColorStop(1, '#d4120c'); }
-  ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
-  ctx.fillStyle = 'rgba(80,0,0,.25)';
-  for (let y = 0; y < H; y += 14) ctx.fillRect(0, y, W, 2);
-  ctx.fillStyle = white ? 'rgba(160,20,10,.85)' : 'rgba(20,0,0,.75)';
-  ctx.font = '900 72px sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-  ctx.fillText(['●', '◆', '✦', '■'][Math.floor(r() * 4)], W * 0.5, H * 0.5);
-  return c;
-}
-
-/** Soft radial glow. */
-export function glow(inner, outer = 'rgba(0,0,0,0)', size = 256) {
-  const c = canvas(size, size), ctx = c.getContext('2d');
-  const g = ctx.createRadialGradient(size / 2, size / 2, 0, size / 2, size / 2, size / 2);
-  g.addColorStop(0, inner); g.addColorStop(1, outer);
-  ctx.fillStyle = g; ctx.fillRect(0, 0, size, size);
   return c;
 }
