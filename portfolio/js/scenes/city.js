@@ -1,9 +1,8 @@
 import * as THREE from 'three';
-import { glow as glowCanvas } from '../art.js';
 
-// Who I work with: falling down a canyon of towers through blue haze. The
+// About / focus: falling down a canyon of towers through blue haze. The
 // camera looks straight down the street, so the far ground glows like a light
-// shaft. At the bottom a red window into the next scene waits on the street.
+// shaft.
 
 const VERT = /* glsl */`
 varying vec3 vW;
@@ -59,7 +58,7 @@ void main(){
   gl_FragColor = vec4(col, 1.0);
 }`;
 
-export function createCity({ portalTexture }) {
+export function createCity() {
   const scene = new THREE.Scene();
   const fogColor = new THREE.Color(0x7fb2d6);
   scene.background = fogColor.clone();
@@ -126,44 +125,19 @@ export function createCity({ portalTexture }) {
   const flecks = new THREE.Points(pg, new THREE.PointsMaterial({ color: 0xdfefff, size: 0.35, transparent: true, opacity: 0.75, fog: false }));
   scene.add(flecks);
 
-  // red window on the street
-  const PORTAL_ROT = 0.38;
-  const portalMat = new THREE.MeshBasicMaterial({ map: portalTexture, fog: false });
-  const portal = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), portalMat);
-  portal.rotation.order = 'YXZ';
-  portal.rotation.set(-Math.PI / 2, PORTAL_ROT, 0);
-  portal.position.set(0, 0.25, 0);
-  scene.add(portal);
-  const glowTex = new THREE.CanvasTexture(glowCanvas('rgba(255,60,30,1)'));
-  glowTex.colorSpace = THREE.SRGBColorSpace;
-  const glowMat = new THREE.MeshBasicMaterial({ map: glowTex, transparent: true, opacity: 0.5, blending: THREE.AdditiveBlending, depthWrite: false, fog: false });
-  const glow = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), glowMat);
-  glow.rotation.copy(portal.rotation);
-  glow.position.set(0, 0.2, 0);
-  scene.add(glow);
-
-  let aspect = 1;
-  const PW = 12;
-  function resize(a) {
-    aspect = a;
-    camera.aspect = a; camera.updateProjectionMatrix();
-    portal.scale.set(PW, PW / a, 1);
-    glow.scale.set(PW * 2.2, PW / a * 2.6, 1);
-  }
-  const fillHeight = () => (PW / aspect / 2) / Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) + 0.25;
+  function resize(a) { camera.aspect = a; camera.updateProjectionMatrix(); }
 
   const ease = (x) => (x <= 0 ? 0 : x >= 1 ? 1 : x * x * (3 - 2 * x));
 
-  /** fall: 0..1 down the canyon, dive: 0..1 into the portal */
-  function update(t, dt, { fall, dive, pointer }) {
+  /** fall: 0..1 down the canyon */
+  function update(t, dt, { fall, pointer }) {
     mat.uniforms.uTime.value = t;
-    const yFall = THREE.MathUtils.lerp(330, 34, ease(fall) * 0.6 + fall * 0.4);
-    const y = THREE.MathUtils.lerp(yFall, fillHeight(), ease(dive));
-    const roll = THREE.MathUtils.lerp(-0.25 + fall * 0.5, PORTAL_ROT, ease(dive));
-    const px = (pointer.nx || 0) * (1 - dive), py = (pointer.ny || 0) * (1 - dive);
-    camera.position.set(px * 1.2 + Math.sin(t * 0.3) * 0.4 * (1 - dive), y, py * 1.2);
+    const y = THREE.MathUtils.lerp(330, 40, ease(fall) * 0.6 + fall * 0.4);
+    const roll = -0.25 + fall * 0.55;
+    const px = pointer.nx || 0, py = pointer.ny || 0;
+    camera.position.set(px * 1.2 + Math.sin(t * 0.3) * 0.4, y, py * 1.2);
     camera.up.set(-Math.sin(roll), 0, -Math.cos(roll));
-    camera.lookAt(camera.position.x * (1 - dive) * 0.6, 0, camera.position.z * 0.6);
+    camera.lookAt(camera.position.x * 0.6, 0, camera.position.z * 0.6);
     // denser haze high up, clear at street level
     mat.uniforms.uDensity.value = THREE.MathUtils.lerp(0.0042, 0.012, ease(fall));
     const p = flecks.geometry.attributes.position;
@@ -173,7 +147,6 @@ export function createCity({ portalTexture }) {
       p.setY(i, yy);
     }
     p.needsUpdate = true;
-    glowMat.opacity = (0.45 + 0.12 * Math.sin(t * 3.0)) * (1 - ease(dive));
   }
 
   return { scene, camera, resize, update };

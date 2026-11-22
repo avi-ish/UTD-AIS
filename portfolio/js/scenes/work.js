@@ -1,11 +1,11 @@
 import * as THREE from 'three';
-import { makeCover, glyphFloor } from '../art.js';
+import { glyphFloor } from '../art.js';
 
-// Selected Work: screens ride the outside of a big drum. Card 0 is the hero
-// frame itself, cards 1..n are projects, the last card is a live window into
-// the next scene that grows to fill the screen.
+// Selected credentials: floating panels ride the outside of a big drum. Card 0
+// is the hero frame itself, cards 1..n are credentials, and the last card is a
+// live window into the next scene that grows to fill the screen.
 
-export function createWork({ heroCanvas, projects, portalTexture, anisotropy }) {
+export function createWork({ heroCanvas, cards: cardCanvases, portalTexture, anisotropy }) {
   const scene = new THREE.Scene();
   scene.background = new THREE.Color(0xf1f1ef);
   scene.fog = new THREE.Fog(0xf1f1ef, 5, 16);
@@ -52,16 +52,16 @@ export function createWork({ heroCanvas, projects, portalTexture, anisotropy }) 
   scene.add(heroMesh);
   cards.push({ mesh: heroMesh, kind: 'hero' });
 
-  // project cards
-  projects.forEach((p, i) => {
-    const tex = new THREE.CanvasTexture(makeCover(p, 7 + i * 13));
+  // credential cards
+  cardCanvases.forEach((cv, i) => {
+    const tex = new THREE.CanvasTexture(cv);
     tex.colorSpace = THREE.SRGBColorSpace;
     tex.anisotropy = anisotropy;
     const mat = new THREE.MeshBasicMaterial({ map: tex, transparent: true, fog: false });
     const mesh = new THREE.Mesh(bend(new THREE.PlaneGeometry(1.6, 1, 32, 16), 0.06), mat);
-    mesh.userData.project = i;
+    mesh.userData.card = i;
     scene.add(mesh);
-    cards.push({ mesh, kind: 'project', index: i });
+    cards.push({ mesh, kind: 'card', index: i });
   });
 
   // last card: window into the next scene
@@ -144,14 +144,14 @@ export function createWork({ heroCanvas, projects, portalTexture, anisotropy }) 
       x *= 1 + barrel * rr; y *= 1 + barrel * rr;
       ndc.set(x, -y);
       ray.setFromCamera(ndc, camera);
-      const hits = ray.intersectObjects(cards.filter((c) => c.kind === 'project' && c.mesh.visible).map((c) => c.mesh), false);
-      if (hits.length) hovered = hits[0].object.userData.project + 1;
+      const hits = ray.intersectObjects(cards.filter((c) => c.kind === 'card' && c.mesh.visible).map((c) => c.mesh), false);
+      if (hits.length) hovered = hits[0].object.userData.card + 1;
     }
   }
 
   return {
     scene, camera, resize, update,
-    get hoveredProject() { return hovered > 0 ? hovered - 1 : -1; },
+    get hoveredCard() { return hovered > 0 ? hovered - 1 : -1; },
     count: cards.length,
     PORTAL_INDEX,
   };

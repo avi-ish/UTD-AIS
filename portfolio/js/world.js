@@ -5,19 +5,11 @@ import { createWork } from './scenes/work.js';
 import { createCorridor } from './scenes/corridor.js';
 import { createCity } from './scenes/city.js';
 import { createAlley } from './scenes/alley.js';
-import { createDetail } from './scenes/detail.js';
+import { TL, CARD_STEP } from './timeline.js';
 
-// Scroll timeline, in viewport heights scrolled.
-export const TL = {
-  workEnd: 5.0,        // ring reaches the last (portal) card
-  growEnd: 5.6,        // portal card fills the screen -> machine hall
-  hallEnd: 8.0,
-  mixStart: 7.6,       // hall dissolves into the city
-  mixEnd: 8.0,
-  fallEnd: 9.6,        // reached the street
-  diveEnd: 10.2,       // red window fills the screen -> alley
-  end: 11.2,
-};
+// The 3D journey behind the page, driven by scroll:
+//   credentials (white floating panels) → about (blue city canyon)
+//   → experience (machine hall) → let's connect (red alley)
 
 const clamp01 = (x) => Math.max(0, Math.min(1, x));
 const lerp = (a, b, t) => a + (b - a) * t;
@@ -120,11 +112,10 @@ void main(){
 
 // look of each section; bloom is applied to the scene before this post pass
 const PRESETS = {
-  work:   { bg: [0.88, 0.88, 0.87], barrel: 0.12, chroma: 0.035, band: 0.0, grain: 0.022, vig: 0.1, tint: [1, 1, 1], burst: 0.0, tone: 0, exposure: 1, bloom: 0 },
-  hall:   { bg: [0, 0, 0], barrel: 0.07, chroma: 0.05, band: 0.35, grain: 0.02, vig: 0.6, tint: [1, 1, 1], burst: 0.12, tone: 1, exposure: 1.0, bloom: 0.32 },
-  city:   { bg: [0, 0, 0], barrel: 0.08, chroma: 0.04, band: 0.12, grain: 0.02, vig: 0.5, tint: [0.96, 1, 1.04], burst: 0.0, tone: 1, exposure: 1.0, bloom: 0.22 },
-  alley:  { bg: [0, 0, 0], barrel: 0.06, chroma: 0.05, band: 0.08, grain: 0.022, vig: 0.7, tint: [1, 1, 1], burst: 0.0, tone: 1, exposure: 1.0, bloom: 0.4 },
-  detail: { bg: [0, 0, 0], barrel: 0.08, chroma: 0.03, band: 0.0, grain: 0.018, vig: 0.45, tint: [1, 1, 1], burst: 0.0, tone: 1, exposure: 1.0, bloom: 0.15 },
+  work:  { bg: [0.88, 0.88, 0.87], barrel: 0.12, chroma: 0.035, band: 0.0, grain: 0.022, vig: 0.1, tint: [1, 1, 1], burst: 0.0, tone: 0, exposure: 1, bloom: 0 },
+  city:  { bg: [0, 0, 0], barrel: 0.08, chroma: 0.04, band: 0.12, grain: 0.02, vig: 0.5, tint: [0.96, 1, 1.04], burst: 0.0, tone: 1, exposure: 1.0, bloom: 0.22 },
+  hall:  { bg: [0, 0, 0], barrel: 0.07, chroma: 0.05, band: 0.3, grain: 0.02, vig: 0.6, tint: [1, 1, 1], burst: 0.1, tone: 1, exposure: 1.0, bloom: 0.32 },
+  alley: { bg: [0, 0, 0], barrel: 0.06, chroma: 0.05, band: 0.08, grain: 0.022, vig: 0.7, tint: [1, 1, 1], burst: 0.0, tone: 1, exposure: 1.0, bloom: 0.4 },
 };
 function mixPreset(a, b, t) {
   const o = {};
@@ -132,7 +123,7 @@ function mixPreset(a, b, t) {
   return o;
 }
 
-export function createWorld(canvas, { heroCanvas, projects }) {
+export function createWorld(canvas, { heroCanvas, cards }) {
   let renderer;
   try {
     renderer = new THREE.WebGLRenderer({ canvas, antialias: false, alpha: false, powerPreference: 'high-performance' });
@@ -146,14 +137,12 @@ export function createWorld(canvas, { heroCanvas, projects }) {
   const rtOpts = { type: THREE.HalfFloatType, samples: 4 };
   const rtA = new THREE.WebGLRenderTarget(4, 4, rtOpts);
   const rtB = new THREE.WebGLRenderTarget(4, 4, rtOpts);
-  const rtC = new THREE.WebGLRenderTarget(4, 4, rtOpts);
   const rtPortal = new THREE.WebGLRenderTarget(4, 4, { type: THREE.HalfFloatType, samples: 2 });
 
-  const work = createWork({ heroCanvas, projects, portalTexture: rtPortal.texture, anisotropy });
+  const work = createWork({ heroCanvas, cards, portalTexture: rtPortal.texture, anisotropy });
+  const city = createCity();
   const hall = createCorridor();
-  const city = createCity({ portalTexture: rtPortal.texture });
   const alley = createAlley({ anisotropy });
-  const detail = createDetail({ projects, anisotropy });
 
   const post = new THREE.ShaderMaterial({
     vertexShader: POST_VERT,
@@ -161,7 +150,7 @@ export function createWorld(canvas, { heroCanvas, projects }) {
     depthTest: false,
     depthWrite: false,
     uniforms: {
-      tA: { value: rtA.texture }, tB: { value: rtB.texture }, tC: { value: rtC.texture },
+      tA: { value: rtA.texture }, tB: { value: rtB.texture }, tC: { value: rtB.texture },
       uMixAB: { value: 0 }, uMixC: { value: 0 }, uBarrel: { value: 0 }, uChroma: { value: 0 },
       uTime: { value: 0 }, uGlitch: { value: 0 }, uBandY: { value: 0.3 }, uBandAmp: { value: 0 },
       uGrain: { value: 0.05 }, uVig: { value: 0 }, uAspect: { value: 1 },
@@ -174,37 +163,26 @@ export function createWorld(canvas, { heroCanvas, projects }) {
   const postCam = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
 
   let pr = Math.min(window.devicePixelRatio || 1, 2);
-
-  // bloom, applied in place to the main scene target
   const bloom = new UnrealBloomPass(new THREE.Vector2(256, 256), 0.3, 0.32, 1.05);
 
-  // image-based lighting: real HDR environments (CC0, Poly Haven)
+  // image-based lighting for the machine hall (CC0 HDRI, Poly Haven)
   const pmrem = new THREE.PMREMGenerator(renderer);
   new RGBELoader().load('assets/env/warehouse_1k.hdr', (tex) => {
     tex.mapping = THREE.EquirectangularReflectionMapping;
     hall.setEnvironment(pmrem.fromEquirectangular(tex).texture);
     tex.dispose();
   });
-  const texLoader = new THREE.TextureLoader();
-  const equirect = (url, cb) => texLoader.load(url, (tex) => {
-    tex.mapping = THREE.EquirectangularReflectionMapping;
-    tex.colorSpace = THREE.SRGBColorSpace;
-    cb(tex, pmrem.fromEquirectangular(tex).texture);
-  });
-  equirect('assets/env/studio.jpg', (bg, env) => detail.setBackdrop('studio', bg, env));
-  equirect('assets/env/softstudio.jpg', (bg, env) => detail.setBackdrop('fog', bg, env));
-  let cssW = 1, cssH = 1;
 
   function resize() {
-    cssW = innerWidth; cssH = innerHeight;
+    const cssW = innerWidth, cssH = innerHeight;
     renderer.setPixelRatio(pr);
     renderer.setSize(cssW, cssH, false);
     const w = Math.max(4, Math.round(cssW * pr)), h = Math.max(4, Math.round(cssH * pr));
-    rtA.setSize(w, h); rtB.setSize(w, h); rtC.setSize(w, h);
+    rtA.setSize(w, h); rtB.setSize(w, h);
     bloom.setSize(Math.round(w / 2), Math.round(h / 2));
     const a = cssW / cssH;
     rtPortal.setSize(Math.round(Math.min(1280, w * 0.6)), Math.round(Math.min(1280, w * 0.6) / a));
-    [work, hall, city, alley, detail].forEach((s) => s.resize(a));
+    [work, city, hall, alley].forEach((s) => s.resize(a));
     post.uniforms.uAspect.value = a;
     post.uniforms.uRes.value.set(w, h);
   }
@@ -213,17 +191,19 @@ export function createWorld(canvas, { heroCanvas, projects }) {
   const draw = (target, s) => { renderer.setRenderTarget(target); renderer.render(s.scene, s.camera); };
 
   let frames = 0, acc = 0, settled = false;
-  let burst = 0, nextBurst = 4;
+  let burst = 0, nextBurst = 5;
 
-  /**
-   * st: { s, vel, pointer:{nx,ny,inside}, detail:{amt} }
-   */
+  // shared progress values, so a scene looks the same whether it is the
+  // incoming half of a dissolve or the main scene right after it
+  const fallAt = (s) => clamp01((s - TL.growEnd) / (TL.fallEnd - TL.growEnd));
+  const travelAt = (s) => clamp01((s - TL.mixStart) / (TL.hallEnd - TL.mixStart));
+  const driftAt = (s) => clamp01((s - TL.mix2Start) / (TL.end - TL.mix2Start));
+
+  /** st: { s, vel, pointer:{nx,ny,hx,hy,inside}, reduceMotion } */
   function frame(t, dt, st) {
     const s = st.s, P = st.pointer;
-    let preset, mixAB = 0, mixC = 0;
-    let A = rtA, B = rtB;
+    let preset, mixAB = 0;
 
-    // adaptive resolution
     if (!settled) {
       acc += dt; frames++;
       if (frames >= 120) {
@@ -232,70 +212,51 @@ export function createWorld(canvas, { heroCanvas, projects }) {
       }
     }
 
-    const sectionVisible = st.detail.amt < 1;
-    if (sectionVisible) {
-      if (s < TL.growEnd) {
-        const r = Math.min(s, TL.workEnd);
-        const grow = clamp01((s - TL.workEnd) / (TL.growEnd - TL.workEnd));
-        if (s > 3.4) { hall.update(t, dt, { travel: 0, pointer: P }); draw(rtPortal, hall); }
-        preset = mixPreset(PRESETS.work, PRESETS.hall, clamp01((grow - 0.55) / 0.45));
-        preset.barrel = lerp(PRESETS.work.barrel * clamp01(s / 0.45), PRESETS.hall.barrel, clamp01(grow * 1.4));
-        preset.band *= clamp01(s / 0.5);
-        work.update(t, dt, { r, grow, pointer: P, barrel: preset.barrel });
-        draw(A, work);
-      } else if (s < TL.mixEnd) {
-        const travel = clamp01((s - TL.growEnd) / (TL.hallEnd - TL.growEnd));
-        hall.update(t, dt, { travel, pointer: P });
-        draw(A, hall);
-        preset = PRESETS.hall;
-        if (s > TL.mixStart) {
-          mixAB = clamp01((s - TL.mixStart) / (TL.mixEnd - TL.mixStart));
-          city.update(t, dt, { fall: 0, dive: 0, pointer: P });
-          draw(B, city);
-          preset = mixPreset(PRESETS.hall, PRESETS.city, mixAB);
-        }
-      } else if (s < TL.diveEnd) {
-        const fall = clamp01((s - TL.mixStart) / (TL.fallEnd - TL.mixStart));
-        const dive = clamp01((s - TL.fallEnd) / (TL.diveEnd - TL.fallEnd));
-        alley.update(t, dt, { drift: 0, pointer: P });
-        draw(rtPortal, alley);
-        city.update(t, dt, { fall, dive, pointer: P });
-        draw(A, city);
-        preset = mixPreset(PRESETS.city, PRESETS.alley, dive);
-      } else {
-        const drift = clamp01((s - TL.diveEnd) / (TL.end - TL.diveEnd));
-        alley.update(t, dt, { drift, pointer: P });
-        draw(A, alley);
-        preset = PRESETS.alley;
+    if (s < TL.growEnd) {
+      const r = Math.min(s / CARD_STEP, work.count - 1);
+      const grow = clamp01((s - TL.ringEnd) / (TL.growEnd - TL.ringEnd));
+      if (s > TL.ringEnd - 2.2) { city.update(t, dt, { fall: 0, pointer: P }); draw(rtPortal, city); }
+      preset = mixPreset(PRESETS.work, PRESETS.city, clamp01((grow - 0.55) / 0.45));
+      preset.barrel = lerp(PRESETS.work.barrel * clamp01(s / 0.3), PRESETS.city.barrel, clamp01(grow * 1.4));
+      work.update(t, dt, { r, grow, pointer: P, barrel: preset.barrel });
+      draw(rtA, work);
+    } else if (s < TL.mixEnd) {
+      city.update(t, dt, { fall: fallAt(s), pointer: P });
+      draw(rtA, city);
+      preset = PRESETS.city;
+      if (s > TL.mixStart) {
+        mixAB = clamp01((s - TL.mixStart) / (TL.mixEnd - TL.mixStart));
+        hall.update(t, dt, { travel: travelAt(s), pointer: P });
+        draw(rtB, hall);
+        preset = mixPreset(PRESETS.city, PRESETS.hall, mixAB);
       }
+    } else if (s < TL.mix2End) {
+      hall.update(t, dt, { travel: travelAt(s), pointer: P });
+      draw(rtA, hall);
+      preset = PRESETS.hall;
+      if (s > TL.mix2Start) {
+        mixAB = clamp01((s - TL.mix2Start) / (TL.mix2End - TL.mix2Start));
+        alley.update(t, dt, { drift: driftAt(s), pointer: P });
+        draw(rtB, alley);
+        preset = mixPreset(PRESETS.hall, PRESETS.alley, mixAB);
+      }
+    } else {
+      alley.update(t, dt, { drift: driftAt(s), pointer: P });
+      draw(rtA, alley);
+      preset = PRESETS.alley;
     }
 
-    if (st.detail.amt > 0) {
-      detail.update(t, dt, { pointer: P });
-      if (sectionVisible) {
-        draw(rtC, detail);
-        mixC = st.detail.amt;
-        preset = mixPreset(preset, PRESETS.detail, st.detail.amt);
-      } else {
-        draw(A, detail);
-        preset = PRESETS.detail;
-      }
-    }
-
-    // bloom on the main target
     if (preset.bloom > 0.01) {
       bloom.strength = preset.bloom;
-      bloom.render(renderer, null, A, dt, false);
+      bloom.render(renderer, null, rtA, dt, false);
     }
 
-    // rare glitch bursts, and some tearing while scrolling fast
     if (t > nextBurst) { burst = 0.12 + Math.random() * 0.12; nextBurst = t + 5 + Math.random() * 7; }
     burst = Math.max(0, burst - dt);
     const vGlitch = Math.min(0.45, Math.max(0, Math.abs(st.vel) - 0.4) * 0.08);
 
     const u = post.uniforms;
-    u.tA.value = A.texture; u.tB.value = B.texture; u.tC.value = rtC.texture;
-    u.uMixAB.value = mixAB; u.uMixC.value = mixC;
+    u.uMixAB.value = mixAB; u.uMixC.value = 0;
     u.uBarrel.value = preset.barrel;
     u.uChroma.value = preset.chroma;
     u.uTime.value = t;
@@ -313,10 +274,5 @@ export function createWorld(canvas, { heroCanvas, projects }) {
     renderer.render(postScene, postCam);
   }
 
-  return {
-    frame,
-    resize,
-    detail,
-    get hoveredProject() { return work.hoveredProject; },
-  };
+  return { frame, resize, get hoveredCard() { return work.hoveredCard; } };
 }

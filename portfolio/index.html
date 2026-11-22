@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>Avi Pandya — Portfolio</title>
-  <meta name="description" content="Avi Pandya: Finance and CIS Tech student at UT Dallas and Vice President of AIS, designing and building websites people remember.">
+  <title>Avi Pandya — Finance × Computer Information Systems</title>
+  <meta name="description" content="Avi Pandya: Finance and CIS student at The University of Texas at Dallas, focused on financial analysis, M&amp;A, valuation, and technology-driven strategy.">
   <meta name="theme-color" content="#000000">
   <link rel="preload" href="fonts/silkscreen-400.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="fonts/chakra-petch-500.woff2" as="font" type="font/woff2" crossorigin>
@@ -13,15 +13,18 @@
 </head>
 <body class="is-hero">
 
-  <!-- 3D world (work, machine hall, city, alley, project details) -->
+  <a class="skip" href="#about" data-goto="about">Skip to content</a>
+
+  <!-- 3D journey: credentials, city, machine hall, alley -->
   <canvas id="world" aria-hidden="true"></canvas>
-  <!-- the hero portrait; it also feeds the first card of Selected Work -->
-  <canvas id="hero" aria-hidden="true"></canvas>
+  <!-- the hero portrait; it also feeds the first floating panel -->
+  <canvas id="hero" role="img" aria-label="Dot-matrix portrait of Avi Pandya, smiling, wearing glasses, a dark suit and tie, in front of a glowing wireframe grid"></canvas>
+  <img class="hero-fallback" src="assets/portrait.webp" alt="Portrait of Avi Pandya, smiling, wearing glasses, a dark suit and tie" width="640" height="800">
 
   <header class="bar">
-    <a class="bar__name" href="#top" data-goto="0" data-scramble>AVI PANDYA</a>
+    <a class="bar__name" href="#top" data-goto="top" data-scramble>AVI PANDYA</a>
     <nav class="bar__nav" aria-label="Primary">
-      <a class="bar__talk" href="#contact" data-goto="contact"><span data-scramble>LET'S TALK</span><i class="bar__dot" aria-hidden="true"></i></a>
+      <a class="bar__talk" href="#connect" data-goto="connect"><span data-scramble>LET'S CONNECT</span><i class="bar__dot" aria-hidden="true"></i></a>
       <button class="bar__menu" type="button" aria-expanded="false" aria-controls="menu">
         <span class="bar__menu-label" data-scramble>MENU</span>
         <i class="burger" aria-hidden="true"><b></b><b></b><b></b></i>
@@ -29,86 +32,112 @@
     </nav>
   </header>
 
-  <h1 class="sr-only">Avi Pandya — Finance and CIS Tech student and web designer</h1>
+  <main id="top">
+    <h1 class="sr-only">Avi Pandya — Finance × Computer Information Systems</h1>
 
-  <!-- Left label: the name in the hero, the project list in Selected Work -->
-  <div class="label" data-mode="hero">
-    <p class="label__title" data-label-title data-glitch aria-hidden="true">AVI PANDYA</p>
-    <p class="label__sub"><span>// PORTFOLIO</span><span data-year>©2026</span></p>
-    <h2 class="sr-only" id="work">Selected work</h2>
-    <ol class="label__list" aria-labelledby="work"></ol>
-  </div>
+    <!-- Left label: the name in the hero, the credential list further down -->
+    <div class="label" data-mode="hero">
+      <p class="label__title" data-label-title data-glitch aria-hidden="true">AVI PANDYA</p>
+      <p class="label__sub">FINANCE × COMPUTER INFORMATION SYSTEMS</p>
+      <h2 class="sr-only" id="credentials">Selected credentials</h2>
+      <ol class="label__list" aria-labelledby="credentials"></ol>
+    </div>
 
-  <p class="tagline" data-scramble>FINANCE AND CIS TECH STUDENT AT UT DALLAS AND VICE PRESIDENT OF AIS, BUILDING WEBSITES PEOPLE REMEMBER</p>
+    <div class="intro">
+      <p class="intro__lead" data-scramble>Finance and CIS student at The University of Texas at Dallas, focused on financial analysis, M&amp;A, valuation, and technology-driven strategy.</p>
+      <p class="intro__now">Currently contributing to Financial Integrations at Inogen.</p>
+      <p class="intro__loc"><i aria-hidden="true"></i>Frisco, Texas</p>
+    </div>
 
-  <section class="copy copy--about" id="about" aria-labelledby="about-h">
-    <span class="copy__rail" aria-hidden="true"></span>
-    <h2 id="about-h" data-scramble>ABOUT ME</h2>
-    <p class="copy__lead">I'M AVI, A FINANCE AND CIS TECH STUDENT AT UT DALLAS AND VICE PRESIDENT OF THE ASSOCIATION FOR INFORMATION SYSTEMS.</p>
-    <p>I DESIGN AND BUILD WEBSITES WHERE TYPE, MOTION AND 3D DO THE TALKING, FROM THE SITES FOR OUR CHAPTER TO THE ONE YOU'RE SCROLLING RIGHT NOW.</p>
-    <a class="copy__more" href="#contact" data-goto="contact">&gt; <span data-scramble>LEARN MORE</span></a>
-  </section>
+    <section class="copy copy--about" id="about" aria-labelledby="about-h">
+      <span class="copy__rail" aria-hidden="true"></span>
+      <h2 id="about-h" data-scramble>ABOUT / FOCUS</h2>
+      <p class="copy__lead">I’m pursuing dual bachelor’s degrees in Finance and Computer Information Systems at The University of Texas at Dallas.</p>
+      <p>I’m interested in applying data-driven insights to corporate finance and technology-driven strategies, with a focus on valuation and market analysis.</p>
+      <h3 class="copy__k">Top skills</h3>
+      <ul class="skills">
+        <li>Mergers &amp; Acquisitions</li>
+        <li>Microsoft Excel</li>
+        <li>Argus Modeling</li>
+        <li>Financial Analysis</li>
+        <li>Artificial Intelligence</li>
+      </ul>
+      <a class="copy__more" href="#experience" data-goto="experience">&gt; <span data-scramble>LEARN MORE</span></a>
+    </section>
 
-  <section class="copy copy--clients" id="clients" aria-labelledby="clients-h">
-    <span class="copy__rail" aria-hidden="true"></span>
-    <h2 id="clients-h" data-scramble>WHO I WORK WITH</h2>
-    <p>STUDENT ORGANIZATIONS, CAMPUS CLUBS AND SMALL TEAMS THAT NEED A SITE PEOPLE ACTUALLY REMEMBER. EVERY BUILD STARTS WITH WHO IT'S FOR AND WHAT IT HAS TO DO.</p>
-    <a class="copy__more" href="#contact" data-goto="contact">&gt; <span data-scramble>LEARN MORE</span></a>
-  </section>
+    <section class="tl" id="experience" aria-labelledby="exp-h">
+      <h2 id="exp-h" class="tl__title" data-scramble>EXPERIENCE</h2>
+      <ol class="tl__list">
+        <li class="tl__item">
+          <h3 class="tl__org">Association for Information Systems at UT Dallas</h3>
+          <ul class="tl__roles">
+            <li><span class="tl__role">Vice President</span><span class="tl__meta"><time datetime="2026-05">May 2026</time> – Present</span></li>
+            <li><span class="tl__role">Outreach Officer</span><span class="tl__meta"><time datetime="2026-02">Feb 2026</time> – Present</span></li>
+          </ul>
+        </li>
+        <li class="tl__item">
+          <h3 class="tl__org">Inogen</h3>
+          <ul class="tl__roles">
+            <li><span class="tl__role">Summer Intern</span><span class="tl__meta"><time datetime="2026-05">May</time> – <time datetime="2026-08">Aug 2026</time> · Dallas</span></li>
+            <li><span class="tl__role">Spring Intern</span><span class="tl__meta"><time datetime="2026-01">Jan</time> – <time datetime="2026-04">Apr 2026</time> · Plano · On-site</span></li>
+          </ul>
+          <p class="tl__note">Contributing to Financial Integrations.</p>
+        </li>
+        <li class="tl__item">
+          <h3 class="tl__org">Dutch Bros Coffee</h3>
+          <ul class="tl__roles">
+            <li><span class="tl__role">Shift Supervisor</span><span class="tl__meta"><time datetime="2025-05">May</time> – <time datetime="2025-09">Sep 2025</time></span></li>
+          </ul>
+        </li>
+        <li class="tl__item">
+          <h3 class="tl__org">Eagle Point Solution</h3>
+          <ul class="tl__roles">
+            <li><span class="tl__role">Financial Data Analyst</span><span class="tl__meta"><time datetime="2025-05">May</time> – <time datetime="2025-08">Aug 2025</time> · Remote</span></li>
+          </ul>
+        </li>
+        <li class="tl__item">
+          <h3 class="tl__org">Andy’s Frozen Custard</h3>
+          <ul class="tl__roles">
+            <li><span class="tl__role">Manager</span><span class="tl__meta"><time datetime="2024-08">Aug 2024</time> – <time datetime="2025-05">May 2025</time></span></li>
+          </ul>
+          <ul class="tl__points">
+            <li>Managed more than $2 million in store supplies and assets, reducing asset loss by 5% over two months.</li>
+            <li>Led daily operations and improved team productivity by 10%.</li>
+            <li>Reduced labor costs by 8% through scheduling.</li>
+            <li>Trained and guided a team of 20+ staff.</li>
+            <li>Achieved 100% customer satisfaction ratings during peak hours.</li>
+          </ul>
+        </li>
+      </ol>
+    </section>
 
-  <section class="contact" id="contact" aria-labelledby="contact-h">
-    <svg class="contact__icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10.5" fill="none" stroke="currentColor" stroke-width="1.2"/><path d="M8 14.2c1 1.4 2.4 2.1 4 2.1s3-.7 4-2.1" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><circle cx="9" cy="9.8" r=".9" fill="currentColor"/><circle cx="15" cy="9.8" r=".9" fill="currentColor"/></svg>
-    <h2 id="contact-h" class="contact__title">LET'S TALK ABOUT<br>YOUR NEXT PROJECT</h2>
-    <p class="contact__sub">SEND ME A FEW LINES ABOUT WHAT YOU'RE BUILDING<br>AND I'LL GET BACK TO YOU.</p>
-    <ul class="contact__links">
-      <li><a href="https://www.linkedin.com/in/avipandya/" target="_blank" rel="noopener" data-scramble>LINKEDIN</a></li>
-      <li><a href="https://github.com/avi-ish" target="_blank" rel="noopener" data-scramble>GITHUB</a></li>
-      <li><a href="../v3/" data-scramble>AIS AT UTD</a></li>
-    </ul>
-  </section>
+    <section class="contact" id="connect" aria-labelledby="connect-h">
+      <p class="contact__kicker">// FINANCE × COMPUTER INFORMATION SYSTEMS</p>
+      <h2 id="connect-h" class="contact__title" data-scramble>LET’S CONNECT</h2>
+      <p class="contact__sub">Frisco, Texas</p>
+      <a class="contact__cta" href="https://www.linkedin.com/in/avipandya" target="_blank" rel="noopener">
+        <span data-scramble>CONNECT ON LINKEDIN</span> <span aria-hidden="true">↗</span><span class="sr-only"> (opens in a new tab)</span>
+      </a>
+    </section>
+  </main>
+
   <footer class="foot">
-    <span>RICHARDSON, TX</span>
-    <span>© AVI PANDYA. ALL RIGHTS RESERVED</span>
-    <span data-year>©2026</span>
+    <span>FRISCO, TEXAS</span>
+    <span>© <span data-year>2026</span> AVI PANDYA</span>
+    <a href="#top" data-goto="top">BACK TO TOP ↑</a>
   </footer>
-
-  <!-- Project detail -->
-  <div class="detail" id="detail" role="dialog" aria-modal="true" aria-labelledby="detail-name" hidden>
-    <button class="detail__close" type="button">&gt; <span data-scramble>CLOSE</span> &lt;</button>
-    <div class="detail__info">
-      <div class="detail__col detail__col--name">
-        <span class="detail__k">PROJECT</span>
-        <h2 class="detail__name" id="detail-name">—</h2>
-        <a class="detail__link" href="#" target="_blank" rel="noopener" hidden>VISIT SITE &#8599;</a>
-      </div>
-      <div class="detail__col detail__col--info">
-        <span class="detail__k">INFO</span>
-        <p class="detail__text"></p>
-      </div>
-      <div class="detail__col">
-        <span class="detail__k">ROLE</span>
-        <p class="detail__role"></p>
-      </div>
-      <div class="detail__thumbs" role="tablist" aria-label="Screens"></div>
-    </div>
-    <div class="detail__nav">
-      <button type="button" class="detail__prev" aria-label="Previous project">&lt; PREV</button>
-      <span class="detail__count">01 / 04</span>
-      <button type="button" class="detail__next" aria-label="Next project">NEXT &gt;</button>
-    </div>
-  </div>
 
   <!-- Full-screen menu -->
   <div class="menu" id="menu" hidden>
-    <nav class="menu__list" aria-label="Site">
-      <a href="#work" data-goto="work"><span class="menu__n">01</span><span class="menu__t" data-scramble>WORK</span></a>
+    <nav class="menu__list" aria-label="Sections">
+      <a href="#credentials" data-goto="credentials"><span class="menu__n">01</span><span class="menu__t" data-scramble>CREDENTIALS</span></a>
       <a href="#about" data-goto="about"><span class="menu__n">02</span><span class="menu__t" data-scramble>ABOUT</span></a>
-      <a href="#clients" data-goto="clients"><span class="menu__n">03</span><span class="menu__t" data-scramble>CLIENTS</span></a>
-      <a href="#contact" data-goto="contact"><span class="menu__n">04</span><span class="menu__t" data-scramble>CONTACT</span></a>
+      <a href="#experience" data-goto="experience"><span class="menu__n">03</span><span class="menu__t" data-scramble>EXPERIENCE</span></a>
+      <a href="#connect" data-goto="connect"><span class="menu__n">04</span><span class="menu__t" data-scramble>CONNECT</span></a>
     </nav>
     <div class="menu__foot">
-      <span>// UT DALLAS · RICHARDSON, TX</span>
-      <span class="menu__social"><a href="https://www.linkedin.com/in/avipandya/" target="_blank" rel="noopener" data-scramble>LINKEDIN</a><a href="https://github.com/avi-ish" target="_blank" rel="noopener" data-scramble>GITHUB</a></span>
+      <span>// FRISCO, TEXAS</span>
+      <span class="menu__social"><a href="https://www.linkedin.com/in/avipandya" target="_blank" rel="noopener" data-scramble>LINKEDIN</a></span>
     </div>
   </div>
 
@@ -148,15 +177,14 @@
     </svg>
   </button>
   <div class="bubble" id="bot-bubble" role="status" hidden>
-    <p data-scramble>HEY, I'M AVI. GOT A PROJECT IN MIND?</p>
-    <a href="#contact" data-goto="contact">LET'S TALK →</a>
+    <p data-scramble>HEY, I'M AVI.</p>
+    <a href="#connect" data-goto="connect">LET'S CONNECT →</a>
   </div>
 
   <div class="cursor" aria-hidden="true"></div>
-  <p class="drop-hint" aria-hidden="true">DROP A PHOTO OR VIDEO TO USE IT AS THE PORTRAIT</p>
 
   <!-- gives the page its scroll length -->
-  <div class="scroll-space" id="top" aria-hidden="true"></div>
+  <div class="scroll-space" aria-hidden="true"></div>
 
   <script src="js/main.js" type="module"></script>
 </body>
