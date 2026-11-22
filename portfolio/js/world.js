@@ -1,4 +1,6 @@
 import * as THREE from 'three';
+import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+import { RGBELoader } from 'three/addons/loaders/RGBELoader.js';
 import { createWork } from './scenes/work.js';
 import { createCorridor } from './scenes/corridor.js';
 import { createCity } from './scenes/city.js';
@@ -42,7 +44,14 @@ uniform float uAspect;
 uniform vec3 uBg;
 uniform vec3 uTint;
 uniform vec2 uRes;
+uniform float uTone;      // 0 = leave colours as they are (white page), 1 = filmic tone curve
+uniform float uExposure;
 varying vec2 vUv;
+
+vec3 aces(vec3 x){
+  const float a = 2.51, b = 0.03, c = 2.43, d = 0.59, e = 0.14;
+  return clamp((x * (a * x + b)) / (x * (c * x + d) + e), 0.0, 1.0);
+}
 
 float h21(vec2 p){ p = fract(p * vec2(123.34, 456.21)); p += dot(p, p + 45.32); return fract(p.x * p.y); }
 
@@ -93,17 +102,14 @@ void main(){
   uv.x += off;
 
   float k = uBarrel;
-  float ca = uChroma + trans * 0.15 + uGlitch * 0.1;
+  float ca = uChroma + trans * 0.12 + uGlitch * 0.06;
   vec3 col = vec3(chan(uv, k * (1.0 - ca), 0), chan(uv, k, 1), chan(uv, k * (1.0 + ca), 2));
-  // a little colour fringing even where the lens is weak
-  float edge = length((vUv - 0.5) * vec2(uAspect, 1.0));
-  col.r = mix(col.r, chan(uv + vec2(0.0015 * edge, 0.0), k, 0), 0.6);
-
   // band streaks
   float seg = floor((uv.x * uRes.x + h21(vec2(row, 2.0)) * 900.0) / (20.0 + 80.0 * h21(vec2(row, 5.0))));
-  col += step(0.92, h21(vec2(seg, row + tf * 0.37))) * band * 0.18;
+  col += step(0.93, h21(vec2(seg, row + tf * 0.37))) * band * 0.12;
 
   col *= uTint;
+  col = mix(col, aces(col * uExposure), uTone);
   col *= 1.0 - uVig * dot(vUv - 0.5, vUv - 0.5);
   col = clamp(col, 0.0, 1.0);
   // linear -> sRGB, then film grain in display space so it stays even in the darks
@@ -112,12 +118,13 @@ void main(){
   gl_FragColor = vec4(col, 1.0);
 }`;
 
+// look of each section; bloom is applied to the scene before this post pass
 const PRESETS = {
-  work:     { bg: [0.88, 0.88, 0.87], barrel: 0.16, chroma: 0.06, band: 0.12, grain: 0.06, vig: 0.15, tint: [1, 1, 1], burst: 0.45 },
-  hall:     { bg: [0, 0, 0], barrel: 0.08, chroma: 0.08, band: 0.55, grain: 0.045, vig: 0.65, tint: [1, 1, 1], burst: 0.5 },
-  city:     { bg: [0, 0, 0], barrel: 0.1, chroma: 0.06, band: 0.25, grain: 0.045, vig: 0.55, tint: [0.95, 1, 1.05], burst: 0.4 },
-  alley:    { bg: [0, 0, 0], barrel: 0.08, chroma: 0.08, band: 0.18, grain: 0.045, vig: 0.75, tint: [1.06, 0.95, 0.93], burst: 0.35 },
-  detail:   { bg: [0, 0, 0], barrel: 0.1, chroma: 0.05, band: 0.1, grain: 0.035, vig: 0.5, tint: [1, 1, 1], burst: 0.12 },
+  work:   { bg: [0.88, 0.88, 0.87], barrel: 0.12, chroma: 0.035, band: 0.0, grain: 0.022, vig: 0.1, tint: [1, 1, 1], burst: 0.0, tone: 0, exposure: 1, bloom: 0 },
+  hall:   { bg: [0, 0, 0], barrel: 0.07, chroma: 0.05, band: 0.35, grain: 0.02, vig: 0.6, tint: [1, 1, 1], burst: 0.12, tone: 1, exposure: 1.0, bloom: 0.32 },
+  city:   { bg: [0, 0, 0], barrel: 0.08, chroma: 0.04, band: 0.12, grain: 0.02, vig: 0.5, tint: [0.96, 1, 1.04], burst: 0.0, tone: 1, exposure: 1.0, bloom: 0.22 },
+  alley:  { bg: [0, 0, 0], barrel: 0.06, chroma: 0.05, band: 0.08, grain: 0.022, vig: 0.7, tint: [1, 1, 1], burst: 0.0, tone: 1, exposure: 1.0, bloom: 0.4 },
+  detail: { bg: [0, 0, 0], barrel: 0.08, chroma: 0.03, band: 0.0, grain: 0.018, vig: 0.45, tint: [1, 1, 1], burst: 0.0, tone: 1, exposure: 1.0, bloom: 0.15 },
 };
 function mixPreset(a, b, t) {
   const o = {};
@@ -159,13 +166,33 @@ export function createWorld(canvas, { heroCanvas, projects }) {
       uTime: { value: 0 }, uGlitch: { value: 0 }, uBandY: { value: 0.3 }, uBandAmp: { value: 0 },
       uGrain: { value: 0.05 }, uVig: { value: 0 }, uAspect: { value: 1 },
       uBg: { value: new THREE.Vector3() }, uTint: { value: new THREE.Vector3(1, 1, 1) }, uRes: { value: new THREE.Vector2(1, 1) },
+      uTone: { value: 0 }, uExposure: { value: 1 },
     },
   });
   const postScene = new THREE.Scene();
   postScene.add(new THREE.Mesh(new THREE.PlaneGeometry(2, 2), post));
   const postCam = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
 
-  let pr = Math.min(window.devicePixelRatio || 1, 1.5);
+  let pr = Math.min(window.devicePixelRatio || 1, 2);
+
+  // bloom, applied in place to the main scene target
+  const bloom = new UnrealBloomPass(new THREE.Vector2(256, 256), 0.3, 0.32, 1.05);
+
+  // image-based lighting: real HDR environments (CC0, Poly Haven)
+  const pmrem = new THREE.PMREMGenerator(renderer);
+  new RGBELoader().load('assets/env/warehouse_1k.hdr', (tex) => {
+    tex.mapping = THREE.EquirectangularReflectionMapping;
+    hall.setEnvironment(pmrem.fromEquirectangular(tex).texture);
+    tex.dispose();
+  });
+  const texLoader = new THREE.TextureLoader();
+  const equirect = (url, cb) => texLoader.load(url, (tex) => {
+    tex.mapping = THREE.EquirectangularReflectionMapping;
+    tex.colorSpace = THREE.SRGBColorSpace;
+    cb(tex, pmrem.fromEquirectangular(tex).texture);
+  });
+  equirect('assets/env/studio.jpg', (bg, env) => detail.setBackdrop('studio', bg, env));
+  equirect('assets/env/softstudio.jpg', (bg, env) => detail.setBackdrop('fog', bg, env));
   let cssW = 1, cssH = 1;
 
   function resize() {
@@ -174,6 +201,7 @@ export function createWorld(canvas, { heroCanvas, projects }) {
     renderer.setSize(cssW, cssH, false);
     const w = Math.max(4, Math.round(cssW * pr)), h = Math.max(4, Math.round(cssH * pr));
     rtA.setSize(w, h); rtB.setSize(w, h); rtC.setSize(w, h);
+    bloom.setSize(Math.round(w / 2), Math.round(h / 2));
     const a = cssW / cssH;
     rtPortal.setSize(Math.round(Math.min(1280, w * 0.6)), Math.round(Math.min(1280, w * 0.6) / a));
     [work, hall, city, alley, detail].forEach((s) => s.resize(a));
@@ -199,7 +227,7 @@ export function createWorld(canvas, { heroCanvas, projects }) {
     if (!settled) {
       acc += dt; frames++;
       if (frames >= 120) {
-        if (acc / frames > 0.026 && pr > 0.75) { pr -= 0.25; resize(); } else settled = true;
+        if (acc / frames > 0.024 && pr > 0.75) { pr = Math.max(0.75, pr - 0.5); resize(); } else settled = true;
         frames = 0; acc = 0;
       }
     }
@@ -254,10 +282,16 @@ export function createWorld(canvas, { heroCanvas, projects }) {
       }
     }
 
-    // random glitch bursts, stronger while scrolling fast
-    if (t > nextBurst) { burst = 0.18 + Math.random() * 0.2; nextBurst = t + 3 + Math.random() * 5; }
+    // bloom on the main target
+    if (preset.bloom > 0.01) {
+      bloom.strength = preset.bloom;
+      bloom.render(renderer, null, A, dt, false);
+    }
+
+    // rare glitch bursts, and some tearing while scrolling fast
+    if (t > nextBurst) { burst = 0.12 + Math.random() * 0.12; nextBurst = t + 5 + Math.random() * 7; }
     burst = Math.max(0, burst - dt);
-    const vGlitch = Math.min(0.7, Math.abs(st.vel) * 0.12);
+    const vGlitch = Math.min(0.45, Math.max(0, Math.abs(st.vel) - 0.4) * 0.08);
 
     const u = post.uniforms;
     u.tA.value = A.texture; u.tB.value = B.texture; u.tC.value = rtC.texture;
@@ -272,6 +306,8 @@ export function createWorld(canvas, { heroCanvas, projects }) {
     u.uVig.value = preset.vig;
     u.uBg.value.set(...preset.bg);
     u.uTint.value.set(...preset.tint);
+    u.uTone.value = preset.tone;
+    u.uExposure.value = preset.exposure;
 
     renderer.setRenderTarget(null);
     renderer.render(postScene, postCam);

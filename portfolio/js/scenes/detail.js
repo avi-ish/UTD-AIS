@@ -52,52 +52,18 @@ export function createDetail({ projects, anisotropy }) {
       g.add(neb);
       g.userData = { bg: 0x050507, fog: null };
     } else if (kind === 'studio') {
-      g.add(new THREE.HemisphereLight(0xffffff, 0x222222, 1.4));
-      const floor = new THREE.Mesh(new THREE.PlaneGeometry(80, 80), new THREE.MeshStandardMaterial({ color: 0x2a2a2a, roughness: 0.85 }));
-      floor.rotation.x = -Math.PI / 2; floor.position.y = -1.7;
-      g.add(floor);
-      // curved backdrop so the rigs read as silhouettes
-      const cyc = new THREE.Mesh(new THREE.CylinderGeometry(16, 16, 14, 48, 1, true, Math.PI * 0.6, Math.PI * 0.8), new THREE.MeshStandardMaterial({ color: 0x1f1f1f, roughness: 1, side: THREE.BackSide }));
-      cyc.position.set(0, 5, 2);
-      g.add(cyc);
-      const front = tex(softbox());
-      const boxMat = new THREE.MeshStandardMaterial({ color: 0x3a3a3a, roughness: 0.45, metalness: 0.2 });
-      const faceMat = new THREE.MeshBasicMaterial({ map: front });
-      const legMat = new THREE.MeshStandardMaterial({ color: 0xc8c8c8, metalness: 0.5, roughness: 0.35 });
-      const placements = [[-4.2, -3.2, 0.7], [4.4, -3.6, -0.7], [-6.5, -7, 0.45], [6.8, -7.5, -0.4], [0, -11, 0]];
-      placements.forEach(([x, z, ry]) => {
-        const rig = new THREE.Group();
-        const box = new THREE.Mesh(new THREE.BoxGeometry(1.5, 0.95, 0.3), boxMat);
-        const face = new THREE.Mesh(new THREE.PlaneGeometry(1.42, 0.88), faceMat);
-        face.position.z = 0.152;
-        const head = new THREE.Group(); head.add(box, face);
-        head.position.y = 1.0; head.rotation.x = -0.35;
-        rig.add(head);
-        const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.035, 2.6, 8), legMat);
-        pole.position.y = -0.4; rig.add(pole);
-        for (let k = 0; k < 3; k++) {
-          const leg = new THREE.Mesh(new THREE.CylinderGeometry(0.028, 0.028, 1.4, 6), legMat);
-          const a = (k / 3) * Math.PI * 2;
-          leg.position.set(Math.cos(a) * 0.35, -1.15, Math.sin(a) * 0.35);
-          leg.rotation.set(Math.sin(a) * 0.45, 0, -Math.cos(a) * 0.45);
-          rig.add(leg);
-        }
-        rig.position.set(x, 0, z); rig.rotation.y = ry + (x < 0 ? 0.5 : -0.5);
-        g.add(rig);
-      });
-      const spot = new THREE.PointLight(0xffffff, 30, 20, 2); spot.position.set(0, 3, 2); g.add(spot);
-      g.userData = { bg: 0x0d0d0d, fog: new THREE.Fog(0x0d0d0d, 8, 26) };
+      // backdrop + lighting come from a real photo-studio panorama (setBackdrop)
+      g.userData = { bg: 0x0d0d0d, fog: null, bgIntensity: 0.38, blur: 0 };
     } else if (kind === 'fog') {
-      g.add(new THREE.HemisphereLight(0xffffff, 0x777777, 1.3));
-      const d = new THREE.DirectionalLight(0xffffff, 1.4); d.position.set(3, 5, 4); g.add(d);
-      const blobMat = new THREE.MeshStandardMaterial({ color: 0x141416, roughness: 0.85, flatShading: false });
+      const d = new THREE.DirectionalLight(0xffffff, 1.2); d.position.set(3, 5, 4); g.add(d);
+      const blobMat = new THREE.MeshPhysicalMaterial({ color: 0x121214, roughness: 0.55, clearcoat: 0.6, clearcoatRoughness: 0.35 });
       for (let i = 0; i < 9; i++) {
-        const geo = new THREE.IcosahedronGeometry(0.8 + Math.random() * 1.6, 5);
+        const geo = new THREE.IcosahedronGeometry(0.8 + Math.random() * 1.6, 12);
         const p = geo.attributes.position, v = new THREE.Vector3();
         const s1 = Math.random() * 5, s2 = Math.random() * 5;
         for (let k = 0; k < p.count; k++) {
           v.fromBufferAttribute(p, k);
-          const n = 1 + 0.22 * Math.sin(v.x * 2.1 + s1) * Math.sin(v.y * 1.7 + s2) + 0.08 * Math.sin(v.z * 5.3);
+          const n = 1 + 0.22 * Math.sin(v.x * 2.1 + s1) * Math.sin(v.y * 1.7 + s2) + 0.05 * Math.sin(v.z * 3.1 + s1);
           v.multiplyScalar(n); p.setXYZ(k, v.x, v.y, v.z);
         }
         geo.computeVertexNormals();
@@ -107,7 +73,7 @@ export function createDetail({ projects, anisotropy }) {
         m.userData.spin = (Math.random() - 0.5) * 0.3;
         g.add(m);
       }
-      g.userData = { bg: 0xb9bbbe, fog: new THREE.Fog(0xb9bbbe, 6, 26) };
+      g.userData = { bg: 0xb9bbbe, fog: new THREE.Fog(0xb9bbbe, 10, 34), bgIntensity: 0.85, blur: 0.18 };
     } else {
       // void: a slow iridescent particle swirl
       const N = 5000, pos = new Float32Array(N * 3), colr = new Float32Array(N * 3), c = new THREE.Color();
@@ -130,6 +96,37 @@ export function createDetail({ projects, anisotropy }) {
   }
 
   let current = -1, idx = 0, target = 0, env = null;
+  const backdrops = {};
+  // photo panorama on a sphere around the camera, so it can be aimed (the
+  // studio's softboxes sit about 90° to the right of the panorama's centre)
+  const dome = new THREE.Mesh(new THREE.SphereGeometry(60, 64, 32), new THREE.MeshBasicMaterial({ side: THREE.BackSide, depthWrite: false, fog: false }));
+  dome.scale.x = -1;
+  dome.renderOrder = -1;
+  dome.visible = false;
+  scene.add(dome);
+  function applyBackdrop() {
+    if (!env) return;
+    const kind = projects[current].env, b = backdrops[kind];
+    dome.visible = false;
+    if (b && kind === 'studio') {
+      dome.material.map = b.bg;
+      dome.material.color.setScalar(env.userData.bgIntensity ?? 1);
+      dome.material.needsUpdate = true;
+      dome.rotation.y = 0.1;
+      dome.visible = true;
+      scene.background = new THREE.Color(0x000000);
+      scene.environment = b.env;
+    } else if (b) {
+      scene.background = b.bg;
+      scene.backgroundIntensity = env.userData.bgIntensity ?? 1;
+      scene.backgroundBlurriness = env.userData.blur ?? 0;
+      scene.environment = b.env;
+    } else {
+      scene.background = new THREE.Color(env.userData.bg);
+      scene.environment = null;
+    }
+  }
+  function setBackdrop(kind, bg, envTex) { backdrops[kind] = { bg, env: envTex }; if (current >= 0) applyBackdrop(); }
 
   function open(i) {
     current = i;
@@ -137,8 +134,8 @@ export function createDetail({ projects, anisotropy }) {
     Object.values(envs).forEach((e) => { e.visible = false; });
     env = envs[p.env] || buildEnv(p.env);
     env.visible = true;
-    scene.background = new THREE.Color(env.userData.bg);
     scene.fog = env.userData.fog;
+    applyBackdrop();
     // rebuild the screens for this project
     screens.forEach((s) => carousel.remove(s));
     const { textures } = screensFor(i);
@@ -180,5 +177,5 @@ export function createDetail({ projects, anisotropy }) {
     }
   }
 
-  return { scene, camera, open, go, nudge, resize, update, get index() { return Math.round(target); }, get count() { return screens.length; } };
+  return { scene, camera, open, go, nudge, resize, update, setBackdrop, get index() { return Math.round(target); }, get count() { return screens.length; } };
 }

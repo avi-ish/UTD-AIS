@@ -13,16 +13,26 @@ export function createCorridor() {
 
   const camera = new THREE.PerspectiveCamera(58, 1, 0.05, 80);
 
-  scene.add(new THREE.HemisphereLight(0xc8d8ff, 0x050505, 1.1));
-  const key = new THREE.DirectionalLight(0xffffff, 2.2);
+  scene.add(new THREE.HemisphereLight(0xc8d8ff, 0x050505, 0.18));
+  const key = new THREE.DirectionalLight(0xffffff, 0.75);
   key.position.set(0.4, 6, 3);
   scene.add(key);
   scene.add(key.target);
-  const near = new THREE.PointLight(0xdfe8ff, 14, 9, 2);
+  const near = new THREE.PointLight(0xdfe8ff, 4, 9, 2);
   scene.add(near);
 
   const std = (color, extra = {}) => new THREE.MeshStandardMaterial({ color, roughness: 0.6, metalness: 0.1, ...extra });
-  const glowMat = (color) => new THREE.MeshBasicMaterial({ color });
+  // glowing materials push past 1.0 so the bloom picks them up
+  const glowMat = (color, power = 1.8) => new THREE.MeshBasicMaterial({ color: new THREE.Color(color).multiplyScalar(power) });
+
+  // scanned circuit-board textures (Poly Haven, CC0)
+  const tl = new THREE.TextureLoader();
+  const cbTex = (name, srgb) => { const t = tl.load(`assets/tex/circuit_${name}.jpg`); if (srgb) t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 8; return t; };
+  const cbArm = cbTex('arm', false);
+  const boardMat = new THREE.MeshStandardMaterial({
+    map: cbTex('diff', true), normalMap: cbTex('nor_gl', false), aoMap: cbArm, roughnessMap: cbArm, metalnessMap: cbArm,
+    emissive: 0x06220f, roughness: 1, metalness: 1,
+  });
 
   const add = (geo, mat, x, y, z) => { const m = new THREE.Mesh(geo, mat); m.position.set(x, y, z); scene.add(m); return m; };
   const instanced = (geo, mat, list) => {
@@ -41,7 +51,7 @@ export function createCorridor() {
   };
 
   // floor, bed, rails
-  const floor = add(new THREE.PlaneGeometry(16, LEN), std(0x08090b, { roughness: 0.85 }), 0, 0, -LEN / 2 + 8);
+  const floor = add(new THREE.PlaneGeometry(16, LEN), std(0x07080a, { roughness: 0.55, metalness: 0.3 }), 0, 0, -LEN / 2 + 8);
   floor.rotation.x = -Math.PI / 2;
   add(new THREE.BoxGeometry(1.5, 0.08, LEN), std(0x111317), 0, 0.04, -LEN / 2 + 8);
   const railMat = std(0xc4c8ce, { metalness: 0.85, roughness: 0.3 });
@@ -71,8 +81,7 @@ export function createCorridor() {
     }
   }
   instanced(new THREE.CylinderGeometry(0.11, 0.14, 0.54, 10), std(0x15171b), posts);
-  instanced(new THREE.BoxGeometry(0.52, 0.04, 0.36), std(0x2fae5a, { emissive: 0x0c3a1b, roughness: 0.5 }), boards);
-  instanced(new THREE.BoxGeometry(0.12, 0.04, 0.1), std(0x0b0b0b, { roughness: 0.4 }), boardChips);
+  instanced(new THREE.BoxGeometry(0.56, 0.03, 0.56), boardMat, boards);
   instanced(new THREE.CylinderGeometry(0.035, 0.035, 0.32, 8), std(0x1a1c20), pins);
   instanced(new THREE.CylinderGeometry(0.06, 0.06, 0.035, 14), std(0xe8e8e8, { roughness: 0.35 }), caps);
   instanced(new THREE.CylinderGeometry(0.09, 0.09, 0.5, 12), std(0x0c0d10, { roughness: 0.3, metalness: 0.4 }), acts);
@@ -93,20 +102,23 @@ export function createCorridor() {
   vault.rotation.x = Math.PI / 2;
 
   /* ---- robot arms ---- */
-  const white = std(0xd9dde3, { roughness: 0.55 });
-  const dark = std(0x16181c, { roughness: 0.4, metalness: 0.3 });
+  // glossy white robot shell with a clear coat, dark rubber joints
+  const white = new THREE.MeshPhysicalMaterial({ color: 0xbfc4cb, roughness: 0.4, metalness: 0.0, clearcoat: 1, clearcoatRoughness: 0.12, envMapIntensity: 1.2 });
+  const dark = new THREE.MeshPhysicalMaterial({ color: 0x15171a, roughness: 0.5, metalness: 0.2, clearcoat: 0.5, clearcoatRoughness: 0.3 });
   const PARTS = [
-    { geo: new THREE.CylinderGeometry(0.34, 0.4, 0.24, 24), mat: dark },     // 0 base plate
-    { geo: new THREE.CylinderGeometry(0.25, 0.28, 0.42, 24), mat: white },   // 1 turret
-    { geo: new THREE.CylinderGeometry(0.21, 0.21, 0.44, 24), mat: white },   // 2 shoulder (horizontal)
-    { geo: new THREE.CapsuleGeometry(0.16, 1.05, 6, 16), mat: white },       // 3 upper arm
-    { geo: new THREE.CylinderGeometry(0.17, 0.17, 0.38, 24), mat: white },   // 4 elbow (horizontal)
-    { geo: new THREE.CapsuleGeometry(0.12, 0.8, 6, 14), mat: white },        // 5 forearm
-    { geo: new THREE.CylinderGeometry(0.1, 0.1, 0.24, 18), mat: white },     // 6 wrist
+    { geo: new THREE.CylinderGeometry(0.34, 0.4, 0.24, 48), mat: dark },     // 0 base plate
+    { geo: new THREE.CylinderGeometry(0.25, 0.3, 0.42, 48), mat: white },    // 1 turret
+    { geo: new THREE.CylinderGeometry(0.22, 0.22, 0.46, 48), mat: white },   // 2 shoulder (horizontal)
+    { geo: new THREE.CapsuleGeometry(0.16, 1.05, 12, 36), mat: white },      // 3 upper arm
+    { geo: new THREE.CylinderGeometry(0.18, 0.18, 0.4, 48), mat: white },    // 4 elbow (horizontal)
+    { geo: new THREE.CapsuleGeometry(0.12, 0.8, 12, 32), mat: white },       // 5 forearm
+    { geo: new THREE.CylinderGeometry(0.1, 0.11, 0.24, 32), mat: dark },     // 6 wrist
     { geo: new THREE.BoxGeometry(0.15, 0.24, 0.15), mat: dark },             // 7 tool
-    { geo: new THREE.CylinderGeometry(0.018, 0.018, 1.0, 6), mat: glowMat(0xff3524) }, // 8 cable red
-    { geo: new THREE.CylinderGeometry(0.018, 0.018, 1.0, 6), mat: glowMat(0x3f7dff) }, // 9 cable blue
-    { geo: new THREE.CylinderGeometry(0.018, 0.018, 1.0, 6), mat: glowMat(0xffd23f) }, // 10 cable yellow
+    { geo: new THREE.CylinderGeometry(0.016, 0.016, 1.0, 8), mat: glowMat(0xff3524, 1.4) }, // 8 cable red
+    { geo: new THREE.CylinderGeometry(0.016, 0.016, 1.0, 8), mat: glowMat(0x3f7dff, 1.4) }, // 9 cable blue
+    { geo: new THREE.CylinderGeometry(0.016, 0.016, 1.0, 8), mat: glowMat(0xffd23f, 1.4) }, // 10 cable yellow
+    { geo: new THREE.TorusGeometry(0.2, 0.03, 12, 48), mat: dark },                          // 11 shoulder ring
+    { geo: new THREE.TorusGeometry(0.165, 0.025, 12, 48), mat: dark },                       // 12 elbow ring
   ];
   const arms = [];
   for (let z = 4; z > -LEN + 10; z -= 1.6) {
@@ -140,12 +152,14 @@ export function createCorridor() {
       meshes[1].setMatrixAt(i, out.copy(mBase).multiply(T(0, 0.45, 0)));
       mSh.copy(mBase).multiply(T(0, 0.78, 0)).multiply(RY(yaw));
       meshes[2].setMatrixAt(i, out.copy(mSh).multiply(RX(Math.PI / 2)));
+      meshes[11].setMatrixAt(i, out.copy(mSh).multiply(T(0, 0, 0.24)));
       const up = M().copy(mSh).multiply(RZ(sh));
       meshes[3].setMatrixAt(i, out.copy(up).multiply(T(0, L1 / 2, 0)));
       meshes[8].setMatrixAt(i, out.copy(up).multiply(T(0.13, L1 / 2, 0.1)).multiply(tmp.clone().makeScale(1, L1, 1)));
       meshes[9].setMatrixAt(i, out.copy(up).multiply(T(0.15, L1 / 2, -0.06)).multiply(tmp.clone().makeScale(1, L1, 1)));
       mEl.copy(up).multiply(T(0, L1, 0));
       meshes[4].setMatrixAt(i, out.copy(mEl).multiply(RX(Math.PI / 2)));
+      meshes[12].setMatrixAt(i, out.copy(mEl).multiply(T(0, 0, 0.21)));
       const fo = M().copy(mEl).multiply(RZ(el));
       meshes[5].setMatrixAt(i, out.copy(fo).multiply(T(0, L2 / 2, 0)));
       meshes[10].setMatrixAt(i, out.copy(fo).multiply(T(0.11, L2 / 2, 0.08)).multiply(tmp.clone().makeScale(1, L2, 1)));
@@ -157,6 +171,7 @@ export function createCorridor() {
   }
 
   function resize(a) { camera.aspect = a; camera.updateProjectionMatrix(); }
+  function setEnvironment(env) { scene.environment = env; scene.environmentIntensity = 0.35; }
 
   /** travel: 0..1 along the hall */
   function update(t, dt, { travel, pointer }) {
@@ -170,5 +185,5 @@ export function createCorridor() {
     poseArms(t);
   }
 
-  return { scene, camera, resize, update };
+  return { scene, camera, resize, update, setEnvironment };
 }

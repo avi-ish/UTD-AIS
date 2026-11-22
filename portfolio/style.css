@@ -203,7 +203,7 @@ a, button { color: inherit; text-decoration: none; font: inherit; background: no
   right: var(--pad);
   top: 50%;
   z-index: 15;
-  width: 18.5em;
+  width: 19.6em;
   transform: translateY(-50%);
   font-size: var(--pixel);
   line-height: 1.24;
@@ -283,6 +283,14 @@ a, button { color: inherit; text-decoration: none; font: inherit; background: no
   visibility: hidden;
 }
 .contact.is-on { visibility: visible; }
+.contact::before {
+  content: "";
+  position: absolute;
+  inset: -30% -40%;
+  z-index: -1;
+  background: radial-gradient(closest-side, rgba(10,0,0,.55), rgba(10,0,0,0));
+  pointer-events: none;
+}
 .contact__icon { width: clamp(18px, 1.5vw, 26px); height: auto; margin-bottom: 1.6em; opacity: .8; }
 .contact__title {
   font-family: "Chakra Petch", system-ui, sans-serif;
@@ -376,6 +384,8 @@ a, button { color: inherit; text-decoration: none; font: inherit; background: no
   line-height: 1.02;
   -webkit-font-smoothing: antialiased;
 }
+.detail__link { display: inline-block; margin-top: .9em; font-size: var(--tiny); color: #9ea2aa; letter-spacing: .06em; }
+.detail__link:hover { color: #fff; }
 .detail__text, .detail__role { font-size: var(--pixel); line-height: 1.45; color: #d9dce1; }
 .detail__role { white-space: pre-line; }
 .detail__thumbs { display: flex; gap: .5vw; padding-top: .3em; }

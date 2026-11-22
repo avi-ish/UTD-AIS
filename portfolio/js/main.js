@@ -1,5 +1,5 @@
 import { createHero } from './hero.js';
-import { PROJECTS } from './projects.js';
+import { PROJECTS, loadShots } from './projects.js';
 import { thumbURL } from './art.js';
 import { reduceMotion, finePointer, scramble, setupHoverScramble, setupCursor, setupMenu, setupBot } from './ui.js';
 
@@ -89,6 +89,7 @@ $('.scroll-space').style.height = `${(TL.end + 1) * 100}vh`;
       Promise.all([document.fonts.load('16px Silkscreen'), document.fonts.load('500 16px "Chakra Petch"')]),
       new Promise((r) => setTimeout(r, 2500)),
     ]);
+    await loadShots(PROJECTS);
     const mod = await import('./world.js');
     TL = mod.TL;
     $('.scroll-space').style.height = `${(TL.end + 1) * 100}vh`;
@@ -123,6 +124,9 @@ function fillDetail(i) {
   dName.textContent = p.name;
   dText.textContent = p.info;
   dRole.textContent = p.role.join('\n');
+  const link = $('.detail__link');
+  link.hidden = !p.url;
+  if (p.url) link.href = p.url;
   dCount.textContent = `${String(i + 1).padStart(2, '0')} / ${String(PROJECTS.length).padStart(2, '0')}`;
   dThumbs.innerHTML = '';
   canvases.forEach((c, k) => {
@@ -207,7 +211,7 @@ function setMode(m) {
   label.classList.toggle('is-hidden', m === 'none');
   if (m === 'none') return;
   label.dataset.mode = m;
-  scramble(labelTitle, 650, m === 'hero' ? 'YOUR NAME' : 'SELECTED WORK');
+  scramble(labelTitle, 650, m === 'hero' ? 'AVI PANDYA' : 'SELECTED WORK');
   if (m === 'work') list.querySelectorAll('button').forEach((b, i) => setTimeout(() => scramble(b, 500), i * 70));
 }
 

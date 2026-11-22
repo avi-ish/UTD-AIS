@@ -49,7 +49,7 @@ void main(){
     col = vec3(0.045, 0.085, 0.125) * (0.65 + 0.7 * vC.r) * shade;
     col *= 0.82 + 0.18 * step(0.07, g.y);                         // floor slabs
     col = mix(col, col * 0.45, win);                                // dark glass
-    col = mix(col, vec3(0.82, 0.92, 1.0) * 1.6, win * lit);         // lit windows
+    col = mix(col, vec3(0.82, 0.92, 1.0) * 1.25, win * lit);        // lit windows
   } else {
     col = vec3(0.06, 0.1, 0.14) * (0.6 + 0.6 * vC.r);
     if (n.y > 0.5 && vC.b > 0.95) col = vec3(0.025, 0.03, 0.04);   // street

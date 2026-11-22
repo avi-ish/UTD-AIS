@@ -355,15 +355,23 @@ function paintScreen(ctx, project, x, y, w, h, variant, seed) {
   }
 }
 
-/** Card for the Selected Work carousel: screen inside a dark rounded bezel. */
+// draw an image to fill a box (like CSS background-size: cover)
+function cover(ctx, img, x, y, w, h) {
+  const s = Math.max(w / img.width, h / img.height);
+  const iw = img.width * s, ih = img.height * s;
+  ctx.drawImage(img, x + (w - iw) / 2, y + (h - ih) / 2, iw, ih);
+}
+
+/** Card for the Selected Work carousel: screen inside a thin dark rounded bezel. */
 export function makeCover(project, seed = 7) {
   const W = 1600, H = 1000, c = canvas(W, H), ctx = c.getContext('2d');
-  ctx.fillStyle = '#060606';
-  rrect(ctx, 0, 0, W, H, 46); ctx.fill();
-  const b = 24;
+  ctx.fillStyle = '#0b0b0c';
+  rrect(ctx, 0, 0, W, H, 34); ctx.fill();
+  const b = 16;
   ctx.save();
   rrect(ctx, b, b, W - b * 2, H - b * 2, 20); ctx.clip();
-  paintScreen(ctx, project, b, b, W - b * 2, H - b * 2, 0, seed);
+  if (project.images && project.images.length) cover(ctx, project.images[0], b, b, W - b * 2, H - b * 2);
+  else paintScreen(ctx, project, b, b, W - b * 2, H - b * 2, 0, seed);
   ctx.restore();
   // glass sheen
   const g = ctx.createLinearGradient(0, 0, W, H);
@@ -374,6 +382,15 @@ export function makeCover(project, seed = 7) {
 
 /** The 5 screens shown in a project's detail view. */
 export function makeScreens(project) {
+  if (project.images && project.images.length) {
+    return project.images.map((img) => {
+      const W = 1440, H = 900, c = canvas(W, H), ctx = c.getContext('2d');
+      ctx.save(); rrect(ctx, 0, 0, W, H, 14); ctx.clip();
+      cover(ctx, img, 0, 0, W, H);
+      ctx.restore();
+      return c;
+    });
+  }
   return [0, 1, 2, 3, 4].map((v) => {
     const W = 1440, H = 900, c = canvas(W, H), ctx = c.getContext('2d');
     ctx.save(); rrect(ctx, 0, 0, W, H, 18); ctx.clip();

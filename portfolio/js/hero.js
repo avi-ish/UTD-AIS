@@ -13,7 +13,10 @@
 */
 
 export const HERO_CONFIG = {
-  portrait: null,          // e.g. "images/me.jpg" or "images/me.mp4" (dark background works best)
+  // A cut-out portrait (transparent background). Set to null to use the generated bust instead.
+  portrait: 'assets/portrait.webp',
+  // where things are in that photo, as fractions of its width/height
+  frame: { headTop: 0.235, faceX: 0.482, eye: [0.414, 0.419] },
   lensRadius: 0.064,       // lens radius as a fraction of the viewport width
   maxDpr: 2,
 };
@@ -214,17 +217,38 @@ const PORTRAIT_IMAGE = PORTRAIT_HEAD + /* glsl */`
 uniform sampler2D uImg;
 uniform vec2 uImgSize;
 uniform vec2 uCenter;
+uniform vec4 uRect;     // cut-out placement on screen (uv, y down): x, y, w, h
+uniform float uCut;     // 1 = cut-out with alpha, 0 = cover-fit photo
+uniform vec2 uLook;     // small parallax so the photo feels a little 3D
 void main(){
   vec2 uv = screenUV();
-  float sa = uScreen.x / uScreen.y, ia = uImgSize.x / uImgSize.y;
-  vec2 st = uv - vec2(uCenter.x, 0.5);
-  if (sa > ia) st.y *= ia / sa; else st.x *= sa / ia;
-  st += 0.5;
+  vec2 st;
+  if (uCut > 0.5) {
+    st = (uv - uRect.xy) / uRect.zw;
+    // a soft "pillow" depth from the blurred alpha: the middle of the head moves more than the edges
+    float depth = textureLod(uImg, st, 5.0).a;
+    st -= uLook * vec2(0.035, 0.025) * (depth - 0.45);
+  } else {
+    float sa = uScreen.x / uScreen.y, ia = uImgSize.x / uImgSize.y;
+    st = uv - vec2(uCenter.x, 0.5);
+    if (sa > ia) st.y *= ia / sa; else st.x *= sa / ia;
+    st += 0.5;
+  }
   if (any(lessThan(st, vec2(0.0))) || any(greaterThan(st, vec2(1.0)))) { emit(0.0, 0.0); return; }
-  vec3 c = texture(uImg, st).rgb;
-  float lum = dot(c, vec3(0.2126, 0.7152, 0.0722));
-  lum = smoothstep(0.03, 0.95, lum);
-  emit(lum, smoothstep(0.05, 0.22, lum));
+  vec4 c = texture(uImg, st);
+  float lum = dot(c.rgb, vec3(0.2126, 0.7152, 0.0722));
+  if (uCut > 0.5) {
+    // local contrast: pull features (eyes, glasses, mouth) out of the flat skin tones
+    float blur = dot(textureLod(uImg, st, 3.5).rgb, vec3(0.2126, 0.7152, 0.0722));
+    lum = lum + (lum - blur) * 1.1;
+    lum = smoothstep(0.03, 0.95, lum);
+    lum = lum / (1.0 + 1.1 * max(lum - 0.5, 0.0));   // keep the white shirt from going flat
+    lum = pow(lum, 1.05) * c.a;
+    emit(lum, smoothstep(0.1, 0.6, c.a));
+  } else {
+    lum = smoothstep(0.03, 0.95, lum);
+    emit(lum, smoothstep(0.05, 0.22, lum));
+  }
 }`;
 
 const SCREEN = /* glsl */`#version 300 es
@@ -368,7 +392,7 @@ void main(){
   }
 
   /* ---- quadtree on the dark parts: cells split where the image varies ---- */
-  float qMean = 0.0, qK = 0.0, qS = cell;
+  float qMean = 0.0, qK = 0.0, qS = cell, qMask = 0.0, qInLens = 0.0;
   vec2 qO = vec2(0.0);
   for (int k = 4; k >= 0; k--) {
     float S = cell * exp2(float(k));
@@ -378,13 +402,16 @@ void main(){
     vec4 tx = P(lens(cen, 0.0), log2(S / uTexel) + log2(mix(1.0, lensMag(rq), uLensOn)));
     float var = max(tx.g - tx.r * tx.r, 0.0);
     qMean = tx.r * mix(1.0, mix(0.07, 1.0, smoothstep(0.16, 0.8, rq)), uLensOn);
+    qMask = tx.b;
+    qInLens = (1.0 - smoothstep(0.85, 1.05, rq)) * uLensOn;
     qK = float(k); qS = S; qO = id * S;
     if (var < 0.0032) break;
   }
   vec2 lp = fd - qO;
   float edge = max(step(lp.x, uDpr), step(lp.y, uDpr));
   float dark = 1.0 - smoothstep(0.06, 0.2, qMean);
-  float qt = dark * step(qK, 3.5) * step(0.5, uIntro) * (1.0 - pinK);
+  float edgeCell = smoothstep(0.02, 0.25, qMask) * smoothstep(0.98, 0.75, qMask);
+  float qt = dark * step(qK, 3.5) * step(0.5, uIntro) * (1.0 - pinK) * max(edgeCell, qInLens);
   col += qt * mix(vec3(qMean * 0.45), vec3(0.2), edge);
 
   /* ---- sphere grid behind the figure (dispersed through the lens) ---- */
@@ -525,8 +552,27 @@ export function createHero(canvas, input, env) {
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
   }
 
+  // placement of a framed cut-out photo, in screen uv (y down)
+  const rect = { x: 0, y: 0, w: 1, h: 1 };
+  function placeCutout() {
+    if (!source.frame) return;
+    const f = source.frame, aspect = innerWidth / innerHeight, ia = source.w / source.h;
+    const narrow = aspect < 0.9;
+    const top = narrow ? 0.12 : 0.03, bottom = narrow ? 1.0 : 1.38;
+    rect.h = (bottom - top) / (1 - f.headTop);
+    rect.y = top - f.headTop * rect.h;
+    rect.w = rect.h * ia / aspect;
+    rect.x = view.cx - f.faceX * rect.w;
+  }
+
   // where the bust's (viewer's) left eye lands on screen, in CSS px, for a given head turn
   function eyeOnScreen(yaw, pitch) {
+    if (source.frame) {
+      return {
+        x: (rect.x + source.frame.eye[0] * rect.w - yaw * 0.035 * 0.55 * rect.w) * innerWidth,
+        y: (rect.y + source.frame.eye[1] * rect.h - pitch * 0.025 * 0.55 * rect.h) * innerHeight,
+      };
+    }
     const piv = [0, -0.85, -0.1];
     let x = -0.255 - piv[0], y = 0.045 - piv[1], z = 0.565 - piv[2];
     // undo the pitch, then the yaw (inverse of headSpace in the shader)
@@ -575,12 +621,13 @@ export function createHero(canvas, input, env) {
       view.tanH = 0.265;
       view.camY = -0.33;
     }
+    placeCutout();
     home = eyeOnScreen(look.x, look.y);
     if (!input.active) { lens.x = home.x; lens.y = home.y; }
   }
 
   /* ---- custom portrait: config, ?portrait=, or drag & drop ---- */
-  function useMedia(url, isVideo) {
+  function useMedia(url, isVideo, frame = null) {
     if (isVideo) {
       const v = document.createElement('video');
       v.src = url; v.muted = true; v.loop = true; v.playsInline = true; v.crossOrigin = 'anonymous';
@@ -592,17 +639,21 @@ export function createHero(canvas, input, env) {
       img.onload = () => {
         gl.bindTexture(gl.TEXTURE_2D, imgTex);
         gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+        gl.generateMipmap(gl.TEXTURE_2D);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-        source = { kind: 'image', el: img, w: img.naturalWidth, h: img.naturalHeight };
+        source = { kind: 'image', el: img, w: img.naturalWidth, h: img.naturalHeight, frame };
+        placeCutout();
+        home = eyeOnScreen(look.x, look.y);
+        if (!input.active) { lens.x = home.x; lens.y = home.y; }
       };
       img.src = url;
     }
   }
   const qp = new URLSearchParams(location.search).get('portrait');
-  const initial = qp || HERO_CONFIG.portrait;
-  if (initial) useMedia(initial, /\.(mp4|webm|mov)(\?|$)/i.test(initial));
+  if (qp) useMedia(qp, /\.(mp4|webm|mov)(\?|$)/i.test(qp));
+  else if (HERO_CONFIG.portrait) useMedia(HERO_CONFIG.portrait, false, HERO_CONFIG.frame);
 
   let glitch = 0, glitchUntil = 0, nextGlitch = 3.2, bandJump = 0;
   let frames = 0, acc = 0, checked = false, started = -1;
@@ -719,6 +770,9 @@ export function createHero(canvas, input, env) {
       gl.bindTexture(gl.TEXTURE_2D, imgTex);
       gl.uniform1i(u.uImg, 0);
       gl.uniform2f(u.uImgSize, source.w, source.h);
+      gl.uniform4f(u.uRect, rect.x, rect.y, rect.w, rect.h);
+      gl.uniform1f(u.uCut, source.frame ? 1 : 0);
+      gl.uniform2f(u.uLook, look.x, look.y);
       gl.uniform2f(u.uScreen, W, H);
       gl.uniform1f(u.uTexel, texel);
       gl.uniform1f(u.uTime, t);
