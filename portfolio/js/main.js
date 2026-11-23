@@ -1,11 +1,11 @@
 import { createHero } from './hero.js';
-import { makeCredentialCard, glyphFloor } from './art.js';
+import { makeCredentialCard } from './art.js';
 import { readIssuers, createViewer } from './viewer.js';
 import { createMedia } from './media.js';
 import { createCards } from './cards.js';
 import { TL, CARD_STEP, measureSections, timelineAt } from './timeline.js';
 import { CONFIG } from './config.js';
-import { reduceMotion, finePointer, scramble, setupHoverScramble, setupCursor, setupMenu } from './ui.js';
+import { reduceMotion, finePointer, setupCursor, setupMenu } from './ui.js';
 
 const $ = (sel) => document.querySelector(sel);
 const root = document.documentElement;
@@ -30,7 +30,6 @@ let viewer = null; // the certification viewer, made further down
 const motionBtn = $('.nav__motion');
 function setStill(v) {
   still = v;
-  if (viewer) viewer.resume();
   root.classList.toggle('is-still', v);
   motionBtn.setAttribute('aria-pressed', String(v));
   motionBtn.textContent = v ? 'Play motion' : 'Pause motion';
@@ -40,24 +39,12 @@ motionBtn.addEventListener('click', () => setStill(!still));
 
 /* ---- hero ---- */
 const heroCanvas = $('#hero');
-const heroName = $('.hero__name');
 const heroInner = $('.hero__inner');
-const hero = createHero(heroCanvas, input, {
-  reduceMotion,
-  finePointer,
-  onGlitch() {
-    if (still) return;
-    heroName.classList.remove('is-glitch');
-    void heroName.offsetWidth;
-    heroName.classList.add('is-glitch');
-  },
-});
+const hero = createHero(heroCanvas, input, { reduceMotion, finePointer });
 if (!hero) root.classList.add('no-gl');
 
-setupHoverScramble();
 setupCursor();
 const menu = setupMenu({ onNavigate: goto });
-setTimeout(() => scramble(heroName, 900), 250);
 
 /* ---- scroll timeline, measured from the sections themselves ---- */
 let sections = measureSections();
@@ -120,13 +107,15 @@ function syncCerts(s) {
 
 /* ---- backdrop pictures and the certification cards ---- */
 const worldCanvas = $('#world');
-const media = createMedia(worldCanvas, { floorCanvas: glyphFloor() });
+const media = createMedia(worldCanvas);
 if (!media) root.classList.add('no-media');
 let cards = null;
 (async () => {
   try {
-    await Promise.race([document.fonts.load('600 16px "Spline Sans Mono"'), new Promise((r) => setTimeout(r, 2500))]);
-    const canvases = issuers.map((iss, i) => makeCredentialCard({ issuer: iss.name, items: iss.certs.map((c) => c.short), accent: iss.accent, motif: iss.motif }, i));
+    const faces = ['400 16px "Spline Sans"', '600 16px "Spline Sans"', '400 16px "Spline Sans Mono"', '600 16px "Spline Sans Mono"'];
+    await Promise.race([Promise.all(faces.map((f) => document.fonts.load(f))), new Promise((r) => setTimeout(r, 2500))]);
+    const compact = innerWidth < 700;
+    const canvases = issuers.map((iss) => makeCredentialCard(iss, { compact }));
     cards = createCards($('.cards'), canvases, { onPick: (i) => viewer.open(i, 0, issuers[i].btn) });
   } catch (err) {
     console.error(err);

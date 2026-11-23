@@ -12,8 +12,6 @@ export function readIssuers(list) {
     el: li,
     btn: li.querySelector('.issuer__btn'),
     name: li.querySelector('.issuer__name').textContent.trim(),
-    motif: li.dataset.motif,
-    accent: li.dataset.accent,
     certs: [...li.querySelectorAll('.cert')].map((c) => {
       const times = c.querySelectorAll('time');
       const id = c.querySelector('.cert__id');
@@ -47,7 +45,6 @@ export function createViewer({ issuers, isStill, reduceMotion, onIssuer }) {
   const dlg = el('dialog', 'viewer');
   dlg.setAttribute('aria-labelledby', 'viewer-h');
   dlg.innerHTML = `
-    <canvas class="viewer__sky" aria-hidden="true"></canvas>
     <div class="viewer__bar">
       <button class="viewer__hop viewer__hop--prev" type="button" data-hop="-1">${CHEVRON(-1)}<span class="viewer__hop-name"></span></button>
       <button class="viewer__close" type="button">Close</button>
@@ -79,7 +76,6 @@ export function createViewer({ issuers, isStill, reduceMotion, onIssuer }) {
   document.body.append(dlg);
 
   const q = (s) => dlg.querySelector(s);
-  const sky = q('.viewer__sky');
   const stage = q('.viewer__stage');
   const track = q('.viewer__track');
   const live = dlg.querySelector('[aria-live]');
@@ -141,7 +137,7 @@ export function createViewer({ issuers, isStill, reduceMotion, onIssuer }) {
     live.textContent = `${c.name}, ${at + 1} of ${n}`;
   }
 
-  function go(k, { glitch = true } = {}) {
+  function go(k) {
     const n = issuer.certs.length;
     const next = Math.max(0, Math.min(n - 1, k));
     drag = 0;
@@ -149,16 +145,11 @@ export function createViewer({ issuers, isStill, reduceMotion, onIssuer }) {
     at = next;
     place();
     fill();
-    if (glitch && !isStill()) {
-      const on = slides[at];
-      on.classList.remove('is-glitch'); void on.offsetWidth; on.classList.add('is-glitch');
-    }
   }
 
   function show(iIssuer, k = 0) {
     issuer = issuers[(iIssuer + issuers.length) % issuers.length];
     at = Math.max(0, Math.min(issuer.certs.length - 1, k));
-    dlg.style.setProperty('--accent-cert', issuer.accent);
     q('.viewer__issuer').textContent = issuer.name;
     stage.setAttribute('aria-label', `${issuer.name} certifications`);
     const prev = issuers[(issuer.index - 1 + issuers.length) % issuers.length];
@@ -206,7 +197,6 @@ export function createViewer({ issuers, isStill, reduceMotion, onIssuer }) {
     if (!dlg.open) dlg.showModal();
     show(iIssuer, k);
     (issuer.certs.length > 1 ? stepNext : q('.viewer__close')).focus({ preventScroll: true });
-    startSky();
   }
   let closing = 0;
   function close() {
@@ -286,46 +276,11 @@ export function createViewer({ issuers, isStill, reduceMotion, onIssuer }) {
   addEventListener('pointerup', release);
   addEventListener('pointercancel', release);
 
-  addEventListener('resize', () => { if (dlg.open) { layout(); sizeSky(); } });
-
-  /* ---- the room: slow drifting points of light ---- */
-  const sctx = sky.getContext('2d');
-  let stars = [], skyRaf = 0, skyW = 0, skyH = 0;
-  function sizeSky() {
-    const dpr = Math.min(devicePixelRatio || 1, 2);
-    skyW = innerWidth; skyH = innerHeight;
-    sky.width = Math.round(skyW * dpr); sky.height = Math.round(skyH * dpr);
-    sctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    let seed = 7;
-    const rnd = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
-    stars = Array.from({ length: Math.round((skyW * skyH) / 5200) }, () => ({ x: rnd() * skyW, y: rnd() * skyH, z: 0.2 + rnd() * 0.8, p: rnd() * 6.28 }));
-  }
-  function drawSky(t) {
-    sctx.clearRect(0, 0, skyW, skyH);
-    for (const s of stars) {
-      const x = (s.x - t * 6 * s.z + skyW * 4) % skyW;
-      const tw = 0.55 + 0.45 * Math.sin(t * 1.3 + s.p);
-      sctx.fillStyle = `rgba(226,232,255,${(0.12 + s.z * 0.5) * tw})`;
-      const r = s.z * 1.4;
-      sctx.fillRect(x, s.y, r, r);
-    }
-  }
-  function startSky() {
-    sizeSky();
-    cancelAnimationFrame(skyRaf);
-    const t0 = performance.now();
-    const tick = (now) => {
-      if (!dlg.open) return;
-      drawSky(isStill() ? 0 : (now - t0) / 1000);
-      if (!isStill()) skyRaf = requestAnimationFrame(tick);
-    };
-    skyRaf = requestAnimationFrame(tick);
-  }
+  addEventListener('resize', () => { if (dlg.open) layout(); });
 
   return {
     open,
     close,
     get isOpen() { return dlg.open; },
-    resume() { if (dlg.open) startSky(); },
   };
 }

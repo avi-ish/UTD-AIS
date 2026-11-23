@@ -1,3 +1,5 @@
+@font-face { font-family: "Spline Sans"; src: url("fonts/spline-sans-400.woff2") format("woff2"); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: "Spline Sans"; src: url("fonts/spline-sans-600.woff2") format("woff2"); font-weight: 600; font-style: normal; font-display: swap; }
 @font-face { font-family: "Spline Sans Mono"; src: url("fonts/spline-sans-mono-400.woff2") format("woff2"); font-weight: 400; font-style: normal; font-display: swap; }
 @font-face { font-family: "Spline Sans Mono"; src: url("fonts/spline-sans-mono-600.woff2") format("woff2"); font-weight: 600; font-style: normal; font-display: swap; }
 
@@ -23,13 +25,14 @@
   /* screen and shadow colours (used by the canvases' fallbacks and the elevation scale) */
   --color-night: oklch(8% 0.01 255); --color-shadow: oklch(6% 0.02 255 / 0.55); --color-shadow-soft: oklch(6% 0.02 255 / 0.28); --color-highlight: oklch(98% 0.005 255 / 0.06);
 
-  --font-display: "Spline Sans Mono", ui-monospace, "SFMono-Regular", Menlo, monospace; --font-body: var(--font-display); --font-outlier: var(--font-body);
-  --radius-card: 6px; --radius-pill: 999px; --rule-hair: 1px;
+  --font-display: "Spline Sans", system-ui, -apple-system, "Segoe UI", sans-serif; --font-body: var(--font-display);
+  --font-mono: "Spline Sans Mono", ui-monospace, "SFMono-Regular", Menlo, monospace; --font-outlier: var(--font-mono);
+  --radius-card: 8px; --radius-pill: 999px; --rule-hair: 1px;
   /* elevation: offset and blur, never a glow */
   --shadow-card: 0 1px 0 var(--color-highlight) inset, 0 2px 6px var(--color-shadow-soft), 0 22px 48px -18px var(--color-shadow);
   --shadow-lift: 0 1px 0 var(--color-highlight) inset, 0 6px 14px var(--color-shadow-soft), 0 34px 70px -22px var(--color-shadow);
-  --color-room: oklch(9% 0.012 260); --color-room-veil: oklch(9% 0.012 260 / 0.7); --color-scanline: oklch(100% 0 0 / 0.035);
+  --color-room: oklch(9% 0.012 260); --color-room-veil: oklch(9% 0.012 260 / 0.7);
   --shadow-screen: 0 40px 80px -30px oklch(0% 0 0 / 0.9), 0 0 0 1px var(--color-highlight);
-  --tracking-display: -0.03em;
+  --tracking-display: -0.035em;
   --nav-h: 72px;
 }

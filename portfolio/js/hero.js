@@ -339,7 +339,7 @@ void main(){
   float off = (n1 - 0.5) * (6.0 + 20.0 * n2) * uDpr * band;
   float gRow = floor(fc.y / (uRes.y * 0.035));
   float gN = h21(vec2(gRow, floor(t * 28.0)));
-  off += step(1.0 - 0.35 * uGlitch, gN) * (h21(vec2(gRow, tf + 3.1)) - 0.5) * 160.0 * uDpr * step(0.01, uGlitch);
+  off += step(1.0 - 0.35 * uGlitch, gN) * (h21(vec2(gRow, tf + 3.1)) - 0.5) * 70.0 * uDpr * step(0.01, uGlitch);
   vec2 fd = fc + vec2(off, 0.0);
 
   /* ---- intro: resolve from big blocks to fine cells ---- */
@@ -432,7 +432,7 @@ void main(){
   float segLen = (18.0 + 90.0 * h21(vec2(row, 5.0))) * uDpr;
   float seg = floor((fc.x + h21(vec2(row, 2.0)) * 1000.0) / segLen);
   float streak = step(0.9, h21(vec2(seg, row + tf * 0.37)));
-  col += streak * band * 0.3 * (0.6 + 0.4 * h21(vec2(seg, row)));
+  col += streak * band * 0.14 * (0.6 + 0.4 * h21(vec2(seg, row)));
 
   float dRow = floor(fc.y / (3.0 * uDpr));
   float dSeg = floor(fc.x / (26.0 * uDpr) + h21(vec2(dRow, 1.0)) * 3.0);
@@ -655,7 +655,7 @@ export function createHero(canvas, input, env) {
   if (qp) useMedia(qp, /\.(mp4|webm|mov)(\?|$)/i.test(qp));
   else if (HERO_CONFIG.portrait) useMedia(HERO_CONFIG.portrait, false, HERO_CONFIG.frame);
 
-  let glitch = 0, glitchUntil = 0, nextGlitch = 3.2, bandJump = 0;
+  let glitch = 0, glitchUntil = 0, nextGlitch = 7, bandJump = 0;
   let frames = 0, acc = 0, checked = false, started = -1;
 
   layout();
@@ -706,9 +706,8 @@ export function createHero(canvas, input, env) {
     // glitch bursts
     if (!reduce && t > nextGlitch) {
       glitchUntil = t + 0.12 + Math.random() * 0.16;
-      nextGlitch = t + 3.5 + Math.random() * 5.5;
-      bandJump = (Math.random() - 0.5) * 0.18;
-      env.onGlitch && env.onGlitch();
+      nextGlitch = t + 9 + Math.random() * 9;
+      bandJump = (Math.random() - 0.5) * 0.1;
     }
     glitch = t < glitchUntil ? 1 : 0;
     bandJump *= Math.exp(-dt * 3);
@@ -716,7 +715,7 @@ export function createHero(canvas, input, env) {
     const intro = reduce ? 1 : Math.min(1, Math.max(0, (t - 0.15) / 1.5));
     const lensOn = reduce ? 1 : smooth(Math.min(1, Math.max(0, (t - 1.2) / 0.9)));
     const bandY = 0.305 + (reduce ? 0 : 0.03 * Math.sin(t * 0.37) + 0.012 * Math.sin(t * 1.7) + bandJump);
-    const bandAmp = reduce ? 0.6 : 0.85 + 0.15 * Math.sin(t * 9.0) + glitch * 0.6;
+    const bandAmp = reduce ? 0.35 : 0.42 + 0.06 * Math.sin(t * 9.0) + glitch * 0.4;
 
     /* trail pass (ping-pong) */
     const ptrX = input.active ? input.x : lens.x, ptrY = input.active ? input.y : lens.y;

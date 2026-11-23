@@ -1,6 +1,6 @@
 // The backdrop: real photographs and video instead of live 3D. One WebGL2
 // pass draws the section's picture slightly zoomed (and scrubs the video with
-// the scroll), grades it, lays the CRT treatment on top, dissolves between
+// the scroll), grades it, lays a light film finish on top, dissolves between
 // sections in blocks, and lets the cursor knock the picture into flying
 // pixels wherever it moves.
 
@@ -35,7 +35,7 @@ const FRAG = `#version 300 es
 precision highp float;
 in vec2 vUv;
 out vec4 o;
-uniform sampler2D tA, tB, tTrail, tFloor;
+uniform sampler2D tA, tB, tTrail;
 uniform vec2 uRes;
 uniform vec4 uCoverA, uCoverB;   // uv scale (xy) and offset (zw) for cover fit + zoom
 uniform int uModeA, uModeB;      // 0 sheet, 1 picture
@@ -43,21 +43,16 @@ uniform vec3 uGradeA, uGradeB;   // shadow tint, per section
 uniform vec3 uHiA, uHiB;         // highlight tint, per section
 uniform float uLiftA, uLiftB;    // how much of the original colour survives
 uniform float uMix;              // block dissolve A -> B
-uniform float uTime, uGlitch, uBand, uBandY, uDpr;
+uniform float uTime, uGlitch, uDpr;
 uniform vec2 uMouse;             // device px, y up
 
 float h21(vec2 p){ p = fract(p * vec2(123.34, 456.21)); p += dot(p, p + 45.32); return fract(p.x * p.y); }
 
 vec3 sheet(vec2 uv){
-  vec3 paper = vec3(0.945, 0.943, 0.93);
-  // the faint text floor, tipped back in perspective
-  float y = 1.0 - uv.y;
-  if (y > 0.58) {
-    float depth = (y - 0.58) / 0.42;
-    vec2 fuv = vec2((uv.x - 0.5) / (0.35 + depth * 0.9) + 0.5, 1.0 / (0.08 + depth * 0.92));
-    float g = texture(tFloor, fuv * vec2(2.2, 0.7)).a;
-    paper = mix(paper, vec3(0.42, 0.43, 0.46), g * 0.55 * smoothstep(0.0, 0.5, depth));
-  }
+  // warm paper, lit from above: lighter at the top, a soft falloff to the edges
+  vec3 paper = mix(vec3(0.885, 0.882, 0.872), vec3(0.955, 0.953, 0.945), smoothstep(0.0, 1.0, uv.y));
+  vec2 c = uv - vec2(0.5, 0.62);
+  paper += 0.03 * (1.0 - smoothstep(0.0, 0.7, length(c * vec2(1.0, 1.4))));
   return paper;
 }
 
@@ -92,14 +87,11 @@ void main(){
   vec2 px = gl_FragCoord.xy;
   vec2 uv = vUv;
 
-  // tearing rows in the drifting band and during dissolves
+  // rows tear a little while one picture dissolves into the next, and on a hard flick
   float y = 1.0 - uv.y;
-  float row = floor(px.y / (2.0 * uDpr));
   float tf = floor(uTime * 22.0);
-  float band = smoothstep(0.06, 0.02, abs(y - uBandY)) * uBand;
   float trans = uMix * (1.0 - uMix) * 4.0;
-  uv.x += (h21(vec2(row, tf)) - 0.5) * 0.02 * band;
-  uv.x += (h21(vec2(floor(y * 70.0), tf + 9.0)) - 0.5) * 0.06 * trans;
+  uv.x += (h21(vec2(floor(y * 70.0), tf + 9.0)) - 0.5) * 0.04 * trans;
   float gRow = floor(y * 40.0);
   uv.x += step(1.0 - 0.4 * uGlitch, h21(vec2(gRow, floor(uTime * 30.0)))) * (h21(vec2(gRow, tf + 3.0)) - 0.5) * 0.1 * uGlitch;
 
@@ -118,19 +110,18 @@ void main(){
     col = vec3(scene(suv + vec2(split, 0.0)).r, scene(suv).g, scene(suv - vec2(split, 0.0)).b);
     // some blocks drop out, some flare, as if the pixels were knocked loose
     col *= step(tr * 0.55, r + 0.12);
-    col += step(1.0 - tr * 0.18, r) * vec3(1.0, 0.62, 0.34) * 0.9;
+    col += step(1.0 - tr * 0.12, r) * vec3(1.0, 0.64, 0.38) * 0.45;
     col = mix(scene(uv), col, smoothstep(0.02, 0.18, tr));
   } else {
     col = scene(uv);
   }
 
-  // CRT finish: scan lines, grain, vignette
-  col *= 0.94 + 0.06 * step(mod(px.y, 3.0 * uDpr), 1.5 * uDpr);
+  // finish on the pictures: faint scan lines and a vignette; fine grain everywhere
+  float pic = float(uModeA == 1 || uMix > 0.5);
+  col *= 1.0 - 0.025 * pic * step(mod(px.y, 3.0 * uDpr), 1.5 * uDpr);
   vec2 vv = vUv - 0.5;
-  col *= 1.0 - 0.55 * dot(vv, vv) * float(uModeA == 1 || uMix > 0.5);
-  col += (h21(px + fract(uTime * 7.0) * 100.0) - 0.5) * 0.035;
-  float seg = floor((px.x + h21(vec2(row, 2.0)) * 900.0) / (20.0 + 80.0 * h21(vec2(row, 5.0))));
-  col += step(0.93, h21(vec2(seg, row + tf * 0.37))) * band * 0.12;
+  col *= 1.0 - 0.5 * dot(vv, vv) * pic;
+  col += (h21(px + fract(uTime * 7.0) * 100.0) - 0.5) * 0.02;
   o = vec4(clamp(col, 0.0, 1.0), 1.0);
 }`;
 
@@ -141,14 +132,14 @@ const ease = (x) => x * x * (3 - 2 * x);
 const SCENES = [
   { id: 'sheet', mode: 0, from: 0, to: TL.ringEnd },
   { id: 'city', mode: 1, src: 'assets/env/city-drop.mp4', poster: 'assets/env/city-drop-poster.jpg', video: true, from: TL.ringEnd, to: TL.fallEnd, zoom: [1.06, 1.16], grade: [0.01, 0.05, 0.14], hi: [0.62, 0.8, 1.0], lift: 0.12 },
-  { id: 'alley', mode: 1, src: 'assets/env/alley.jpg', from: TL.mixStart, to: TL.end, zoom: [1.06, 1.14], grade: [0.06, 0.005, 0.004], hi: [1.0, 0.42, 0.26], lift: 0.18 },
+  { id: 'alley', mode: 1, src: 'assets/env/alley.jpg', from: TL.mixStart, to: TL.end, zoom: [1.06, 1.14], grade: [0.035, 0.02, 0.018], hi: [1.0, 0.74, 0.56], lift: 0.42 },
 ];
 const DISSOLVES = [
   { a: 0, b: 1, from: TL.ringEnd, to: TL.growEnd },
   { a: 1, b: 2, from: TL.mixStart, to: TL.mixEnd },
 ];
 
-export function createMedia(canvas, { floorCanvas }) {
+export function createMedia(canvas) {
   const gl = canvas.getContext('webgl2', { antialias: false, alpha: false, premultipliedAlpha: false, powerPreference: 'high-performance' });
   if (!gl) return null;
 
@@ -206,8 +197,6 @@ export function createMedia(canvas, { floorCanvas }) {
     }
     return m;
   });
-  const floorTex = texture(null);
-  upload(floorTex, floorCanvas, true);
 
   // trail ping-pong at an eighth of the screen
   const trail = [0, 1].map(() => ({ tex: texture(null), fbo: gl.createFramebuffer() }));
@@ -287,7 +276,7 @@ export function createMedia(canvas, { floorCanvas }) {
     u = main.u;
     const px = pointer.nx || 0, py = pointer.ny || 0;
     const bind = (unit, tex, name) => { gl.activeTexture(gl.TEXTURE0 + unit); gl.bindTexture(gl.TEXTURE_2D, tex); gl.uniform1i(u[name], unit); };
-    bind(0, a.tex, 'tA'); bind(1, (b || a).tex, 'tB'); bind(2, trail[ti].tex, 'tTrail'); bind(3, floorTex, 'tFloor');
+    bind(0, a.tex, 'tA'); bind(1, (b || a).tex, 'tB'); bind(2, trail[ti].tex, 'tTrail');
     const za = a.zoom ? a.zoom[0] + (a.zoom[1] - a.zoom[0]) * progress(a) : 1;
     const zb = b && b.zoom ? b.zoom[0] + (b.zoom[1] - b.zoom[0]) * progress(b) : 1;
     gl.uniform4f(u.uCoverA, ...cover(a, za, px, py));
@@ -301,9 +290,7 @@ export function createMedia(canvas, { floorCanvas }) {
     gl.uniform1f(u.uTime, t);
     gl.uniform1f(u.uDpr, dpr);
     gl.uniform2f(u.uMouse, mx, my);
-    gl.uniform1f(u.uGlitch, still ? 0 : Math.min(0.4, Math.max(0, Math.abs(vel) - 0.5) * 0.08));
-    gl.uniform1f(u.uBand, still || a.mode === 0 ? 0 : 0.3);
-    gl.uniform1f(u.uBandY, 0.32 + 0.22 * Math.sin(t * 0.11));
+    gl.uniform1f(u.uGlitch, still || a.mode === 0 ? 0 : Math.min(0.2, Math.max(0, Math.abs(vel) - 0.8) * 0.05));
     gl.drawArrays(gl.TRIANGLES, 0, 3);
   }
 

@@ -20,14 +20,14 @@
   <!-- the certification cards, floating over the white sheet -->
   <div class="cards" aria-hidden="true"></div>
   <!-- the dot-matrix portrait; it also becomes the first floating card -->
-  <canvas id="hero" role="img" aria-label="Dot-matrix portrait of Avi Pandya, smiling, in glasses, a dark suit and tie, in front of a glowing wireframe grid"></canvas>
+  <canvas id="hero" role="img" aria-label="Dot-matrix portrait of Avi Pandya, smiling, in glasses, a dark suit and tie, in front of a wireframe grid"></canvas>
   <img class="hero-fallback" src="assets/portrait.webp" alt="Avi Pandya, smiling, in glasses, a dark suit and tie" width="640" height="800">
 
   <header class="nav">
-    <a class="nav__mark" href="#top" data-goto="top" data-scramble>Avi Pandya</a>
+    <a class="nav__mark" href="#top" data-goto="top">Avi Pandya</a>
     <div class="nav__end">
       <button class="nav__link nav__motion" type="button" aria-pressed="false">Pause motion</button>
-      <a class="nav__link nav__mail" href="mailto:avi.pandya@utdallas.edu" data-scramble>Email Avi</a>
+      <a class="nav__link nav__mail" href="mailto:avi.pandya@utdallas.edu">Email Avi</a>
       <button class="nav__link nav__menu" type="button" aria-expanded="false" aria-controls="menu"><span class="nav__menu-label">Menu</span></button>
     </div>
   </header>
@@ -35,7 +35,7 @@
   <main>
     <section class="hero" id="top" data-s="0 0.5" aria-labelledby="hero-h">
       <div class="container hero__inner">
-        <h1 class="hero__name" id="hero-h" data-glitch>Avi Pandya</h1>
+        <h1 class="hero__name" id="hero-h">Avi Pandya</h1>
         <p class="hero__line">Finance and CIS student at UT Dallas, focused on valuation and M&amp;A.</p>
         <div class="hero__actions">
           <a class="btn" href="mailto:avi.pandya@utdallas.edu">Email Avi</a>
@@ -49,7 +49,13 @@
         <div class="certs__sheet">
           <h2 class="certs__h" id="certs-h">Twenty-eight certifications</h2>
           <ol class="certs__list">
-            <li class="issuer" data-motif="stack" data-accent="#ff6a5c">
+            <li class="issuer">
+              <button class="issuer__btn" type="button" aria-haspopup="dialog"><span class="issuer__name">FINRA</span><span class="issuer__count">1</span></button>
+              <ul class="issuer__certs">
+                <li class="cert" data-short="SIE exam"><span class="cert__name">Securities Industry Essentials (SIE)</span> <span class="cert__meta">Issued <time datetime="2026-08">August 2026</time></span> <span class="cert__id">Credential ID T1108535</span> <span class="cert__note">Securities regulations, products and trading practices, from equity and debt to market structure.</span></li>
+              </ul>
+            </li>
+            <li class="issuer">
               <button class="issuer__btn" type="button" aria-haspopup="dialog"><span class="issuer__name">S&amp;P Global</span><span class="issuer__count">6</span></button>
               <ul class="issuer__certs">
                 <li class="cert" data-short="Capital IQ Pro 101"><span class="cert__name">Capital IQ Pro 101 Certification</span> <span class="cert__meta">Issued <time datetime="2026-09">September 2026</time></span> <a class="cert__link" href="https://spglobal.thoughtindustries.com/c/s/o5N0jKgpXDw4bY4qaEwEvnR373ZhPpiskozbvcc3GslrH4NW1Plp4V8abSZT_GjF" target="_blank" rel="noopener">Show credential</a></li>
@@ -60,7 +66,7 @@
                 <li class="cert" data-short="Metals &amp; Mining 101"><span class="cert__name">Metals &amp; Mining 101 Certification</span> <span class="cert__meta">Issued <time datetime="2026-09">September 2026</time></span> <a class="cert__link" href="https://spglobal.thoughtindustries.com/c/s/5O0NNHCHazqBu3BPMr_P-JXpKoKy1jN3r63-a9Nl4GrlqvYTAeNR-dyfGNP8ubyx" target="_blank" rel="noopener">Show credential</a></li>
               </ul>
             </li>
-            <li class="issuer" data-motif="candles" data-accent="#ffb547">
+            <li class="issuer">
               <button class="issuer__btn" type="button" aria-haspopup="dialog"><span class="issuer__name">Bloomberg</span><span class="issuer__count">4</span></button>
               <ul class="issuer__certs">
                 <li class="cert" data-short="Finance Fundamentals"><span class="cert__name">Bloomberg Finance Fundamentals</span> <span class="cert__meta">Issued <time datetime="2026-06">June 2026</time></span> <span class="cert__id">Credential ID o4gG1qCS7WHqic8fPfTcCv2f</span> <a class="cert__link" href="https://portal.bloombergforeducation.com/certificates/o4gG1qCS7WHqic8fPfTcCv2f" target="_blank" rel="noopener">Show credential</a></li>
@@ -69,7 +75,7 @@
                 <li class="cert" data-short="Spreadsheet Analysis"><span class="cert__name">Bloomberg Spreadsheet Analysis</span> <span class="cert__meta">Issued <time datetime="2026-08">August 2026</time></span> <span class="cert__id">Credential ID RcfCYW27oWzPA8oKguV1WorA</span> <a class="cert__link" href="https://portal.bloombergforeducation.com/certificates/RcfCYW27oWzPA8oKguV1WorA" target="_blank" rel="noopener">Show credential</a></li>
               </ul>
             </li>
-            <li class="issuer" data-motif="globe" data-accent="#21d0b2">
+            <li class="issuer">
               <button class="issuer__btn" type="button" aria-haspopup="dialog"><span class="issuer__name">LSEG</span><span class="issuer__count">4</span></button>
               <ul class="issuer__certs">
                 <li class="cert" data-short="Finance Essentials"><span class="cert__name">LSEG Finance Essentials</span> <span class="cert__meta">Issued <time datetime="2026-08">August 2026</time></span></li>
@@ -78,7 +84,7 @@
                 <li class="cert" data-short="World-Check One"><span class="cert__name">LSEG World-Check One: Case Manager Screener Certification Assessment</span> <span class="cert__meta">Issued <time datetime="2026-09">September 2026</time></span> <a class="cert__link" href="https://learningcentre.lseg.com/c/s/0IigaLAENi7xMMl58BRuJbJDIn8-fCvrI4KDuwCP1KmAVf9fW4cLBN6jV3xFJN6J" target="_blank" rel="noopener">Show credential</a></li>
               </ul>
             </li>
-            <li class="issuer" data-motif="pages" data-accent="#7cc6ff">
+            <li class="issuer">
               <button class="issuer__btn" type="button" aria-haspopup="dialog"><span class="issuer__name">FactSet, Boomi and Microsoft</span><span class="issuer__count">4</span></button>
               <ul class="issuer__certs">
                 <li class="cert" data-short="FactSet Core Products" data-issuer="FactSet"><span class="cert__name">FactSet Essentials: Core Products</span> <span class="cert__meta">Issued <time datetime="2026-09">September 2026</time></span> <span class="cert__id">Credential ID p7ub5xub9hhi</span> <a class="cert__link" href="https://verify.skilljar.com/c/p7ub5xub9hhi" target="_blank" rel="noopener">Show credential</a></li>
@@ -87,13 +93,7 @@
                 <li class="cert" data-short="Microsoft PowerPoint 2016" data-issuer="Microsoft"><span class="cert__name">Microsoft Office Specialist: Microsoft PowerPoint 2016</span> <span class="cert__meta">Issued <time datetime="2022-03">March 2022</time>, expires <time datetime="2034-01">January 2034</time></span></li>
               </ul>
             </li>
-            <li class="issuer" data-motif="shield" data-accent="#ff9b52">
-              <button class="issuer__btn" type="button" aria-haspopup="dialog"><span class="issuer__name">FINRA</span><span class="issuer__count">1</span></button>
-              <ul class="issuer__certs">
-                <li class="cert" data-short="SIE exam"><span class="cert__name">Securities Industry Essentials (SIE)</span> <span class="cert__meta">Issued <time datetime="2026-08">August 2026</time></span> <span class="cert__id">Credential ID T1108535</span> <span class="cert__note">Securities regulations, products and trading practices, from equity and debt to market structure.</span></li>
-              </ul>
-            </li>
-            <li class="issuer" data-motif="series" data-accent="#9aa7ff">
+            <li class="issuer">
               <button class="issuer__btn" type="button" aria-haspopup="dialog"><span class="issuer__name">Forage</span><span class="issuer__count">5</span></button>
               <ul class="issuer__certs">
                 <li class="cert" data-short="J.P. Morgan Investment Banking"><span class="cert__name">J.P. Morgan Investment Banking Job Simulation</span> <span class="cert__meta">Issued <time datetime="2025-11">November 2025</time></span> <span class="cert__id">Credential ID mdGi49Tpuj3RG9qrf</span> <span class="cert__note">Chose an acquisition target, built a DCF valuation with competitive and operational risks, and wrote a two-page client briefing.</span> <a class="cert__link" href="https://www.theforage.com/completion-certificates/Sj7temL583QAYpHXD/YD2kY95RQxQtXxFTS_Sj7temL583QAYpHXD_6906cef38adb65ab3bf4c80b_1762197597477_completion_certificate.pdf" target="_blank" rel="noopener">Show credential</a></li>
@@ -103,7 +103,7 @@
                 <li class="cert" data-short="Bank of America Investment Banking"><span class="cert__name">Bank of America Investment Banking Job Simulation</span> <span class="cert__meta">Issued <time datetime="2025-11">November 2025</time></span> <span class="cert__id">Credential ID SPPDrxqY3Q2tpRqYf</span> <span class="cert__note">Built integrated DCF and comparable company models whose analysis guided a potential $25M acquisition.</span> <a class="cert__link" href="https://www.theforage.com/completion-certificates/fMCqmt8qR4G85Puue/Hi8MJQE5T3MeTRWQR_fMCqmt8qR4G85Puue_6906cef38adb65ab3bf4c80b_1764273994887_completion_certificate.pdf" target="_blank" rel="noopener">Show credential</a></li>
               </ul>
             </li>
-            <li class="issuer" data-motif="code" data-accent="#8bd17c">
+            <li class="issuer">
               <button class="issuer__btn" type="button" aria-haspopup="dialog"><span class="issuer__name">freeCodeCamp</span><span class="issuer__count">4</span></button>
               <ul class="issuer__certs">
                 <li class="cert" data-short="Data Visualization"><span class="cert__name">Data Visualization</span> <span class="cert__meta">Issued <time datetime="2024-07">July 2024</time></span> <span class="cert__id">Credential ID avipandya-dv</span> <a class="cert__link" href="https://freecodecamp.org/certification/AviPandya/data-visualization" target="_blank" rel="noopener">Show credential</a></li>
@@ -157,16 +157,16 @@
     <div class="container foot__grid">
       <p class="foot__mark">Avi Pandya</p>
       <p class="foot__links"><a href="mailto:avi.pandya@utdallas.edu">avi.pandya@utdallas.edu</a><a href="https://www.linkedin.com/in/avipandya" target="_blank" rel="noopener">LinkedIn</a></p>
-      <p class="foot__note">Frisco, Texas. 3D backdrops and textures from Poly Haven, public domain. © <span data-year>2026</span></p>
+      <p class="foot__note">Frisco, Texas. Backdrop photographs and video from Poly Haven, public domain. © <span data-year>2026</span></p>
     </div>
   </footer>
 
   <!-- Full-screen menu -->
   <div class="menu" id="menu" hidden>
     <nav class="container menu__list" aria-label="Sections">
-      <a href="#credentials" data-goto="credentials"><span class="menu__n">01</span><span data-scramble>Certifications</span></a>
-      <a href="#about" data-goto="about"><span class="menu__n">02</span><span data-scramble>Education</span></a>
-      <a href="#connect" data-goto="connect"><span class="menu__n">03</span><span data-scramble>Contact</span></a>
+      <a href="#credentials" data-goto="credentials"><span class="menu__n">01</span><span>Certifications</span></a>
+      <a href="#about" data-goto="about"><span class="menu__n">02</span><span>Education</span></a>
+      <a href="#connect" data-goto="connect"><span class="menu__n">03</span><span>Contact</span></a>
     </nav>
   </div>
 
