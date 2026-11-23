@@ -203,7 +203,7 @@ main > section a, main > section button, main > section .panel, main > section .
 
 /* ---------- certifications: a white sheet beside the floating cards ---------- */
 
-.certs { height: 500svh; padding-top: var(--space-2xl); }
+.certs { height: 400svh; padding-top: var(--space-2xl); }
 .certs__track { position: sticky; top: calc(var(--nav-h) + var(--space-lg)); }
 .certs__sheet {
   width: min(32rem, 100%);

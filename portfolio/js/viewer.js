@@ -23,6 +23,7 @@ export function readIssuers(list) {
       return {
         name,
         short: c.dataset.short || name,
+        issuer: c.dataset.issuer || '', // set where one card groups several issuers
         issued: times[0] ? times[0].textContent.trim() : '',
         expires: times[1] ? times[1].textContent.trim() : '',
         id: id ? id.textContent.replace(/^Credential ID\s*/, '').trim() : '',
@@ -124,7 +125,7 @@ export function createViewer({ issuers, isStill, reduceMotion, onIssuer }) {
     const c = issuer.certs[at], n = issuer.certs.length;
     q('.viewer__pos').textContent = n === 1 ? 'One certification' : `Certification ${at + 1} of ${n}`;
     q('.viewer__name').textContent = c.name;
-    const facts = [['Issued', c.issued]];
+    const facts = c.issuer ? [['Issuer', c.issuer], ['Issued', c.issued]] : [['Issued', c.issued]];
     if (c.expires) facts.push(['Expires', c.expires]);
     if (c.id) facts.push(['Credential ID', c.id]);
     q('.viewer__facts').innerHTML = facts.map(([k, v]) => `<div><dt>${k}</dt><dd>${v.replace(/[<&]/g, (m) => (m === '<' ? '&lt;' : '&amp;'))}</dd></div>`).join('');

@@ -383,7 +383,7 @@ export function makeCertSlide(cert, issuer, k, n) {
   const L = x0 + 72;
   ctx.textBaseline = 'alphabetic';
   ctx.font = `600 30px ${PIXEL}`; ctx.fillStyle = A;
-  ctx.fillText(issuer.name, L, y0 + 92);
+  ctx.fillText(cert.issuer || issuer.name, L, y0 + 92);
   ctx.font = `400 26px ${PIXEL}`; ctx.fillStyle = 'rgba(236,238,242,.55)';
   const pos = `${k + 1} of ${n}`;
   ctx.fillText(pos, x0 + w0 - 72 - ctx.measureText(pos).width, y0 + 92);
