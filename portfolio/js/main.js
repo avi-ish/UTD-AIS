@@ -97,7 +97,16 @@ viewer = createViewer({
   onIssuer: (i) => scrollTo({ top: cardY(i), behavior: 'instant' }),
 });
 issuers.forEach((iss, i) => {
+  const n = iss.certs.length;
+  iss.btn.setAttribute('aria-label', `${iss.name}, ${n} certification${n === 1 ? '' : 's'}`);
   iss.btn.addEventListener('click', () => viewer.open(i, 0, iss.btn));
+  // the list is hidden with scripts on: focusing an issuer brings its card to the front
+  iss.btn.addEventListener('focus', () => {
+    if (viewer.isOpen) return;
+    scrollTo({ top: cardY(i), behavior: 'instant' });
+    if (cards && iss.btn.matches(':focus-visible')) cards.focus(i);
+  });
+  iss.btn.addEventListener('blur', () => cards && cards.focus(-1));
 });
 // the list marks the issuer whose card is in front
 let activeCert = -2;

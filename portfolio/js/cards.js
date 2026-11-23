@@ -19,22 +19,16 @@ export function createCards(stage, canvases, { onPick }) {
   });
 
   let cw = 800, ch = 500, R = 700, shift = 0, lift = 0, vw = innerWidth, vh = innerHeight;
-  const sheet = document.querySelector('.certs__sheet');
   const nav = document.querySelector('.nav');
   function layout() {
     vw = innerWidth; vh = innerHeight;
     const wide = vw / vh > 1.2 && vw > 900;
-    cw = Math.min(wide ? vw * 0.46 : vw * 0.86, 880);
+    cw = Math.min(wide ? vw * 0.5 : vw * 0.86, 960);
     ch = cw * 0.625;
     R = vh * 1.05;
-    shift = wide ? vw * 0.17 : 0;
-    // on narrow screens the list sits at the bottom: centre the cards in the band above it
-    lift = 0;
-    if (!wide && sheet) {
-      const top = nav ? nav.offsetHeight : 0;
-      const bottom = vh - sheet.offsetHeight - 16;
-      if (bottom - top > ch * 1.1) lift = (top + bottom) / 2 - vh / 2;
-    }
+    shift = 0;
+    // centre the cards in the screen below the bar
+    lift = nav ? nav.offsetHeight / 2 : 0;
     stage.style.setProperty('--card-w', `${cw}px`);
   }
   layout();
@@ -77,5 +71,8 @@ export function createCards(stage, canvases, { onPick }) {
     }
   }
 
-  return { frame, resize: layout };
+  // the keyboard reaches each card through the list: show which one has focus
+  function focus(i) { cards.forEach((el, k) => el.classList.toggle('is-focus', k === i)); }
+
+  return { frame, resize: layout, focus };
 }

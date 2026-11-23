@@ -9,10 +9,8 @@ export const TL = {
   ringEnd: (N_CARDS + 1) * CARD_STEP, // 6.5: the last card has passed and the city starts to show
   growEnd: 7.0,                       // the city fills the screen
   fallEnd: 9.3,                       // bottom of the city canyon
-  mixStart: 9.1, mixEnd: 9.5,         // city dissolves into the machine hall
-  hallEnd: 14.0,
-  mix2Start: 13.75, mix2End: 14.15,   // hall dissolves into the alley, done before Contact arrives
-  end: 15.3,
+  mixStart: 8.85, mixEnd: 9.2,        // city dissolves into the alley, done as Contact arrives
+  end: 10.3,
 };
 
 /** Read the sections' stretches once per resize. */

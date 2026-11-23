@@ -141,13 +141,11 @@ const ease = (x) => x * x * (3 - 2 * x);
 const SCENES = [
   { id: 'sheet', mode: 0, from: 0, to: TL.ringEnd },
   { id: 'city', mode: 1, src: 'assets/env/city-drop.mp4', poster: 'assets/env/city-drop-poster.jpg', video: true, from: TL.ringEnd, to: TL.fallEnd, zoom: [1.06, 1.16], grade: [0.01, 0.05, 0.14], hi: [0.62, 0.8, 1.0], lift: 0.12 },
-  { id: 'workshop', mode: 1, src: 'assets/env/workshop.jpg', from: TL.mixStart, to: TL.hallEnd, zoom: [1.04, 1.2], grade: [0.005, 0.03, 0.04], hi: [0.72, 0.92, 0.9], lift: 0.1 },
-  { id: 'alley', mode: 1, src: 'assets/env/alley.jpg', from: TL.mix2Start, to: TL.end, zoom: [1.06, 1.14], grade: [0.06, 0.005, 0.004], hi: [1.0, 0.42, 0.26], lift: 0.18 },
+  { id: 'alley', mode: 1, src: 'assets/env/alley.jpg', from: TL.mixStart, to: TL.end, zoom: [1.06, 1.14], grade: [0.06, 0.005, 0.004], hi: [1.0, 0.42, 0.26], lift: 0.18 },
 ];
 const DISSOLVES = [
   { a: 0, b: 1, from: TL.ringEnd, to: TL.growEnd },
   { a: 1, b: 2, from: TL.mixStart, to: TL.mixEnd },
-  { a: 2, b: 3, from: TL.mix2Start, to: TL.mix2End },
 ];
 
 export function createMedia(canvas, { floorCanvas }) {
