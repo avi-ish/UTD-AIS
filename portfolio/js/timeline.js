@@ -3,14 +3,18 @@
 // the world follows the real document however tall the sections end up.
 
 export const CARD_STEP = 0.5;   // timeline per issuer card
-export const N_CARDS = 12;
+export const N_CARDS = 9;
+const RING_END = (N_CARDS + 1) * CARD_STEP;
 
+// Keep the sections' data-s in index.html in step with these:
+// hero 0 to 0.5, certifications 0.5 to growEnd, education growEnd to fallEnd, contact fallEnd to end.
 export const TL = {
-  ringEnd: (N_CARDS + 1) * CARD_STEP, // 6.5: the last card has passed and the city starts to show
-  growEnd: 7.0,                       // the city fills the screen
-  fallEnd: 9.3,                       // bottom of the city canyon
-  mixStart: 8.85, mixEnd: 9.2,        // city dissolves into the alley, done as Contact arrives
-  end: 10.3,
+  ringEnd: RING_END,                  // 5.0: the last card has passed and the city starts to show
+  growEnd: RING_END + 0.5,            // 5.5: the city fills the screen
+  fallEnd: RING_END + 2.8,            // 7.8: bottom of the city canyon
+  mixStart: RING_END + 2.35,          // the city dissolves into the alley,
+  mixEnd: RING_END + 2.7,             // done as Contact arrives
+  end: RING_END + 3.8,                // 8.8
 };
 
 /** Read the sections' stretches once per resize. */
