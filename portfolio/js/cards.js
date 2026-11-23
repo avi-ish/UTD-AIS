@@ -18,7 +18,9 @@ export function createCards(stage, canvases, { onPick }) {
     return el;
   });
 
-  let cw = 800, ch = 500, R = 700, shift = 0, vw = innerWidth, vh = innerHeight;
+  let cw = 800, ch = 500, R = 700, shift = 0, lift = 0, vw = innerWidth, vh = innerHeight;
+  const sheet = document.querySelector('.certs__sheet');
+  const nav = document.querySelector('.nav');
   function layout() {
     vw = innerWidth; vh = innerHeight;
     const wide = vw / vh > 1.2 && vw > 900;
@@ -26,15 +28,22 @@ export function createCards(stage, canvases, { onPick }) {
     ch = cw * 0.625;
     R = vh * 1.05;
     shift = wide ? vw * 0.17 : 0;
+    // on narrow screens the list sits at the bottom: centre the cards in the band above it
+    lift = 0;
+    if (!wide && sheet) {
+      const top = nav ? nav.offsetHeight : 0;
+      const bottom = vh - sheet.offsetHeight - 16;
+      if (bottom - top > ch * 1.1) lift = (top + bottom) / 2 - vh / 2;
+    }
     stage.style.setProperty('--card-w', `${cw}px`);
   }
   layout();
 
   // where a card sits for drum offset u (0 = centred, +1 = next one below)
-  function pose(u, k = 1, sx = shift) {
+  function pose(u, k = 1, sx = shift, ly = lift) {
     const a = u * STEP;
     const x = sx + u * cw * 0.16;
-    const y = R * Math.sin(a) * 0.92;
+    const y = ly + R * Math.sin(a) * 0.92;
     const z = -R * (1 - Math.cos(a));
     const rz = 9 * Math.min(Math.abs(u), 1.5) * (u < 0 ? 1.1 : 0.8);
     return `translate3d(${x}px, ${y}px, ${z}px) rotateX(${(-a * 180) / Math.PI}deg) rotateZ(${rz}deg) scale(${k})`;
@@ -61,7 +70,7 @@ export function createCards(stage, canvases, { onPick }) {
         const p = ease(r / 0.6);
         const k = 1 + (cw / vw - 1) * p;
         hero.classList.add('is-card');
-        hero.style.transform = `perspective(1600px) ${pose(-r, k, shift * p)}`;
+        hero.style.transform = `perspective(1600px) ${pose(-r, k, shift * p, lift * p)}`;
         hero.style.borderRadius = `${(14 * p) / Math.max(k, 0.2)}px`;
       }
       hero.style.visibility = r > 2.3 ? 'hidden' : 'visible';

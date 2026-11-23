@@ -1,18 +1,18 @@
-// The 3D world runs on one scroll timeline, measured in "screens". Each
+// The backdrop runs on one scroll timeline, measured in "screens". Each
 // page section says which stretch of it it covers (data-s="start end"), so
 // the world follows the real document however tall the sections end up.
 
-export const CARD_STEP = 0.6;   // timeline per credential card
-export const N_CARDS = 8;
+export const CARD_STEP = 0.5;   // timeline per issuer card
+export const N_CARDS = 12;
 
 export const TL = {
-  ringEnd: (N_CARDS + 1) * CARD_STEP, // 5.4: last card (a window into the city) is centred
-  growEnd: 6.0,                       // that window fills the screen
-  fallEnd: 8.3,                       // bottom of the city canyon
-  mixStart: 8.1, mixEnd: 8.5,         // city dissolves into the machine hall
-  hallEnd: 13.0,
-  mix2Start: 12.75, mix2End: 13.15,   // hall dissolves into the alley, done before Contact arrives
-  end: 14.3,
+  ringEnd: (N_CARDS + 1) * CARD_STEP, // 6.5: the last card has passed and the city starts to show
+  growEnd: 7.0,                       // the city fills the screen
+  fallEnd: 9.3,                       // bottom of the city canyon
+  mixStart: 9.1, mixEnd: 9.5,         // city dissolves into the machine hall
+  hallEnd: 14.0,
+  mix2Start: 13.75, mix2End: 14.15,   // hall dissolves into the alley, done before Contact arrives
+  end: 15.3,
 };
 
 /** Read the sections' stretches once per resize. */

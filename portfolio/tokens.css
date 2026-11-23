@@ -28,6 +28,8 @@
   /* elevation: offset and blur, never a glow */
   --shadow-card: 0 1px 0 var(--color-highlight) inset, 0 2px 6px var(--color-shadow-soft), 0 22px 48px -18px var(--color-shadow);
   --shadow-lift: 0 1px 0 var(--color-highlight) inset, 0 6px 14px var(--color-shadow-soft), 0 34px 70px -22px var(--color-shadow);
+  --color-room: oklch(9% 0.012 260); --color-room-veil: oklch(9% 0.012 260 / 0.7); --color-scanline: oklch(100% 0 0 / 0.035);
+  --shadow-screen: 0 40px 80px -30px oklch(0% 0 0 / 0.9), 0 0 0 1px var(--color-highlight);
   --tracking-display: -0.03em;
   --nav-h: 72px;
 }

@@ -1,6 +1,6 @@
 import { createHero } from './hero.js';
-import { CREDENTIALS } from './content.js';
 import { makeCredentialCard, glyphFloor } from './art.js';
+import { readIssuers, createViewer } from './viewer.js';
 import { createMedia } from './media.js';
 import { createCards } from './cards.js';
 import { TL, CARD_STEP, measureSections, timelineAt } from './timeline.js';
@@ -26,9 +26,11 @@ addEventListener('blur', () => { input.active = false; input.inside = false; });
 
 /* ---- motion switch: pauses every animation; scrolling still moves the scenes ---- */
 let still = reduceMotion;
+let viewer = null; // the certification viewer, made further down
 const motionBtn = $('.nav__motion');
 function setStill(v) {
   still = v;
+  if (viewer) viewer.resume();
   root.classList.toggle('is-still', v);
   motionBtn.setAttribute('aria-pressed', String(v));
   motionBtn.textContent = v ? 'Play motion' : 'Pause motion';
@@ -74,7 +76,7 @@ function goto(where) {
   const target = where === 'top' ? $('#top') : document.getElementById(where);
   if (!target) return;
   const y = target.getBoundingClientRect().top + scrollY - (where === 'top' ? 0 : 0);
-  goTo(where === 'credentials' ? yForTimeline(CARD_STEP) : y);
+  goTo(where === 'credentials' ? cardY(0) : y);
 }
 document.addEventListener('click', (e) => {
   const a = e.target.closest('[data-goto]');
@@ -82,23 +84,29 @@ document.addEventListener('click', (e) => {
   e.preventDefault();
   goto(a.dataset.goto);
 });
-addEventListener('keydown', (e) => { if (e.key === 'Escape' && menu.open) menu.close(); });
+addEventListener('keydown', (e) => { if (e.key === 'Escape' && menu.open && !viewer.isOpen) menu.close(); });
 
-/* ---- certifications: the list follows the cards, and picking one brings its card forward ---- */
-const certItems = [...document.querySelectorAll('.certs__list details')];
-certItems.forEach((d, i) => {
-  d.querySelector('summary').addEventListener('click', (e) => {
-    e.preventDefault();
-    goTo(yForTimeline(CARD_STEP * (i + 1)));
-  });
+/* ---- certifications: each issuer opens its own inner menu ---- */
+const issuers = readIssuers($('.certs__list'));
+const cardY = (i) => yForTimeline(CARD_STEP * (i + 1));
+viewer = createViewer({
+  issuers,
+  reduceMotion,
+  isStill: () => still,
+  // keep the page behind on the issuer being viewed, so closing lands there
+  onIssuer: (i) => scrollTo({ top: cardY(i), behavior: 'instant' }),
 });
+issuers.forEach((iss, i) => {
+  iss.btn.addEventListener('click', () => viewer.open(i, 0, iss.btn));
+});
+// the list marks the issuer whose card is in front
 let activeCert = -2;
 function syncCerts(s) {
   const r = s / CARD_STEP;
-  const a = r < 0.5 || s > TL.ringEnd ? -1 : Math.max(0, Math.min(certItems.length - 1, Math.round(r) - 1));
+  const a = r < 0.5 || s > TL.ringEnd - CARD_STEP * 0.5 ? -1 : Math.max(0, Math.min(issuers.length - 1, Math.round(r) - 1));
   if (a === activeCert) return;
   activeCert = a;
-  certItems.forEach((d, i) => { d.open = i === a; });
+  issuers.forEach((iss, i) => iss.el.classList.toggle('is-active', i === a));
 }
 
 /* ---- backdrop pictures and the certification cards ---- */
@@ -109,8 +117,8 @@ let cards = null;
 (async () => {
   try {
     await Promise.race([document.fonts.load('600 16px "Spline Sans Mono"'), new Promise((r) => setTimeout(r, 2500))]);
-    const canvases = CREDENTIALS.map((c, i) => makeCredentialCard(c, i));
-    cards = createCards($('.cards'), canvases, { onPick: (i) => goTo(yForTimeline(CARD_STEP * (i + 1))) });
+    const canvases = issuers.map((iss, i) => makeCredentialCard({ issuer: iss.name, items: iss.certs.map((c) => c.short), accent: iss.accent, motif: iss.motif }, i));
+    cards = createCards($('.cards'), canvases, { onPick: (i) => viewer.open(i, 0, issuers[i].btn) });
   } catch (err) {
     console.error(err);
   }
@@ -150,7 +158,8 @@ function loop(now) {
   const ptrKey = `${input.x | 0},${input.y | 0}`;
   const changed = s !== lastS || ptrKey !== lastPtr;
   lastS = s; lastPtr = ptrKey;
-  const draw = !still || changed;
+  // nothing behind the viewer needs drawing while it covers the page
+  const draw = (!still || changed) && !viewer.isOpen;
 
   if (hero && s < 1.6 && draw) hero.render(clock, still ? 0 : dt);
   document.body.classList.toggle('is-hero', s < 0.25);
